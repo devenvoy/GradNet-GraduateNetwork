@@ -40,6 +40,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.ktor.client.okhttp)
+            // https://mvnrepository.com/artifact/io.insert-koin/koin-android
+            implementation("io.insert-koin:koin-android:3.5.6")
+
 //            implementation(libs.google.playServices.ads)
         }
         commonMain.dependencies {
@@ -56,6 +59,11 @@ kotlin {
             // Navigator
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenModel)
+            implementation(libs.voyager.transitions)
+
+            implementation(libs.voyager.koin)
+            implementation(libs.koin.core)
+
 
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
@@ -92,6 +100,9 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.encoding)
+
+            implementation(libs.materialcolors)
+            implementation (libs.fontawesomecompose)
 
             api(libs.moko.permissions)
             api(libs.moko.permissions.compose)

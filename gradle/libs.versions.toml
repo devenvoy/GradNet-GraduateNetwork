@@ -12,7 +12,9 @@ androidx-lifecycle = "2.8.4"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-multiplatform = "1.7.0"
+fontawesomecompose = "1.0.0"
 junit = "4.13.2"
+koinCore = "3.5.6"
 kotlin = "2.1.0"
 kotlinx-coroutines = "1.9.0"
 
@@ -25,6 +27,7 @@ kotlinxCoroutinesCoreVersion = "1.9.0"
 kotlinxDatetime = "0.6.1"
 kotlinxSerializationJson = "1.7.1"
 kotlinxSerializationJsonVersion = "1.7.1"
+materialcolors = "1.0.0"
 multiplatformSettingsNoArg = "1.0.0"
 mvvmCore = "0.16.1"
 retrofit = "2.9.0"
@@ -62,6 +65,8 @@ kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-co
 
 cmptoast = { module = "network.chaintech:cmptoast", version.ref = "cmptoast" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+fontawesomecompose = { module = "com.github.Gurupreet:FontAwesomeCompose", version.ref = "fontawesomecompose" }
+materialcolors = { module = "com.composables:materialcolors", version.ref = "materialcolors" }
 
 kotlinx-coroutines-core-v164 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
@@ -81,6 +86,7 @@ voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sh
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 voyager-hilt = { module = "cafe.adriel.voyager:voyager-hilt", version.ref = "voyager" }
 voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 voyager-rxjava = { module = "cafe.adriel.voyager:voyager-rxjava", version.ref = "voyager" }

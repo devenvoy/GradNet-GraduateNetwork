@@ -1,7 +1,7 @@
 package com.sdjic.gradnet.di.platform_di
 
 import androidx.room.RoomDatabase
-import com.sdjic.gradnet.data.local.GradNetDB
+import com.sdjic.gradnet.data.local.room.GradNetDB
 
 expect fun getDatabaseBuilder(): PlatformDatabaseBuilder
 

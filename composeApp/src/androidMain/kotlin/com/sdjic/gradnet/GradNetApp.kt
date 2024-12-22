@@ -9,6 +9,10 @@ class GradNetApp: Application() {
     }
     override fun onCreate() {
         super.onCreate()
+//        startKoin {
+//            androidLogger()
+//            androidContext(this@GradNetApp)
+//        }
         AppContext = this
     }
 }

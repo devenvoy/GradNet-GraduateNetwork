@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.data.entity
+package com.sdjic.gradnet.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

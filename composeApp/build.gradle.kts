@@ -30,15 +30,11 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
-            linkerOpts.add("AVFoundation")
+            linkerOpts.add("-framework AVFoundation")
         }
     }
 
-    jvm("desktop")
-
     sourceSets {
-        val desktopMain by getting
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -104,10 +100,6 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-        }
     }
 }
 
@@ -140,18 +132,6 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.sdjic.gradnet.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.sdjic.gradnet"
-            packageVersion = "1.0.0"
-        }
-    }
 }
 
 ksp {

@@ -1,7 +1,6 @@
-package com.sdjic.gradnet
+package com.sdjic.gradnet.di.platform_di
 
 import android.os.Build
-import com.sdjic.gradnet.di.platform_di.Platform
 
 class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"

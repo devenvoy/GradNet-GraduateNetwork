@@ -1,6 +1,4 @@
-package com.sdjic.gradnet
-
-import com.sdjic.gradnet.di.platform_di.getPlatform
+package com.sdjic.gradnet.di.platform_di
 
 class Greeting {
     private val platform = getPlatform()

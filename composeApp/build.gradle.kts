@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+
+// added
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -16,7 +20,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -25,17 +29,22 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
+            linkerOpts.add("AVFoundation")
         }
     }
-    
+
     jvm("desktop")
-    
+
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            implementation(libs.ktor.client.okhttp)
+//            implementation(libs.google.playServices.ads)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -46,6 +55,54 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            //            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
+            // Navigator
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.screenModel)
+
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
+            implementation(libs.mvvm.core)
+
+//            implementation("network.chaintech:cmp-preference:1.0.0")
+//            implementation(libs.kotlinx.serialization.json.jvm)
+
+            // #1 - Basic settings
+            implementation(libs.multiplatform.settings.no.arg)
+
+            // #2 - For custom class serialization
+            implementation(libs.kotlinx.serialization.json.v141)
+            implementation(libs.multiplatform.settings.serialization)
+
+            // #3 - For observing values as flows
+            implementation(libs.kotlinx.coroutines.core.v164)
+            implementation(libs.multiplatform.settings.coroutines)
+
+            implementation(libs.kotlinx.datetime)
+
+            implementation(libs.sdp.ssp.compose.multiplatform)
+            implementation(libs.cmptoast)
+
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
+
+            implementation(libs.retrofit)
+
+            implementation(libs.coil.compose)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.encoding)
+
+            api(libs.moko.permissions)
+            api(libs.moko.permissions.compose)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -95,4 +152,24 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "${projectDir}/schemas")
+}
+
+dependencies {
+
+    // Android
+
+    add("kspAndroid", libs.room.compiler)
+
+    // iOS
+
+    add("kspIosSimulatorArm64", libs.room.compiler)
+
+    add("kspIosX64", libs.room.compiler)
+
+    add("kspIosArm64", libs.room.compiler)
+
 }

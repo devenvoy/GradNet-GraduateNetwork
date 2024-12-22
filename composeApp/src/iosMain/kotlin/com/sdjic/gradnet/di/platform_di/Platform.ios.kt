@@ -1,5 +1,6 @@
 package com.sdjic.gradnet
 
+import com.sdjic.gradnet.di.platform_di.Platform
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {

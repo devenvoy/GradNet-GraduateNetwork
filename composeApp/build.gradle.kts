@@ -11,6 +11,7 @@ plugins {
 // added
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.buildConfig)
 }
 
 kotlin {
@@ -39,16 +40,16 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
 
+            implementation(compose.uiTooling)
+            implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
-            // https://mvnrepository.com/artifact/io.insert-koin/koin-android
-            implementation("io.insert-koin:koin-android:3.5.6")
 
 //            implementation(libs.google.playServices.ads)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+//            implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -63,6 +64,7 @@ kotlin {
 
             implementation(libs.voyager.koin)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
 
 
             implementation(compose.material3)
@@ -94,18 +96,24 @@ kotlin {
             implementation(libs.retrofit)
 
             implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.encoding)
+            implementation(libs.ktor.client.serialization)
 
             implementation(libs.materialcolors)
             implementation (libs.fontawesomecompose)
+            implementation(libs.composeIcons.featherIcons)
 
             api(libs.moko.permissions)
             api(libs.moko.permissions.compose)
+
+            implementation(libs.kermit)
+            implementation(libs.kstore)
         }
 
         iosMain.dependencies {
@@ -143,6 +151,12 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+
+buildConfig {
+    // BuildConfig configuration here.
+    // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
 }
 
 ksp {

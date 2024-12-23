@@ -1,19 +1,23 @@
 package com.sdjic.gradnet
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
-import com.sdjic.gradnet.di.initKoin
+import com.sdjic.gradnet.di.appModules
 import com.sdjic.gradnet.presentation.screens.demo.TestScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.KoinApplication
 
 @Composable
 @Preview
 fun App() {
-    // local database for app
-//    val gradNetDB = getDatabaseBuilder().build().setQueryCoroutineContext(Dispatchers.IO).build()
-    initKoin({})
     MaterialTheme {
-       Navigator(TestScreen())
+        KoinApplication(
+            application = {
+                modules(appModules)
+            }
+        ) {
+            Navigator(TestScreen())
+        }
     }
 }

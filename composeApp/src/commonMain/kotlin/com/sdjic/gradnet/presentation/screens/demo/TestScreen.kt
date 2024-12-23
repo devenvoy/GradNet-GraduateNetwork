@@ -9,21 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.koin.koinScreenModel
-import com.sdjic.gradnet.data.local.entity.Test
-import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
+import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 class TestScreen : Screen {

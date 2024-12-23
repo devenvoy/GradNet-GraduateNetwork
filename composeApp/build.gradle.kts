@@ -41,7 +41,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(compose.uiTooling)
-            implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
 
 //            implementation(libs.google.playServices.ads)
@@ -49,7 +48,6 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-//            implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -62,10 +60,9 @@ kotlin {
             implementation(libs.voyager.screenModel)
             implementation(libs.voyager.transitions)
 
-            implementation(libs.voyager.koin)
+//            implementation(libs.voyager.koin)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-
 
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)

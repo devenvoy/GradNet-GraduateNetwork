@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation.Companion.keyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -26,6 +27,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.Eye
+import compose.icons.feathericons.EyeOff
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
@@ -34,7 +38,7 @@ fun CustomInputField(
     fieldTitle: String,
     textFieldValue: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
-    minHeight: Dp = 46.sdp,
+    minHeight: Dp = 42.sdp,
     singleLine: Boolean = true,
     placeholder: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -66,7 +70,11 @@ fun CustomInputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(minHeight)
-                .border(width = 1.sdp, color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                .border(
+                    width = 1.sdp,
+                    color = MaterialTheme.colorScheme.primary,
+                    RoundedCornerShape(8.dp)
+                )
                 .background(Color.White),
             singleLine = singleLine,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -105,11 +113,9 @@ fun CustomInputPasswordField(
             shape = RoundedCornerShape(8.sdp),
             trailingIcon = {
                 if (isPasswordField) {
-                    val visibilityIcon = if (passwordVisible) {
-                        Icons.Default.Visibility
-                    } else {
-                        Icons.Default.VisibilityOff
-                    }
+                    val visibilityIcon =
+                        if (passwordVisible) FeatherIcons.Eye else FeatherIcons.EyeOff
+
                     IconButton(
                         onClick = { passwordVisible = !passwordVisible }
                     ) {
@@ -133,7 +139,11 @@ fun CustomInputPasswordField(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(minHeight)
-                .border(width = 1.sdp, color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                .border(
+                    width = 1.sdp,
+                    color = MaterialTheme.colorScheme.primary,
+                    RoundedCornerShape(8.dp)
+                )
                 .background(Color.White),
             singleLine = singleLine,
             keyboardOptions = KeyboardOptions(

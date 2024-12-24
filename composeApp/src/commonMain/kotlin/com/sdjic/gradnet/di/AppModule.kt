@@ -6,6 +6,7 @@ import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
 import com.sdjic.gradnet.di.platform_di.platformModule
 import com.sdjic.gradnet.domain.repo.TestRepository
+import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.demo.TestViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 
 val screenModelsModule = module {
     factory { TestViewModel(testRepository = get()) }
+    factory { LoginScreenModel() }
 //    factory { DetailScreenModel(museumRepository = get()) }
 //    factory { QuestionScreenModel(questionDataSource = get()) }
 }

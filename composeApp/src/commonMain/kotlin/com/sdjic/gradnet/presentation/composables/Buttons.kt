@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.create_account
+import kotlinx.serialization.json.JsonNull.content
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.stringResource
@@ -24,17 +25,17 @@ fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(14.sdp),
+    shape: Shape = RoundedCornerShape(8.sdp),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         contentColor = Color.White,
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = MaterialTheme.colorScheme.primary,
 
         ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(
-        defaultElevation = 2.sdp
+        defaultElevation = 1.sdp
     ),
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = PaddingValues(vertical = 14.sdp),
+    contentPadding: PaddingValues = PaddingValues(vertical = 8.sdp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -57,9 +58,9 @@ fun SecondaryOutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(10.sdp),
+    shape: Shape = RoundedCornerShape(8.sdp),
     colors: ButtonColors = ButtonDefaults.buttonColors(
-        contentColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.primary,
         containerColor = Color.White,
     ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(defaultElevation = 1.dp),
@@ -70,7 +71,7 @@ fun SecondaryOutlinedButton(
         Text(
             text = stringResource(Res.string.create_account),
             style = TextStyle(
-                fontSize = 16.ssp,
+                fontSize = 14.ssp,
                 fontWeight = FontWeight.SemiBold
             )
         )

@@ -111,6 +111,11 @@ kotlin {
 
             implementation(libs.kermit)
             implementation(libs.kstore)
+
+            implementation(libs.compottie)
+            implementation(libs.compottie.dot)
+            implementation(libs.compottie.network)
+            implementation(libs.compottie.resources)
         }
 
         iosMain.dependencies {

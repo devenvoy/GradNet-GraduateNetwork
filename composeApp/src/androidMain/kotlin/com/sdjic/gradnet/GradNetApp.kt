@@ -9,10 +9,7 @@ class GradNetApp: Application() {
     }
     override fun onCreate() {
         super.onCreate()
-//        startKoin {
-//            androidLogger()
-//            androidContext(this@GradNetApp)
-//        }
         AppContext = this
+        multiplatform.network.cmptoast.AppContext.apply { set(applicationContext) }
     }
 }

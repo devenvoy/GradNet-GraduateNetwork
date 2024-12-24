@@ -6,7 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,11 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.R
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -39,19 +38,23 @@ import com.sdjic.gradnet.presentation.composables.Label
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.SecondaryOutlinedButton
+import com.sdjic.gradnet.presentation.composables.Title
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import compose.icons.FeatherIcons
-import compose.icons.feathericons.Image
 import compose.icons.feathericons.Mail
-import compose.icons.feathericons.Voicemail
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.btn_google_sing_in
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 class LoginScreen : Screen {
     @Composable
@@ -61,10 +64,11 @@ class LoginScreen : Screen {
         LoginScreenContent(
             loginScreenModel = loginScreenModel,
             onLoginSuccess = {},
-            navigateToSignUp = {}
+            navigateToSignUp = {navigator.replace(SignUpScreen())}
         )
     }
 
+    @OptIn(ExperimentalResourceApi::class)
     @Composable
     fun LoginScreenContent(
         loginScreenModel: LoginScreenModel,
@@ -78,13 +82,19 @@ class LoginScreen : Screen {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-//            Image(
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//                painter = painterResource(R.drawable.sign_in_bg),
-//                contentDescription = null,
-//                contentScale = ContentScale.FillWidth
-//            )
+            val composition by rememberLottieComposition {
+                LottieCompositionSpec.JsonString(
+                    Res.readBytes("files/working.json").decodeToString()
+                )
+            }
+            Image(
+                modifier = Modifier.fillMaxWidth().height(180.sdp),
+                painter = rememberLottiePainter(
+                    composition = composition,
+                    iterations = Compottie.IterateForever
+                ),
+                contentDescription = "loader"
+            )
             SignInLayout(loginScreenModel, navigateToSignUp)
             LoginStateUI(
                 loginState = loginState,
@@ -98,33 +108,30 @@ class LoginScreen : Screen {
     fun LoginStateUI(loginState: UiState<Any>, onLoginSuccess: () -> Unit) {
         UiStateHandler(
             uiState = loginState,
-            onErrorShowed = {}
-        ) {
-            onLoginSuccess()
-        }
+            onErrorShowed = {},
+            content = { onLoginSuccess() }
+        )
     }
 
     @Composable
     fun SignInLayout(viewModel: LoginScreenModel, navigateToSignUp: () -> Unit) {
         Column(
             modifier = Modifier
-                .padding(top = 160.sdp)
+                .padding(top = 180.sdp)
                 .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 32.sdp, topEnd = 32.sdp))
                 .background(color = Color.White)
                 .padding(20.sdp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(20.sdp)
+            verticalArrangement = Arrangement.spacedBy(10.sdp)
         ) {
-            Label(
-                text = "Sign In",
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+            Title(
+                text = "Welcome Back",
+                size = 22.ssp,
+                modifier = Modifier.align(Alignment.Start),
                 textColor = Color.Black,
             )
-            Column(
-                modifier = Modifier,
-                verticalArrangement = Arrangement.spacedBy(10.sdp)
-            ) {
+            Column {
                 CustomInputField(
                     fieldTitle = "Email",
                     textFieldValue = viewModel.email.value,
@@ -141,6 +148,7 @@ class LoginScreen : Screen {
                         )
                     }
                 )
+                Spacer(modifier = Modifier.height(10.sdp))
                 CustomInputPasswordField(
                     fieldTitle = "Password",
                     textFieldValue = viewModel.password.value,
@@ -160,50 +168,49 @@ class LoginScreen : Screen {
                     fontSize = 16.ssp
                 )
             }
-           TextButton(onClick = {}){
-               SText(
-                   text = "Forgot Password? Click here",
-                   textColor = Color(0xFFB6B6B6),
-                   fontSize = 10.ssp
-               )
-           }
+            TextButton(
+                modifier = Modifier.align(Alignment.End),
+                onClick = { navigateToSignUp() }) {
+                SText(
+                    text = "Forgot Password? Click here",
+                    textColor = Color(0xFFB6B6B6),
+                    fontSize = 10.ssp
+                )
+            }
             Image(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-                    .clickable(
-                        onClick = {
-                           /* val options =
-                                GoogleSignInOptions
-                                    .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                    .requestIdToken(App.instance.resources.getString(R.string.web_api_key))
-                                    .requestEmail()
-                                    .build()
-                            val gso = GoogleSignIn.getClient(App.instance, options)
-                            gso.signOut()
-                            launcher.launch(gso.signInIntent)*/
-                        }
-                    ),
+                    .clickable(onClick = {
+                        /* val options =
+                             GoogleSignInOptions
+                                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                 .requestIdToken(App.instance.resources.getString(R.string.web_api_key))
+                                 .requestEmail()
+                                 .build()
+                         val gso = GoogleSignIn.getClient(App.instance, options)
+                         gso.signOut()
+                         launcher.launch(gso.signInIntent)*/
+                    }),
                 painter = painterResource(Res.drawable.btn_google_sing_in),
                 contentDescription = "google sign in",
             )
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(10.sdp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(20.sdp))
                 SText(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = "Don't have an account yet?",
                     textColor = Color.Black,
                     fontSize = 12.ssp,
                     fontWeight = FontWeight.W400
-
                 )
+                Spacer(modifier = Modifier.height(10.sdp))
                 SecondaryOutlinedButton(
                     modifier = Modifier
-                        .padding(horizontal = 20.sdp)
+                        .padding(horizontal = 10.sdp)
                         .fillMaxWidth(),
+                    contentPadding = PaddingValues(8.sdp),
                     onClick = { navigateToSignUp() }
                 )
             }

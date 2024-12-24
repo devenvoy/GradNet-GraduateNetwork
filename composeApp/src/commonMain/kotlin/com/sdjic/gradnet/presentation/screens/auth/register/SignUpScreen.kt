@@ -7,14 +7,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.W400
+import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -29,6 +33,7 @@ import compose.icons.feathericons.Mail
 import compose.icons.feathericons.User
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
+import org.jetbrains.compose.resources.stringResource
 
 class SignUpScreen : Screen {
 
@@ -120,18 +125,19 @@ class SignUpScreen : Screen {
                 content = { onSignUpSuccess() }
             )
 
-            /*Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                text = stringResource(R.string.by_clicking_register_you_agree_to_testers_community_s_terms_of_use),
-                style = TextStyle(
-                    color = Color_898686,
-                    fontSize = 10.ssp,
-                    fontWeight = W400,
-                    textAlign = TextAlign.Center
+            TextButton(
+                onClick = {}
+            ){
+                Text(
+                    text = "Already have an account? Sign in",
+                    style = TextStyle(
+                        fontSize = 10.ssp,
+                        fontWeight = W400,
+                        textAlign = TextAlign.Center
+                    )
                 )
-            )*/
+            }
+
         }
     }
 }

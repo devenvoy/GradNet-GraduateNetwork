@@ -51,7 +51,7 @@ fun CustomInputField(
         Title(
             text = fieldTitle,
             modifier = Modifier.padding(start = 2.sdp),
-            textColor = Color.Black,
+            textColor = Color.Gray,
         )
         TextField(
             value = textFieldValue,

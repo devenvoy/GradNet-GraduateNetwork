@@ -41,6 +41,7 @@ class SignUpScreenModel : ScreenModel {
             val validationResult = validateInputs()
             if (validationResult != null) {
                 _signUpState.value = UiState.ValidationError(validationResult)
+                _signUpState.value = UiState.Idle
                 return@launch
             }
             _signUpState.value = UiState.Loading

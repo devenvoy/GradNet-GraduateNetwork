@@ -51,7 +51,7 @@ fun CustomInputField(
         Title(
             text = fieldTitle,
             modifier = Modifier.padding(start = 2.sdp),
-            textColor = Color.Gray,
+            textColor = Color.Black,
         )
         TextField(
             value = textFieldValue,
@@ -122,7 +122,7 @@ fun CustomInputPasswordField(
                         Icon(
                             imageVector = visibilityIcon,
                             contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                            tint = Color.Gray
+                            tint = Color.Black,
                         )
                     }
                 }

@@ -25,7 +25,8 @@ fun <T> UiStateHandler(
                     message = uiState.message ?: "Unknown Error",
                     backgroundColor = Color.Red,
                     textColor = Color.White,
-                    duration = ToastDuration.Short
+                    duration = ToastDuration.Short,
+                    bottomPadding = 100
                 )
                 onErrorShowed()
             }
@@ -38,7 +39,8 @@ fun <T> UiStateHandler(
                     message = errors.entries.first().value.first(),
                     backgroundColor = Color.Red,
                     textColor = Color.White,
-                    duration = ToastDuration.Short
+                    duration = ToastDuration.Short,
+                    bottomPadding = 100
                 )
                 onErrorShowed()
             }
@@ -57,8 +59,6 @@ fun <T> UiStateHandler(
             content(uiState.data) // Handle Success state separately
         }
 
-        UiState.Idle -> {
-
-        }
+        UiState.Idle -> {}
     }
 }

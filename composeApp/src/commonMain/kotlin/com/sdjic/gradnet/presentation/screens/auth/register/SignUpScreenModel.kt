@@ -1,10 +1,14 @@
 package com.sdjic.gradnet.presentation.screens.auth.register
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.gradnet.presentation.helper.SignUpUiState
 import com.sdjic.gradnet.presentation.helper.UiState
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.screens.auth.register.model.getUserRoles
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -23,6 +27,14 @@ class SignUpScreenModel : ScreenModel {
     private val _signUpState = MutableStateFlow<SignUpUiState>(UiState.Idle)
     val signUpState = _signUpState.asStateFlow()
 
+    val userRoles = mutableStateOf(getUserRoles())
+
+    private val _selectedUserRole = MutableStateFlow(userRoles.value[0])
+    val selectedUserRole = _selectedUserRole.asStateFlow()
+
+    fun onUserRoleSelected(userRole: UserRole) {
+        _selectedUserRole.value = userRole
+    }
 
     fun onNameChange(newValue: TextFieldValue) {
         _name.value = newValue
@@ -38,13 +50,14 @@ class SignUpScreenModel : ScreenModel {
 
     fun signUp() {
         screenModelScope.launch {
+            _signUpState.value = UiState.Loading
             val validationResult = validateInputs()
             if (validationResult != null) {
                 _signUpState.value = UiState.ValidationError(validationResult)
+                delay(1000)
                 _signUpState.value = UiState.Idle
                 return@launch
             }
-            _signUpState.value = UiState.Loading
         }
     }
 

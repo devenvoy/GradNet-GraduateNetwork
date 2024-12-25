@@ -28,13 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.presentation.composables.CustomInputField
 import com.sdjic.gradnet.presentation.composables.CustomInputPasswordField
-import com.sdjic.gradnet.presentation.composables.Label
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.SecondaryOutlinedButton
@@ -64,7 +62,8 @@ class LoginScreen : Screen {
         LoginScreenContent(
             loginScreenModel = loginScreenModel,
             onLoginSuccess = {},
-            navigateToSignUp = {navigator.replace(SignUpScreen())}
+            navigateToSignUp = { navigator.push(SignUpScreen()) },
+            navigateToForgotPasswordScreen = {}
         )
     }
 
@@ -73,7 +72,8 @@ class LoginScreen : Screen {
     fun LoginScreenContent(
         loginScreenModel: LoginScreenModel,
         onLoginSuccess: () -> Unit,
-        navigateToSignUp: () -> Unit
+        navigateToSignUp: () -> Unit,
+        navigateToForgotPasswordScreen: () -> Unit
     ) {
         val loginState by loginScreenModel.loginState.collectAsState()
 
@@ -88,14 +88,14 @@ class LoginScreen : Screen {
                 )
             }
             Image(
-                modifier = Modifier.fillMaxWidth().height(180.sdp),
+                modifier = Modifier.fillMaxWidth().height(185.sdp),
                 painter = rememberLottiePainter(
                     composition = composition,
                     iterations = Compottie.IterateForever
                 ),
                 contentDescription = "loader"
             )
-            SignInLayout(loginScreenModel, navigateToSignUp)
+            SignInLayout(loginScreenModel, navigateToSignUp, navigateToForgotPasswordScreen)
             LoginStateUI(
                 loginState = loginState,
                 onLoginSuccess = onLoginSuccess
@@ -114,21 +114,25 @@ class LoginScreen : Screen {
     }
 
     @Composable
-    fun SignInLayout(viewModel: LoginScreenModel, navigateToSignUp: () -> Unit) {
+    fun SignInLayout(
+        viewModel: LoginScreenModel,
+        navigateToSignUp: () -> Unit,
+        navigateToForgotPasswordScreen: () -> Unit
+    ) {
         Column(
             modifier = Modifier
                 .padding(top = 180.sdp)
                 .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 32.sdp, topEnd = 32.sdp))
                 .background(color = Color.White)
-                .padding(20.sdp)
+                .padding(10.sdp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(10.sdp)
         ) {
             Title(
+                modifier = Modifier.padding(start = 8.sdp),
                 text = "Welcome Back",
                 size = 22.ssp,
-                modifier = Modifier.align(Alignment.Start),
                 textColor = Color.Black,
             )
             Column {
@@ -144,7 +148,6 @@ class LoginScreen : Screen {
                                 .size(20.sdp),
                             imageVector = FeatherIcons.Mail,
                             contentDescription = "Email icon",
-//                            tint = PlaceHolderTextColor
                         )
                     }
                 )
@@ -170,11 +173,11 @@ class LoginScreen : Screen {
             }
             TextButton(
                 modifier = Modifier.align(Alignment.End),
-                onClick = { navigateToSignUp() }) {
+                onClick = { navigateToForgotPasswordScreen() }) {
                 SText(
                     text = "Forgot Password? Click here",
                     textColor = Color(0xFFB6B6B6),
-                    fontSize = 10.ssp
+                    fontSize = 12.ssp
                 )
             }
             Image(

@@ -34,7 +34,7 @@ fun RoleSelectionItem(
     modifier: Modifier = Modifier
 ) {
     val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-    val backgroundColor = MaterialTheme.colorScheme.primaryContainer
+    val backgroundColor = MaterialTheme.colorScheme.secondaryContainer
 
     Box(
         modifier = modifier

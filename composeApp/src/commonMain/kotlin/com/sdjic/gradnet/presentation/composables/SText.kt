@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import network.chaintech.sdpcomposemultiplatform.ssp
 
 @Composable
@@ -21,6 +22,7 @@ fun SText(
     Text(
         modifier = modifier,
         text = text,
+        fontFamily = displayFontFamily(),
         style = TextStyle(
             fontWeight = fontWeight,
             color = textColor,

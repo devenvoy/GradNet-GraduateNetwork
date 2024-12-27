@@ -35,7 +35,7 @@ fun PrimaryButton(
         defaultElevation = 1.sdp
     ),
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = PaddingValues(vertical = 8.sdp),
+    contentPadding: PaddingValues = PaddingValues(vertical = 12.sdp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -59,13 +59,13 @@ fun SecondaryOutlinedButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(8.sdp),
-    colors: ButtonColors = ButtonDefaults.buttonColors(
-        contentColor = MaterialTheme.colorScheme.primary,
-        containerColor = Color.White,
+    colors: ButtonColors = ButtonDefaults.outlinedButtonColors(
+        contentColor = MaterialTheme.colorScheme.secondary,
+
     ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(defaultElevation = 1.dp),
     border: BorderStroke? = BorderStroke(1.sdp, MaterialTheme.colorScheme.primary),
-    contentPadding: PaddingValues = PaddingValues(vertical = 14.sdp),
+    contentPadding: PaddingValues = PaddingValues(vertical = 12.sdp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit = {
         Text(
@@ -77,7 +77,7 @@ fun SecondaryOutlinedButton(
         )
     }
 ) {
-    Button(
+    OutlinedButton(
         modifier = modifier,
         onClick = onClick,
         enabled = enabled,

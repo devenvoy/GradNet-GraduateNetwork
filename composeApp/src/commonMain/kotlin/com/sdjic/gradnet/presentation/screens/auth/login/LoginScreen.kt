@@ -213,7 +213,6 @@ class LoginScreen : Screen {
                     modifier = Modifier
                         .padding(horizontal = 10.sdp)
                         .fillMaxWidth(),
-                    contentPadding = PaddingValues(8.sdp),
                     onClick = { navigateToSignUp() }
                 )
             }

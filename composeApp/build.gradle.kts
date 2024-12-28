@@ -116,6 +116,12 @@ kotlin {
             implementation(libs.compottie.dot)
             implementation(libs.compottie.network)
             implementation(libs.compottie.resources)
+
+            implementation(libs.kmp.date.time.picker)
+
+            implementation(libs.peekaboo.ui)
+            implementation(libs.peekaboo.image.picker)
+
         }
 
         iosMain.dependencies {

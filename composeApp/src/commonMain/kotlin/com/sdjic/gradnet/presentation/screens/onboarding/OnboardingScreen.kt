@@ -44,7 +44,6 @@ class OnBoardingScreen : Screen {
             onRegistration = { navigator.replace(SignUpScreen()) }
         )
     }
-
 }
 
 
@@ -123,19 +122,19 @@ data class Onboard(val title: String, val description: String, val lottieFile: S
 
 val onboardingList = listOf(
     Onboard(
-        "Team Collaborations",
-        "Our tools help your teams collaborate for the best output results",
-        "profile.json"
+        title = "Connect and Grow❕🤝",
+        description = "Join a vibrant community of students, alumni, and faculty. 🌱",
+        lottieFile = "onboarding1.json"
     ),
     Onboard(
-        "Improve Productivity",
-        "Our tools are designed to improve productivity by automating all the stuff for you",
-        "working.json"
+        title = "Find Opportunities❕💼",
+        description = "Access jobs, internships, and exclusive university events. 🎓",
+        lottieFile = "onboarding2.json"
     ),
     Onboard(
-        "Growth Tracking",
-        "We provide dashboard and charts to track your growth easily and suggestions.",
-        "food.json"
+        title = "Inspire Others❕🌟",
+        description = "Share achievements and inspire your university network. 💬",
+        lottieFile = "onboarding3.json"
     )
 )
 

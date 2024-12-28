@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
@@ -33,14 +34,15 @@ fun RoleSelectionItem(
     userRole: UserRole,
     modifier: Modifier = Modifier
 ) {
-    val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+    val borderColor =
+        if (isSelected) Color.Yellow else Color.Transparent
     val backgroundColor = MaterialTheme.colorScheme.secondaryContainer
 
     Box(
         modifier = modifier
             .aspectRatio(1f)
             .border(
-                width = if (isSelected) 2.dp else 0.dp,
+                width = if (isSelected) 2.sdp else 0.dp,
                 color = borderColor,
                 shape = RoundedCornerShape(6.sdp)
             )
@@ -67,8 +69,8 @@ fun RoleSelectionItem(
             SText(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = userRole.name,
-                fontWeight = W500,
-                textColor = MaterialTheme.colorScheme.onSurface,
+                fontWeight = if (isSelected) Bold else W500,
+                textColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontSize = 12.ssp,
             )
         }

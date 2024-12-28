@@ -5,7 +5,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.create_account
-import kotlinx.serialization.json.JsonNull.content
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.stringResource
@@ -35,7 +40,7 @@ fun PrimaryButton(
         defaultElevation = 1.sdp
     ),
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = PaddingValues(vertical = 12.sdp),
+    contentPadding: PaddingValues = PaddingValues(vertical = 10.sdp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -61,11 +66,11 @@ fun SecondaryOutlinedButton(
     shape: Shape = RoundedCornerShape(8.sdp),
     colors: ButtonColors = ButtonDefaults.outlinedButtonColors(
         contentColor = MaterialTheme.colorScheme.secondary,
-
+        containerColor = MaterialTheme.colorScheme.background
     ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(defaultElevation = 1.dp),
     border: BorderStroke? = BorderStroke(1.sdp, MaterialTheme.colorScheme.primary),
-    contentPadding: PaddingValues = PaddingValues(vertical = 12.sdp),
+    contentPadding: PaddingValues = PaddingValues(vertical = 10.sdp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit = {
         Text(

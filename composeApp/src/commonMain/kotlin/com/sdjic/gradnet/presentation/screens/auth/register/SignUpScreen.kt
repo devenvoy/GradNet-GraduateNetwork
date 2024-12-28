@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -50,7 +49,9 @@ import compose.icons.feathericons.User
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
-class SignUpScreen : Screen {
+class SignUpScreen(
+    val showNavigatorIcon: Boolean = false
+) : Screen {
 
     @Composable
     override fun Content() {
@@ -61,7 +62,8 @@ class SignUpScreen : Screen {
         ) {
             SignUpScreenContent(
                 viewModel = signUpScreenModel,
-                onBackPressed = { navigator.pop() }
+                onBackPressed = { navigator.pop() },
+                showNavigatorIcon = showNavigatorIcon
             )
             UiStateHandler(
                 uiState = signUpScreenModel.signUpState.collectAsState().value,
@@ -75,7 +77,8 @@ class SignUpScreen : Screen {
     @Composable
     fun SignUpScreenContent(
         viewModel: SignUpScreenModel,
-        onBackPressed: () -> Unit
+        onBackPressed: () -> Unit,
+        showNavigatorIcon: Boolean
     ) {
 
         val keyboardController = LocalSoftwareKeyboardController.current
@@ -95,17 +98,18 @@ class SignUpScreen : Screen {
                     title = {
                         Title(
                             text = "Create free account",
-                            textColor = Color.Black,
                             size = if (scrollBehavior.state.collapsedFraction == 1f) 16.ssp else 22.ssp
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = onBackPressed) {
-                            Icon(
-                                imageVector = FeatherIcons.ArrowLeft,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
+                        if(showNavigatorIcon){
+                            IconButton(onClick = onBackPressed) {
+                                Icon(
+                                    imageVector = FeatherIcons.ArrowLeft,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     }
                 )
@@ -136,7 +140,7 @@ class SignUpScreen : Screen {
                 CustomInputField(
                     fieldTitle = "Email",
                     textFieldValue = viewModel.email.collectAsState().value,
-                    onValueChange = { viewModel.onEmailChange(it) },
+                    onValueChange = { s -> viewModel.onEmailChange(s) },
                     placeholder = { Text("Enter email") },
                     trailingIcon = {
                         Icon(

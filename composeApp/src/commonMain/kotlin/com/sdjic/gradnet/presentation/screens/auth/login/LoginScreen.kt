@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,7 +61,7 @@ class LoginScreen : Screen {
         LoginScreenContent(
             loginScreenModel = loginScreenModel,
             onLoginSuccess = {},
-            navigateToSignUp = { navigator.push(SignUpScreen()) },
+            navigateToSignUp = { navigator.push(SignUpScreen(true)) },
             navigateToForgotPasswordScreen = {}
         )
     }
@@ -124,16 +123,15 @@ class LoginScreen : Screen {
                 .padding(top = 180.sdp)
                 .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 32.sdp, topEnd = 32.sdp))
-                .background(color = Color.White)
+                .padding(top = 10.sdp)
                 .padding(10.sdp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(10.sdp)
         ) {
             Title(
-                modifier = Modifier.padding(start = 8.sdp),
                 text = "Welcome Back",
                 size = 22.ssp,
-                textColor = Color.Black,
+                textColor = MaterialTheme.colorScheme.onSurface,
             )
             Column {
                 CustomInputField(
@@ -143,10 +141,9 @@ class LoginScreen : Screen {
                     placeholder = { Text("Enter email") },
                     trailingIcon = {
                         Icon(
-                            modifier = Modifier
-                                .padding(end = 6.sdp)
-                                .size(20.sdp),
+                            modifier = Modifier.size(20.sdp),
                             imageVector = FeatherIcons.Mail,
+                            tint = MaterialTheme.colorScheme.onBackground,
                             contentDescription = "Email icon",
                         )
                     }
@@ -204,7 +201,6 @@ class LoginScreen : Screen {
                 Spacer(modifier = Modifier.height(20.sdp))
                 SText(
                     text = "Don't have an account yet?",
-                    textColor = Color.Black,
                     fontSize = 12.ssp,
                     fontWeight = FontWeight.W400
                 )

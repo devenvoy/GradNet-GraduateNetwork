@@ -42,9 +42,8 @@ kotlin {
 
             implementation(compose.uiTooling)
             implementation(libs.ktor.client.okhttp)
-
-//            implementation(libs.google.playServices.ads)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -54,13 +53,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            //            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
             // Navigator
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenModel)
             implementation(libs.voyager.transitions)
 
-//            implementation(libs.voyager.koin)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
 
@@ -69,7 +66,6 @@ kotlin {
             implementation(libs.mvvm.core)
 
 //            implementation("network.chaintech:cmp-preference:1.0.0")
-//            implementation(libs.kotlinx.serialization.json.jvm)
 
             // #1 - Basic settings
             implementation(libs.multiplatform.settings.no.arg)
@@ -174,15 +170,10 @@ ksp {
 dependencies {
 
     // Android
-
     add("kspAndroid", libs.room.compiler)
 
     // iOS
-
     add("kspIosSimulatorArm64", libs.room.compiler)
-
     add("kspIosX64", libs.room.compiler)
-
     add("kspIosArm64", libs.room.compiler)
-
 }

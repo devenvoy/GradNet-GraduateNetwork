@@ -1,24 +1,27 @@
 package com.sdjic.gradnet.presentation.screens.home
 
-import androidx.compose.runtime.mutableStateListOf
+import app.cash.paging.Pager
+import app.cash.paging.PagingConfig
+import app.cash.paging.PagingData
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.sdjic.gradnet.data.network.CryptoRepository
 import com.sdjic.gradnet.data.network.entity.CryptoResponse
-import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.data.network.source.CoinPagingSource
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
-private val cryptoRepository: CryptoRepository
+    private val coinPagingSource: CoinPagingSource
 ):ScreenModel {
 
-    val coinList = mutableStateListOf<CryptoResponse.Coin>()
+    val coinList = MutableStateFlow<PagingData<CryptoResponse.Coin>>(PagingData.empty())
 
     init {
         screenModelScope.launch {
-            val list = cryptoRepository.getCryptos()
-            list.onSuccess {
-                coinList.addAll(it.result)
+            Pager(config = PagingConfig(pageSize = 6),
+                pagingSourceFactory = { coinPagingSource }
+            ).flow.collect {
+                coinList.value = it
             }
         }
     }

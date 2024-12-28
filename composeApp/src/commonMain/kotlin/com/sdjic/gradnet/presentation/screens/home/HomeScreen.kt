@@ -2,11 +2,11 @@ package com.sdjic.gradnet.presentation.screens.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import app.cash.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -24,15 +24,18 @@ class HomeScreen : Screen {
     @Composable
     fun HomeScreenContent() {
         val viewModel = koinScreenModel<HomeScreenViewModel>()
+        val data = viewModel.coinList.collectAsLazyPagingItems()
         Scaffold {
             LazyColumn(modifier = Modifier.padding(it).padding(10.sdp)) {
-                items(viewModel.coinList) {
+                items(data.itemCount) {
                     ListItem(
                         headlineContent = {
-                            SText(it.name)
+                            SText(data[it]?.name ?: "")
                         },
                         supportingContent = {
-                            SText(it.toString())
+                            data[it]?.let {
+                                SText(it.toString())
+                            }
                         }
                     )
                 }

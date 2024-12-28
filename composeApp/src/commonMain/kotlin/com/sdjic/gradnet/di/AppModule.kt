@@ -2,6 +2,7 @@ package com.sdjic.gradnet.di
 
 import com.sdjic.gradnet.data.local.room.GradNetDB
 import com.sdjic.gradnet.data.network.CryptoRepository
+import com.sdjic.gradnet.data.network.source.CoinPagingSource
 import com.sdjic.gradnet.data.repo.TestRepositoryImpl
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
@@ -17,11 +18,15 @@ import org.koin.dsl.module
 
 val screenModelsModule = module {
     factory { TestViewModel(testRepository = get()) }
-    factory { HomeScreenViewModel(cryptoRepository = get()) }
+    factory { HomeScreenViewModel(get()) }
     factory { LoginScreenModel() }
     factory { SignUpScreenModel() }
 //    factory { DetailScreenModel(museumRepository = get()) }
 //    factory { QuestionScreenModel(questionDataSource = get()) }
+}
+
+val userCases = module {
+    single { CoinPagingSource(get()) }
 }
 
 val repositoryModule = module {
@@ -48,6 +53,7 @@ val appModules = listOf(
     platformModule(),
     dataModule,
     repositoryModule,
+    userCases,
     screenModelsModule,
     dispatcherModule,
 )

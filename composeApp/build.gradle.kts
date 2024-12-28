@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -118,10 +117,13 @@ kotlin {
             implementation(libs.peekaboo.ui)
             implementation(libs.peekaboo.image.picker)
 
+            implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
+
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation("app.cash.paging:paging-runtime-uikit:3.3.0-alpha02-0.5.1")
         }
     }
 }

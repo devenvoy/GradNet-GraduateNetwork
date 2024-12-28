@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,6 +41,7 @@ import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
+import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Mail
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
@@ -60,10 +62,13 @@ class LoginScreen : Screen {
         val loginScreenModel = koinScreenModel<LoginScreenModel>()
         LoginScreenContent(
             loginScreenModel = loginScreenModel,
-            onLoginSuccess = {},
-            navigateToSignUp = { navigator.push(SignUpScreen(true)) },
+            onLoginSuccess = {navigator.replace(HomeScreen())},
+            navigateToSignUp = { navigator.replace(SignUpScreen(true)) },
             navigateToForgotPasswordScreen = {}
         )
+        Button(onClick = { navigator.replace(HomeScreen()) }) {
+            SText("Click")
+        }
     }
 
     @OptIn(ExperimentalResourceApi::class)

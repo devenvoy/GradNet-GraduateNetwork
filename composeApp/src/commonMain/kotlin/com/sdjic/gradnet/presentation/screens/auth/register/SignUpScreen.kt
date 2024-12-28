@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,17 +32,22 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
+import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.internal.BackHandler
 import com.sdjic.gradnet.presentation.composables.CustomInputField
 import com.sdjic.gradnet.presentation.composables.CustomInputPasswordField
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.RoleSelectionItem
+import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.Title
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.Mail
@@ -50,25 +56,34 @@ import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
 class SignUpScreen(
-    val showNavigatorIcon: Boolean = false
+    private val showNavigatorIcon: Boolean = false
 ) : Screen {
 
+    @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val signUpScreenModel = koinScreenModel<SignUpScreenModel>()
+
+        BackHandler(enabled = showNavigatorIcon) {
+            navigator.replace(LoginScreen())
+        }
+
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
             SignUpScreenContent(
                 viewModel = signUpScreenModel,
-                onBackPressed = { navigator.pop() },
+                onBackPressed = { navigator.replace(LoginScreen()) },
                 showNavigatorIcon = showNavigatorIcon
             )
+            Button(onClick = { navigator.replace(HomeScreen()) }) {
+                SText("Click")
+            }
             UiStateHandler(
                 uiState = signUpScreenModel.signUpState.collectAsState().value,
                 onErrorShowed = {},
-                content = { }
+                content = {}
             )
         }
     }
@@ -189,7 +204,7 @@ class SignUpScreen(
                 }
                 TextButton(
                     modifier = Modifier.align(Alignment.End),
-                    onClick = {}
+                    onClick = { onBackPressed() }
                 ) {
                     Text(
                         text = "Already have an account? Sign in",

@@ -6,6 +6,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.presentation.helper.ConnectivityManager
 import com.sdjic.gradnet.presentation.helper.LoginUiState
@@ -13,6 +14,7 @@ import com.sdjic.gradnet.presentation.helper.UiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.koin.mp.KoinPlatform.getKoin
 
 class LoginScreenModel(val authRepository: AuthRepository) : ScreenModel {
 
@@ -20,6 +22,8 @@ class LoginScreenModel(val authRepository: AuthRepository) : ScreenModel {
     val password = mutableStateOf(TextFieldValue(""))
     private val _loginState = MutableStateFlow<LoginUiState>(UiState.Idle)
     val loginState: MutableStateFlow<LoginUiState> = _loginState
+
+    private val prefs = getKoin().get<AppCacheSetting>()
 
     fun login() {
         screenModelScope.launch {
@@ -34,6 +38,8 @@ class LoginScreenModel(val authRepository: AuthRepository) : ScreenModel {
             if(ConnectivityManager.isConnected){
                 val result = authRepository.login(email.value.text, password.value.text)
                 result.onSuccess {
+                    prefs.accessToken = it.value?.accessToken.toString()
+                    prefs.userId  =it.value?.userDto?.id.toString()
                     _loginState.value = UiState.Success(it)
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)

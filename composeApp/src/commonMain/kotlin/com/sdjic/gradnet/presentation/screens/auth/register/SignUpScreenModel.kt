@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.gradnet.data.network.entity.SignUpRequest
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.presentation.helper.ConnectivityManager
 import com.sdjic.gradnet.presentation.helper.SignUpUiState
@@ -17,8 +18,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.koin.mp.KoinPlatform.getKoin
 
 class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenModel {
+
+    private val prefs = getKoin().get<AppCacheSetting>()
 
     private val _name = MutableStateFlow(TextFieldValue(""))
     val name = _name.asStateFlow()
@@ -79,13 +83,15 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                     address = "  "
                 )
             )
-            if(ConnectivityManager.isConnected){
+            if (ConnectivityManager.isConnected) {
                 result.onSuccess {
+//                    prefs.accessToken = it.value?.accessToken.toString()
+                    prefs.userId = it.value?.userId.toString()
                     _signUpState.value = UiState.Success(it)
                 }.onError {
                     _signUpState.value = UiState.Error(it.detail)
                 }
-            }else{
+            } else {
                 _signUpState.value = UiState.Error("Not Connected to Internet")
             }
         }

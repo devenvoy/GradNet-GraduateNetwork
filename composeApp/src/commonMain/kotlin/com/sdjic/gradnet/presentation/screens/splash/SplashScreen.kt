@@ -12,7 +12,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.LocalPlatformContext
 import com.sdjic.gradnet.presentation.composables.RoundedCornerImage
-import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
+import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import kotlinx.coroutines.delay
 
 class SplashScreen : Screen {
@@ -21,7 +21,7 @@ class SplashScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         LaunchedEffect(Unit) {
             delay(1000)
-            navigator.replace(LoginScreen())
+            navigator.replace(HomeScreen())
         }
         SplashScreenContent()
     }

@@ -119,6 +119,12 @@ kotlin {
 
             implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
 
+            implementation(libs.connectivity.core)
+            implementation(libs.connectivity.device)
+
+            // For compose support
+            implementation(libs.connectivity.compose.device)
+
         }
 
         iosMain.dependencies {

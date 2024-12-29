@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.repo.AuthRepository
+import com.sdjic.gradnet.presentation.helper.ConnectivityManager
 import com.sdjic.gradnet.presentation.helper.LoginUiState
 import com.sdjic.gradnet.presentation.helper.UiState
 import kotlinx.coroutines.delay
@@ -30,11 +31,15 @@ class LoginScreenModel(val authRepository: AuthRepository) : ScreenModel {
                 _loginState.value = UiState.Idle
                 return@launch
             }
-            val result = authRepository.login(email.value.text, password.value.text)
-            result.onSuccess {
-                _loginState.value = UiState.Success(it)
-            }.onError {
-                _loginState.value = UiState.Error(it.detail)
+            if(ConnectivityManager.isConnected){
+                val result = authRepository.login(email.value.text, password.value.text)
+                result.onSuccess {
+                    _loginState.value = UiState.Success(it)
+                }.onError {
+                    _loginState.value = UiState.Error(it.detail)
+                }
+            }else{
+                _loginState.value = UiState.Error("Not Connected to Internet")
             }
         }
     }

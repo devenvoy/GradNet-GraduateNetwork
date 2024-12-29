@@ -11,6 +11,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.presentation.composables.SText
+import com.sdjic.gradnet.presentation.composables.Title
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import network.chaintech.sdpcomposemultiplatform.sdp
 
@@ -30,7 +31,7 @@ class HomeScreen : Screen {
                 items(data.itemCount) {
                     ListItem(
                         headlineContent = {
-                            SText(data[it]?.name ?: "")
+                            Title(data[it]?.name ?: "")
                         },
                         supportingContent = {
                             data[it]?.let {

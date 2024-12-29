@@ -48,9 +48,12 @@ import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.Mail
+import compose.icons.feathericons.Phone
+import compose.icons.feathericons.PhoneCall
 import compose.icons.feathericons.User
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
@@ -80,7 +83,7 @@ class SignUpScreen(
             UiStateHandler(
                 uiState = signUpScreenModel.signUpState.collectAsState().value,
                 onErrorShowed = {},
-                content = {}
+                content = {navigator.replace(HomeScreen())}
             )
         }
     }
@@ -171,12 +174,12 @@ class SignUpScreen(
                     trailingIcon = {
                         Icon(
                             modifier = Modifier.padding(end = 6.sdp),
-                            imageVector = FeatherIcons.Mail,
+                            imageVector = FeatherIcons.Phone,
                             contentDescription = "Email icon",
                         )
                     },
                     prefix = {
-                        Title(text = "+91")
+                        Title(text = "+91 ")
                     },
                     keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Phone)
                 )

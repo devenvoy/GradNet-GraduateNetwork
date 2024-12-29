@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -95,6 +96,7 @@ fun CustomInputPasswordField(
 ) {
     // State to manage password visibility
     var passwordVisible by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
@@ -137,6 +139,11 @@ fun CustomInputPasswordField(
             keyboardOptions = KeyboardOptions(
                 keyboardType = if (isPasswordField && !passwordVisible) KeyboardType.Password else KeyboardType.Text,
                 imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
             ),
             visualTransformation = if (isPasswordField && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
             textStyle = LocalTextStyle.current.copy(fontSize = 12.ssp),

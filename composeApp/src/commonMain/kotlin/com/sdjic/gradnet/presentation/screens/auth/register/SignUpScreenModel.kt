@@ -8,6 +8,7 @@ import com.sdjic.gradnet.data.network.entity.SignUpRequest
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.repo.AuthRepository
+import com.sdjic.gradnet.presentation.helper.ConnectivityManager
 import com.sdjic.gradnet.presentation.helper.SignUpUiState
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
@@ -78,10 +79,14 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                     address = "  "
                 )
             )
-            result.onSuccess {
-                _signUpState.value = UiState.Success(it)
-            }.onError {
-                _signUpState.value = UiState.Error(it.detail)
+            if(ConnectivityManager.isConnected){
+                result.onSuccess {
+                    _signUpState.value = UiState.Success(it)
+                }.onError {
+                    _signUpState.value = UiState.Error(it.detail)
+                }
+            }else{
+                _signUpState.value = UiState.Error("Not Connected to Internet")
             }
         }
     }

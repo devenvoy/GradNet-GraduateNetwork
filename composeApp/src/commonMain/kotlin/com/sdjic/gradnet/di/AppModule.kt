@@ -1,12 +1,14 @@
 package com.sdjic.gradnet.di
 
 import com.sdjic.gradnet.data.local.room.GradNetDB
-import com.sdjic.gradnet.data.network.CryptoRepository
+import com.sdjic.gradnet.data.repo.CryptoRepository
 import com.sdjic.gradnet.data.network.source.CoinPagingSource
+import com.sdjic.gradnet.data.repo.AuthRepositoryImpl
 import com.sdjic.gradnet.data.repo.TestRepositoryImpl
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
 import com.sdjic.gradnet.di.platform_di.platformModule
+import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.domain.repo.TestRepository
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
@@ -19,10 +21,8 @@ import org.koin.dsl.module
 val screenModelsModule = module {
     factory { TestViewModel(testRepository = get()) }
     factory { HomeScreenViewModel(get()) }
-    factory { LoginScreenModel() }
-    factory { SignUpScreenModel() }
-//    factory { DetailScreenModel(museumRepository = get()) }
-//    factory { QuestionScreenModel(questionDataSource = get()) }
+    factory { LoginScreenModel(get()) }
+    factory { SignUpScreenModel(get()) }
 }
 
 val userCases = module {
@@ -30,6 +30,10 @@ val userCases = module {
 }
 
 val repositoryModule = module {
+
+    single<AuthRepository>{  AuthRepositoryImpl(get())}
+
+    // trying only
     single<TestRepository> { TestRepositoryImpl(testDao = get()) }
     single<CryptoRepository> { CryptoRepository(httpClient = get()) }
 }

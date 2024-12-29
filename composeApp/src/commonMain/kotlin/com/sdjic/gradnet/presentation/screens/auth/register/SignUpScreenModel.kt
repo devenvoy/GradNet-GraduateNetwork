@@ -4,6 +4,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.data.network.entity.SignUpRequest
+import com.sdjic.gradnet.data.network.utils.onError
+import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.presentation.helper.SignUpUiState
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
@@ -13,13 +17,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SignUpScreenModel : ScreenModel {
+class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenModel {
 
     private val _name = MutableStateFlow(TextFieldValue(""))
     val name = _name.asStateFlow()
 
     private val _email = MutableStateFlow(TextFieldValue(""))
     val email = _email.asStateFlow()
+
+    private val _phone = MutableStateFlow(TextFieldValue(""))
+    val phone = _phone.asStateFlow()
 
     private val _password = MutableStateFlow(TextFieldValue(""))
     val password = _password.asStateFlow()
@@ -48,15 +55,33 @@ class SignUpScreenModel : ScreenModel {
         _password.value = newValue
     }
 
+    fun onPhoneChange(newValue: TextFieldValue) {
+        _phone.value = newValue
+    }
+
     fun signUp() {
         screenModelScope.launch {
             _signUpState.value = UiState.Loading
             val validationResult = validateInputs()
             if (validationResult != null) {
                 _signUpState.value = UiState.ValidationError(validationResult)
-                delay(1000)
+                delay(200)
                 _signUpState.value = UiState.Idle
                 return@launch
+            }
+            val result = authRepository.signUp(
+                SignUpRequest(
+                    name = _name.value.text,
+                    email = _email.value.text,
+                    phoneNo = _phone.value.text,
+                    password = _password.value.text,
+                    address = "  "
+                )
+            )
+            result.onSuccess {
+                _signUpState.value = UiState.Success(it)
+            }.onError {
+                _signUpState.value = UiState.Error(it.detail)
             }
         }
     }
@@ -81,6 +106,16 @@ class SignUpScreenModel : ScreenModel {
                 .add("Password must be at least 6 characters long.")
         }
 
+        if (_selectedUserRole.value.name.isBlank()) {
+            errors.getOrPut("role") { mutableListOf() }.add("Role cannot be empty.")
+        }
+
+        if (_phone.value.text.isBlank()) {
+            errors.getOrPut("phone") { mutableListOf() }.add("Phone cannot be empty.")
+        } else if (!isValidPhone(_phone.value.text)) {
+            errors.getOrPut("phone") { mutableListOf() }.add("Invalid phone number.")
+        }
+
         return if (errors.isEmpty()) null else errors
     }
 
@@ -89,7 +124,13 @@ class SignUpScreenModel : ScreenModel {
         return email.matches(Regex(emailRegex))
     }
 
-    fun verifyOtp() {    }
+    private fun isValidPhone(phone: String): Boolean {
+        val indianPhonePattern = "^[6-9]\\d{9}$"
+        return phone.matches(indianPhonePattern.toRegex())
+    }
 
-    fun resendOtp() {    }
+    fun verifyOtp() {}
+
+    fun resendOtp() {}
+
 }

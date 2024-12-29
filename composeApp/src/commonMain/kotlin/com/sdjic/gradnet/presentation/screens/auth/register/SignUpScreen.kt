@@ -11,8 +11,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
+import androidx.compose.ui.text.input.KeyboardType
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -47,7 +48,6 @@ import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
-import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.Mail
@@ -77,9 +77,6 @@ class SignUpScreen(
                 onBackPressed = { navigator.replace(LoginScreen()) },
                 showNavigatorIcon = showNavigatorIcon
             )
-            Button(onClick = { navigator.replace(HomeScreen()) }) {
-                SText("Click")
-            }
             UiStateHandler(
                 uiState = signUpScreenModel.signUpState.collectAsState().value,
                 onErrorShowed = {},
@@ -149,7 +146,7 @@ class SignUpScreen(
                             imageVector = FeatherIcons.User,
                             contentDescription = "Name icon",
                         )
-                    }
+                    },
                 )
 
                 CustomInputField(
@@ -163,14 +160,32 @@ class SignUpScreen(
                             imageVector = FeatherIcons.Mail,
                             contentDescription = "Email icon",
                         )
-                    }
+                    },
+                )
+
+                CustomInputField(
+                    fieldTitle = "Phone number",
+                    textFieldValue = viewModel.phone.collectAsState().value,
+                    onValueChange = { s -> viewModel.onPhoneChange(s) },
+                    placeholder = { Text("Enter Phone number") },
+                    trailingIcon = {
+                        Icon(
+                            modifier = Modifier.padding(end = 6.sdp),
+                            imageVector = FeatherIcons.Mail,
+                            contentDescription = "Email icon",
+                        )
+                    },
+                    prefix = {
+                        Title(text = "+91")
+                    },
+                    keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Phone)
                 )
 
                 CustomInputPasswordField(
                     fieldTitle = "Password",
                     textFieldValue = viewModel.password.collectAsState().value,
                     onValueChange = { viewModel.onPasswordChange(it) },
-                    placeholder = { Text("ex: 12345678") },
+                    placeholder = { Text("ex: sfg+b4dbd4") },
                     isPasswordField = true
                 )
 

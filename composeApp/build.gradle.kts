@@ -163,6 +163,11 @@ dependencies {
 buildConfig {
     // BuildConfig configuration here.
     // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
+    buildConfigField("APP_NAME", project.name)
+    buildConfigField("APP_VERSION_CODE", project.version.toString())
+    buildConfigField("APP_VERSION_NAME", project.version.toString())
+    buildConfigField("BASE_URL", "https://grednet-production-3341.up.railway.app")
+
 }
 
 ksp {

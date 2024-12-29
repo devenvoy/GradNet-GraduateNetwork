@@ -4,13 +4,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.data.network.utils.onError
+import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.presentation.helper.LoginUiState
 import com.sdjic.gradnet.presentation.helper.UiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class LoginScreenModel : ScreenModel {
+class LoginScreenModel(val authRepository: AuthRepository) : ScreenModel {
 
     val email = mutableStateOf(TextFieldValue(""))
     val password = mutableStateOf(TextFieldValue(""))
@@ -23,9 +26,15 @@ class LoginScreenModel : ScreenModel {
             val validationResult = validateInputs()
             if (validationResult != null) {
                 _loginState.value = UiState.ValidationError(validationResult)
-                delay(1000)
+                delay(200)
                 _loginState.value = UiState.Idle
                 return@launch
+            }
+            val result = authRepository.login(email.value.text, password.value.text)
+            result.onSuccess {
+                _loginState.value = UiState.Success(it)
+            }.onError {
+                _loginState.value = UiState.Error(it.detail)
             }
         }
     }

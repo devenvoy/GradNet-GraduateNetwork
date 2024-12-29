@@ -1,7 +1,8 @@
-package com.sdjic.gradnet.data.network
+package com.sdjic.gradnet.data.repo
 
 import com.sdjic.gradnet.data.network.entity.CryptoResponse
-import com.sdjic.gradnet.data.network.source.BaseGateway
+import com.sdjic.gradnet.data.network.utils.BaseGateway
+import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.utils.PaginationItems
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -17,7 +18,7 @@ class CryptoRepository(httpClient: HttpClient) : BaseGateway(httpClient) {
         limit: Int = 10,
         cur: String = "EUR"
     ): PaginationItems<CryptoResponse.Coin> {
-        val result = tryToExecute<CryptoResponse> {
+        val result = executeOrThrow<CryptoResponse> {
             get("$BASE_URL/coins") {
                 parameter("page", page)
                 parameter("limit", limit)

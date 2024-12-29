@@ -1,6 +1,6 @@
 package com.sdjic.gradnet.data.network.source
 
-import com.sdjic.gradnet.data.network.CryptoRepository
+import com.sdjic.gradnet.data.repo.CryptoRepository
 import com.sdjic.gradnet.data.network.entity.CryptoResponse
 import com.sdjic.gradnet.domain.utils.BasePagingSource
 import com.sdjic.gradnet.domain.utils.PaginationItems

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -66,9 +65,6 @@ class LoginScreen : Screen {
             navigateToSignUp = { navigator.replace(SignUpScreen(true)) },
             navigateToForgotPasswordScreen = {}
         )
-        Button(onClick = { navigator.replace(HomeScreen()) }) {
-            SText("Click")
-        }
     }
 
     @OptIn(ExperimentalResourceApi::class)
@@ -151,7 +147,7 @@ class LoginScreen : Screen {
                             tint = MaterialTheme.colorScheme.onBackground,
                             contentDescription = "Email icon",
                         )
-                    }
+                    },
                 )
                 Spacer(modifier = Modifier.height(10.sdp))
                 CustomInputPasswordField(

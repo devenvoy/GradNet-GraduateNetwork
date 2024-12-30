@@ -52,7 +52,7 @@ fun Tab.TabContent() {
     Navigator(BasicNavigationScreen(index = 0)) { navigator ->
         SlideTransition(navigator) { screen ->
             Column {
-                InnerTabNavigation()
+//                InnerTabNavigation()
                 screen.Content()
                 Logger.d("Navigator", null ){ "Current Screen: ${navigator.lastItem}" }
             }
@@ -65,11 +65,11 @@ private fun InnerTabNavigation() {
     Row(
         modifier = Modifier.padding(16.dp)
     ) {
-        TabNavigationButton(HomeTab(""))
+//        TabNavigationButton(HomeTab(""))
 
         Spacer(modifier = Modifier.weight(.05f))
 
-        TabNavigationButton(ProfileTab)
+//        TabNavigationButton(ProfileTab)
     }
 }
 

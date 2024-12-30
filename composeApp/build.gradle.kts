@@ -56,6 +56,7 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenModel)
             implementation(libs.voyager.transitions)
+            implementation(libs.voyager.tabNavigator)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
@@ -63,8 +64,6 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(libs.mvvm.core)
-
-//            implementation("network.chaintech:cmp-preference:1.0.0")
 
             // #1 - Basic settings
             implementation(libs.multiplatform.settings.no.arg)
@@ -119,10 +118,9 @@ kotlin {
 
             implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
 
+            // for network status
             implementation(libs.connectivity.core)
             implementation(libs.connectivity.device)
-
-            // For compose support
             implementation(libs.connectivity.compose.device)
 
         }

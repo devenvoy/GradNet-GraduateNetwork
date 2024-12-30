@@ -1,19 +1,28 @@
 package com.sdjic.gradnet.presentation.screens.home
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ListItem
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import app.cash.paging.compose.collectAsLazyPagingItems
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.CurrentTab
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabDisposable
+import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.composables.Title
-import com.sdjic.gradnet.presentation.helper.koinScreenModel
-import network.chaintech.sdpcomposemultiplatform.sdp
+import com.sdjic.gradnet.presentation.screens.home.tabs.HomeTab
+import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
 
 class HomeScreen : Screen {
     @Composable
@@ -22,25 +31,50 @@ class HomeScreen : Screen {
         HomeScreenContent()
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun HomeScreenContent() {
-        val viewModel = koinScreenModel<HomeScreenViewModel>()
-        val data = viewModel.coinList.collectAsLazyPagingItems()
-        Scaffold {
-            LazyColumn(modifier = Modifier.padding(it).padding(10.sdp)) {
-                items(data.itemCount) {
-                    ListItem(
-                        headlineContent = {
-                            Title(data[it]?.name ?: "")
-                        },
-                        supportingContent = {
-                            data[it]?.let {
-                                SText(it.toString())
-                            }
-                        }
+        TabNavigator(
+            ProfileTab,
+            tabDisposable = {
+                TabDisposable(
+                    navigator = it,
+                    tabs = listOf(HomeTab(it.current.key), ProfileTab)
+                )
+            }
+        ) { tabNavigator ->
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { SText(text = tabNavigator.current.options.title) }
+                    )
+                },
+                content = { CurrentTab() },
+                bottomBar = {
+                    val currentKey by remember { mutableStateOf(tabNavigator.current.key) }
+                    NavigationBar {
+                        TabNavigationItem(HomeTab(currentKey))
+                        TabNavigationItem(ProfileTab)
+                    }
+                }
+            )
+        }
+    }
+
+    @Composable
+    private fun RowScope.TabNavigationItem(tab: Tab) {
+        val tabNavigator = LocalTabNavigator.current
+        NavigationBarItem(
+            selected = tabNavigator.current.key == tab.key,
+            onClick = { tabNavigator.current = tab },
+            icon = {
+                BadgedBox(badge = {}) {
+                    Icon(
+                        painter = tab.options.icon!!,
+                        contentDescription = tab.options.title
                     )
                 }
             }
-        }
+        )
     }
 }

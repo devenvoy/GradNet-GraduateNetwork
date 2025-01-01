@@ -12,6 +12,7 @@ import com.sdjic.gradnet.di.platform_di.platformModule
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.domain.repo.TestRepository
+import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
 import com.sdjic.gradnet.presentation.screens.demo.TestViewModel
@@ -25,6 +26,7 @@ val screenModelsModule = module {
     factory { HomeScreenViewModel(get()) }
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
+    factory { SetUpAccountViewModel() }
 }
 
 val userCases = module {

@@ -139,9 +139,4 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         val indianPhonePattern = "^[6-9]\\d{9}$"
         return phone.matches(indianPhonePattern.toRegex())
     }
-
-    fun verifyOtp() {}
-
-    fun resendOtp() {}
-
 }

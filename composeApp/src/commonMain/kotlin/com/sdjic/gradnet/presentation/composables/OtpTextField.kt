@@ -1,5 +1,6 @@
 package com.sdjic.gradnet.presentation.composables
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -87,25 +88,15 @@ private fun CharView(
     }
     Card(
         colors = CardDefaults.cardColors(
-//            containerColor = Color(243, 243, 243, 255)
             containerColor = Color(0xFFF6F6F6)
+        ),
+        border = BorderStroke(
+            width = 2.dp,
+            color = if (isFocused) MaterialTheme.colorScheme.primary else Color.Gray
         ),
         shape = RoundedCornerShape(6.sdp),
         modifier = Modifier
             .size(40.sdp)
-            /* .neu(
-                 lightShadowColor = Color.White,
-                 darkShadowColor = Color(0xFFA1A1A1),
-                 shadowElevation = 1.dp,
-                 lightSource = LightSource.LEFT_TOP,
-                 shape = com.gandiva.neumorphic.shape.Pressed(RoundedCorner(6.sdp)),
-             )*/
-            .innerShadow(
-                shape = RoundedCornerShape(6.sdp),
-                color = if (isFocused) MaterialTheme.colorScheme.primary.copy(.8f) else Color.Gray.copy(alpha = .8f),
-                offsetY = 1.dp,
-                offsetX = 1.dp
-            )
             .padding(2.sdp)
     ) {
         Box(
@@ -116,7 +107,7 @@ private fun CharView(
                 text = char,
                 fontSize = 18.ssp,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
         }

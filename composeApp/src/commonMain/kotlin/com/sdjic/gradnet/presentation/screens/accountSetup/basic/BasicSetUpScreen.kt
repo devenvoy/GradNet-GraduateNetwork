@@ -36,6 +36,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
+import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.text.font.FontWeight.Companion.W700
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -111,6 +112,9 @@ fun BasicSetUpScreen(
             placeholder = {
                 SText("Enter your $fieldTitle")
             },
+            supportingText = {
+                SText("Required", textColor = Color.Red)
+            },
             isEnable = !basicState.isVerified,
         )
 
@@ -137,6 +141,8 @@ fun BasicSetUpScreen(
             }
         }
     }
+
+
 }
 
 @Composable

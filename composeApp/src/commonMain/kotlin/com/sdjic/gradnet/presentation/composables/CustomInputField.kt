@@ -40,12 +40,12 @@ fun CustomInputField(
     fieldTitle: String,
     textFieldValue: String,
     onValueChange: (String) -> Unit,
-    minHeight: Dp = 42.sdp,
     singleLine: Boolean = true,
-    placeholder: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    suffix: @Composable (() -> Unit)? = null,
-    prefix: @Composable (() -> Unit)? = null,
+    placeholder: @Composable() (() -> Unit)? = null,
+    trailingIcon: @Composable() (() -> Unit)? = null,
+    suffix: @Composable() (() -> Unit)? = null,
+    prefix: @Composable() (() -> Unit)? = null,
+    supportingText: @Composable() (() -> Unit)? = null,
     isEnable: Boolean = true,
     keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
 ) {
@@ -64,9 +64,7 @@ fun CustomInputField(
             shape = RoundedCornerShape(8.sdp),
             trailingIcon = trailingIcon,
             enabled = isEnable,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(minHeight),
+            modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
                 unfocusedLeadingIconColor = MaterialTheme.colorScheme.primary,
@@ -77,6 +75,7 @@ fun CustomInputField(
             keyboardOptions = keyboardOption.copy(
                 imeAction = ImeAction.Next
             ),
+            supportingText = supportingText,
             textStyle = LocalTextStyle.current.copy(fontSize = 12.ssp),
             placeholder = placeholder,
         )

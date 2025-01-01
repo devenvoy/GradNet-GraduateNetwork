@@ -1,10 +1,16 @@
 package com.sdjic.gradnet.presentation.screens.accountSetup
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,19 +23,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.Title
+import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScreen
 import com.sdjic.gradnet.presentation.screens.demo.DemoScreen
 import kotlinx.coroutines.launch
+import network.chaintech.sdpcomposemultiplatform.sdp
+import network.chaintech.sdpcomposemultiplatform.ssp
 
 class SetUpScreen : Screen {
 
@@ -58,25 +69,60 @@ class SetUpScreen : Screen {
                 )
             }
         ) {
+            val setUpAccountViewModel = koinScreenModel<SetUpAccountViewModel>()
             val pagerState = rememberPagerState(pageCount = { setUpScreenTabs.size })
             val scope = rememberCoroutineScope()
-            Column(
-                modifier = Modifier.padding(it)
-            ) {
-                Tabs(
-                    tabs = setUpScreenTabs,
-                    pagerState = pagerState,
-                    onClick = { scope.launch { pagerState.animateScrollToPage(it) } }
-                )
-                TabsContent(tabs = setUpScreenTabs, pagerState = pagerState)
+            Box {
+                Column(
+                    modifier = Modifier.padding(it)
+                ) {
+                    Tabs(
+                        tabs = setUpScreenTabs,
+                        pagerState = pagerState,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(it) } }
+                    )
+                    TabsContent(
+                        modifier = Modifier.weight(1f),
+                        setUpAccountViewModel = setUpAccountViewModel,
+                        tabs = setUpScreenTabs,
+                        pagerState = pagerState
+                    )
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.sdp),
+                    ) {
+                        PrimaryButton(
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF43c71c)),
+                            modifier = Modifier
+                                .padding(horizontal = 10.sdp, vertical = 20.sdp)
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 10.sdp),
+                            onClick = { }
+                        ) {
+                            SText(
+                                text = "Save",
+                                fontSize = 14.ssp,
+                                fontWeight = W600,
+                                textColor = MaterialTheme.colorScheme.surface,
+                            )
+                        }
+                    }
+                }
+
+//                UiStateHandler()
             }
         }
     }
 
     @Composable
-    fun TabsContent(pagerState: PagerState, tabs: List<TabItem>) {
-        val setUpAccountViewModel = koinScreenModel<SetUpAccountViewModel>()
-        HorizontalPager(state = pagerState) { page ->
+    fun TabsContent(
+        modifier: Modifier = Modifier,
+        pagerState: PagerState,
+        tabs: List<TabItem>,
+        setUpAccountViewModel: SetUpAccountViewModel
+    ) {
+
+        HorizontalPager(modifier = modifier, state = pagerState) { page ->
             tabs[page].screen(setUpAccountViewModel)
         }
     }

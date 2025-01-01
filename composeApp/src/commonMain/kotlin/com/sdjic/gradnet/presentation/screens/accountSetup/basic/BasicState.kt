@@ -1,7 +1,6 @@
 package com.sdjic.gradnet.presentation.screens.accountSetup.basic
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 
 data class BasicState(
     val verificationField: String = "",
@@ -13,5 +12,4 @@ data class BasicState(
     val showOtpBottomSheet: Boolean = false,
     val openBackGroundImagePicker : Boolean = false,
     val openProfileImagePicker : Boolean = false,
-    val userRole: UserRole = UserRole.Alumni
 )

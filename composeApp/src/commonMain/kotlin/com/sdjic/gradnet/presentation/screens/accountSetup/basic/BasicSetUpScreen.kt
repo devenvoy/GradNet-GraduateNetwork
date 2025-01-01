@@ -1,5 +1,6 @@
 package com.sdjic.gradnet.presentation.screens.accountSetup.basic
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,6 +57,7 @@ import com.sdjic.gradnet.presentation.composables.OtpTextField
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.Title
+import com.sdjic.gradnet.presentation.core.model.BaseUser
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Plus
@@ -69,7 +71,8 @@ import network.chaintech.sdpcomposemultiplatform.ssp
 @Composable
 fun BasicSetUpScreen(
     basicState: BasicState,
-    onAction: (BasicScreenAction) -> Unit
+    onAction: (BasicScreenAction) -> Unit,
+    baseUser: BaseUser
 ) {
 
     val sheetState = rememberModalBottomSheetState(true)
@@ -85,16 +88,16 @@ fun BasicSetUpScreen(
         shapes = null,
         aspects = listOf(ImageAspectRatio(16, 9)),
         autoZoom = false,
-        imagePickerDialogHandler = { onAction(BasicScreenAction.OnBackGroundDialogState(it)) },
-        selectedImageCallback = { onAction(BasicScreenAction.OnBackgroundImageChange(it)) }
+        imagePickerDialogHandler = { onAction(BaseBasicScreenAction.OnBackGroundDialogState(it)) },
+        selectedImageCallback = { onAction(BaseBasicScreenAction.OnBackgroundImageChange(it)) }
     )
 
     CMPImagePickNCropDialog(
         imageCropper = profileCropper,
         openImagePicker = basicState.openProfileImagePicker,
         autoZoom = true,
-        imagePickerDialogHandler = { onAction(BasicScreenAction.OnProfileDialogState(it)) },
-        selectedImageCallback = { onAction(BasicScreenAction.OnProfileImageChange(it)) }
+        imagePickerDialogHandler = { onAction(BaseBasicScreenAction.OnProfileDialogState(it)) },
+        selectedImageCallback = { onAction(BaseBasicScreenAction.OnProfileImageChange(it)) }
     )
 
 
@@ -106,7 +109,7 @@ fun BasicSetUpScreen(
             dragHandle = null,
             onDismissRequest = {
                 onAction(
-                    BasicScreenAction.OnOtpBottomSheetStateChange(false)
+                    BaseBasicScreenAction.OnOtpBottomSheetStateChange(false)
                 )
             },
         ) {
@@ -114,10 +117,10 @@ fun BasicSetUpScreen(
                 otp = basicState.otpField,
                 email = basicState.otpEmailField,
                 onOtpTextChange = { ns, fill ->
-                    onAction(BasicScreenAction.OnOtpFieldValueChange(ns))
+                    onAction(BaseBasicScreenAction.OnOtpFieldValueChange(ns))
                 },
-                onSubmit = { onAction(BasicScreenAction.VerifyOtp) },
-                onResendClick = { onAction(BasicScreenAction.ResendOtp) },
+                onSubmit = { onAction(BaseBasicScreenAction.VerifyOtp) },
+                onResendClick = { onAction(BaseBasicScreenAction.ResendOtp) },
             )
         }
     }
@@ -126,17 +129,81 @@ fun BasicSetUpScreen(
         modifier = Modifier.fillMaxSize().padding(8.sdp),
         verticalArrangement = Arrangement.spacedBy(8.sdp)
     ) {
-        Spacer(Modifier.height(8.sdp))
-        val platformContext = LocalPlatformContext.current
-        Box {
-            val backgroundEditClick = {
-                onAction(BasicScreenAction.OnBackGroundDialogState(true))
-            }
-            BackgroundImage(
-                imageBitmap = basicState.backgroundImage,
-                modifier = Modifier.clickable(onClick = backgroundEditClick),
-                context = platformContext
+        ProfileBackgroundImages(onAction, basicState,true)
+
+        Column {
+            Title(text = "${baseUser.userRole.name} Verification", size = 16.ssp)
+            SText(text = "one time only", textColor = MaterialTheme.colorScheme.secondary)
+        }
+        Spacer(Modifier.height(1.sdp))
+        val fieldTitle by remember {
+            mutableStateOf(
+                when (baseUser.userRole) {
+                    UserRole.Alumni -> "Spid no"
+                    UserRole.Faculty -> "Faculty id"
+                    UserRole.Organization -> "Oragnization id"
+                }
             )
+        }
+        CustomInputField(
+            fieldTitle = fieldTitle,
+            textFieldValue = basicState.verificationField,
+            onValueChange = { s ->
+                onAction(
+                    BaseBasicScreenAction.OnVerificationFieldValueChange(s)
+                )
+            },
+            placeholder = {
+                SText("Enter your $fieldTitle")
+            },
+            supportingText = {
+                SText("Required", textColor = Color.Red)
+            },
+            isEnable = !basicState.isVerified,
+        )
+
+        AnimatedVisibility (!basicState.isVerified && basicState.verificationField.isNotEmpty()) {
+            val keyboardManager = LocalSoftwareKeyboardController.current
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                PrimaryButton(
+                    contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 8.sdp),
+                    onClick = {
+                        onAction(
+                            BaseBasicScreenAction.OnOtpBottomSheetStateChange(true)
+                        )
+                        keyboardManager?.hide()
+                    }) {
+                    SText(
+                        "send otp",
+                        fontSize = 14.ssp,
+                        textColor = MaterialTheme.colorScheme.surface,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileBackgroundImages(
+    onAction: (BasicScreenAction) -> Unit,
+    basicState: BasicState,
+    showEditButton : Boolean = false
+) {
+    val platformContext = LocalPlatformContext.current
+    Box {
+        val backgroundEditClick = {
+            onAction(BaseBasicScreenAction.OnBackGroundDialogState(true))
+        }
+        BackgroundImage(
+            imageBitmap = basicState.backgroundImage,
+            modifier = Modifier.clickable(onClick = backgroundEditClick),
+            context = platformContext
+        )
+        if (showEditButton) {
             IconButton(
                 modifier = Modifier.padding(10.sdp).size(24.sdp).align(Alignment.TopEnd),
                 onClick = backgroundEditClick,
@@ -147,21 +214,23 @@ fun BasicSetUpScreen(
             ) {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = null)
             }
-            Box(modifier = Modifier.padding(top = 70.sdp, start = 10.sdp)) {
-                val onProfileClick = {
-                    onAction(
-                        BasicScreenAction.OnProfileDialogState(
-                            true
-                        )
+        }
+        Box(modifier = Modifier.padding(top = 70.sdp, start = 10.sdp)) {
+            val onProfileClick = {
+                onAction(
+                    BaseBasicScreenAction.OnProfileDialogState(
+                        true
                     )
-                }
-                CircularProfileImage(
-                    modifier = Modifier.clickable(onClick = onProfileClick),
-                    context = platformContext,
-                    data = null,
-                    imageBitmap = basicState.profileImage,
-                    imageSize = 90.sdp
                 )
+            }
+            CircularProfileImage(
+                modifier = Modifier.clickable(onClick = onProfileClick),
+                context = platformContext,
+                data = null,
+                imageBitmap = basicState.profileImage,
+                imageSize = 90.sdp
+            )
+            if (showEditButton) {
                 IconButton(
                     modifier = Modifier.size(20.sdp).align(Alignment.BottomEnd)
                         .offset(y = (-5).sdp, x = (-5).sdp),
@@ -175,63 +244,7 @@ fun BasicSetUpScreen(
                 }
             }
         }
-
-        Column {
-            Title(text = "${basicState.userRole.name} Verification", size = 16.ssp)
-            SText(text = "one time only", textColor = MaterialTheme.colorScheme.secondary)
-        }
-        Spacer(Modifier.height(1.sdp))
-        val fieldTitle by remember {
-            mutableStateOf(
-                when (basicState.userRole) {
-                    UserRole.Alumni -> "Spid no"
-                    UserRole.Faculty -> "Faculty id"
-                    UserRole.Organization -> "Oragnization id"
-                }
-            )
-        }
-        CustomInputField(
-            fieldTitle = fieldTitle,
-            textFieldValue = basicState.verificationField,
-            onValueChange = { s ->
-                onAction(
-                    BasicScreenAction.OnVerificationFieldValueChange(s)
-                )
-            },
-            placeholder = {
-                SText("Enter your $fieldTitle")
-            },
-            supportingText = {
-                SText("Required", textColor = Color.Red)
-            },
-            isEnable = !basicState.isVerified,
-        )
-
-        if (!basicState.isVerified && basicState.verificationField.isNotEmpty()) {
-            val keyboardManager = LocalSoftwareKeyboardController.current
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                PrimaryButton(
-                    contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 8.sdp),
-                    onClick = {
-                        onAction(
-                            BasicScreenAction.OnOtpBottomSheetStateChange(true)
-                        )
-                        keyboardManager?.hide()
-                    }) {
-                    SText(
-                        "send otp",
-                        fontSize = 14.ssp,
-                        textColor = MaterialTheme.colorScheme.surface,
-                    )
-                }
-            }
-        }
     }
-
-
 }
 
 @Composable

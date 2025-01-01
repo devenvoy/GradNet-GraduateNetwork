@@ -6,12 +6,14 @@ import com.sdjic.gradnet.data.network.source.CoinPagingSource
 import com.sdjic.gradnet.data.repo.AuthRepositoryImpl
 import com.sdjic.gradnet.data.repo.CryptoRepository
 import com.sdjic.gradnet.data.repo.TestRepositoryImpl
+import com.sdjic.gradnet.data.repo.UserRepositoryImpl
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
 import com.sdjic.gradnet.di.platform_di.platformModule
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.domain.repo.TestRepository
+import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
@@ -26,7 +28,7 @@ val screenModelsModule = module {
     factory { HomeScreenViewModel(get()) }
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
-    factory { SetUpAccountViewModel() }
+    factory { SetUpAccountViewModel(get()) }
 }
 
 val userCases = module {
@@ -36,6 +38,7 @@ val userCases = module {
 val repositoryModule = module {
 
     single<AuthRepository>{  AuthRepositoryImpl(get())}
+    single <UserRepository>{ UserRepositoryImpl(get()) }
 
     // trying only
     single<TestRepository> { TestRepositoryImpl(testDao = get()) }

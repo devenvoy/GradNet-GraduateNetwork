@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.mp.KoinPlatform.getKoin
 
-class LoginScreenModel(val authRepository: AuthRepository) : ScreenModel {
+class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel {
 
     val email = mutableStateOf(TextFieldValue(""))
     val password = mutableStateOf(TextFieldValue(""))

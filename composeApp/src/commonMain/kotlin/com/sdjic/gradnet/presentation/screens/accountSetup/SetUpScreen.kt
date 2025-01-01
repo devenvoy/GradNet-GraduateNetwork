@@ -34,7 +34,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.Title
-import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScreen
 import com.sdjic.gradnet.presentation.screens.demo.DemoScreen

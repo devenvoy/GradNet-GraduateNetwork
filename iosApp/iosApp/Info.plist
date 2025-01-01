@@ -48,5 +48,9 @@
 	</array>
 	<key>Privacy - Camera Usage Description</key>
     <string>This app uses camera for capturing photos.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>$(PRODUCT_NAME) requires access to your camera to capture photos or videos for your convenience.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>$(PRODUCT_NAME) requires access to your photo library to select or save photos for your projects.</string>
 </dict>
 </plist>

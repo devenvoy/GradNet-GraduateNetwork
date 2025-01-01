@@ -13,6 +13,10 @@ class SetUpAccountViewModel : ScreenModel{
 
     fun onBasicAction(basicScreenAction: BasicScreenAction) {
         when (basicScreenAction) {
+
+            BasicScreenAction.ResendOtp -> verifyOtp()
+            BasicScreenAction.VerifyOtp -> resendOtp()
+
             is BasicScreenAction.OnVerificationFieldValueChange -> {
                 _basicState.value =
                     _basicState.value.copy(verificationField = basicScreenAction.value)
@@ -28,8 +32,25 @@ class SetUpAccountViewModel : ScreenModel{
                     _basicState.value.copy(showOtpBottomSheet = basicScreenAction.value)
             }
 
-            BasicScreenAction.ResendOtp -> verifyOtp()
-            BasicScreenAction.VerifyOtp -> resendOtp()
+            is BasicScreenAction.OnBackGroundDialogState -> {
+                _basicState.value =
+                    _basicState.value.copy(openBackGroundImagePicker = basicScreenAction.value)
+            }
+
+            is BasicScreenAction.OnBackgroundImageChange -> {
+                _basicState.value =
+                    _basicState.value.copy(backgroundImage = basicScreenAction.value)
+            }
+
+            is BasicScreenAction.OnProfileDialogState -> {
+                _basicState.value =
+                    _basicState.value.copy(openProfileImagePicker = basicScreenAction.value)
+            }
+
+            is BasicScreenAction.OnProfileImageChange -> {
+                _basicState.value =
+                    _basicState.value.copy(profileImage = basicScreenAction.value)
+            }
         }
     }
 

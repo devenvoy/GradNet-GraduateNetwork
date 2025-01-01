@@ -1,6 +1,7 @@
 package com.sdjic.gradnet.presentation.screens.accountSetup.basic
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,10 +12,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
@@ -25,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,16 +45,23 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
-import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.text.font.FontWeight.Companion.W700
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import coil3.compose.LocalPlatformContext
+import com.sdjic.gradnet.presentation.composables.BackgroundImage
+import com.sdjic.gradnet.presentation.composables.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.CustomInputField
 import com.sdjic.gradnet.presentation.composables.OtpTextField
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.Title
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.Plus
+import network.chaintech.cmpimagepickncrop.CMPImagePickNCropDialog
+import network.chaintech.cmpimagepickncrop.imagecropper.ImageAspectRatio
+import network.chaintech.cmpimagepickncrop.imagecropper.rememberImageCropper
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
@@ -57,6 +73,30 @@ fun BasicSetUpScreen(
 ) {
 
     val sheetState = rememberModalBottomSheetState(true)
+    val scope = rememberCoroutineScope()
+    val profileCropper = rememberImageCropper()
+    val bgCropper = rememberImageCropper()
+
+    CMPImagePickNCropDialog(
+        imageCropper = bgCropper,
+        enableRotationOption = false,
+        enabledFlipOption = false,
+        openImagePicker = basicState.openBackGroundImagePicker,
+        shapes = null,
+        aspects = listOf(ImageAspectRatio(16, 9)),
+        autoZoom = false,
+        imagePickerDialogHandler = { onAction(BasicScreenAction.OnBackGroundDialogState(it)) },
+        selectedImageCallback = { onAction(BasicScreenAction.OnBackgroundImageChange(it)) }
+    )
+
+    CMPImagePickNCropDialog(
+        imageCropper = profileCropper,
+        openImagePicker = basicState.openProfileImagePicker,
+        autoZoom = true,
+        imagePickerDialogHandler = { onAction(BasicScreenAction.OnProfileDialogState(it)) },
+        selectedImageCallback = { onAction(BasicScreenAction.OnProfileImageChange(it)) }
+    )
+
 
     if (basicState.showOtpBottomSheet) {
         ModalBottomSheet(
@@ -87,6 +127,55 @@ fun BasicSetUpScreen(
         verticalArrangement = Arrangement.spacedBy(8.sdp)
     ) {
         Spacer(Modifier.height(8.sdp))
+        val platformContext = LocalPlatformContext.current
+        Box {
+            val backgroundEditClick = {
+                onAction(BasicScreenAction.OnBackGroundDialogState(true))
+            }
+            BackgroundImage(
+                imageBitmap = basicState.backgroundImage,
+                modifier = Modifier.clickable(onClick = backgroundEditClick),
+                context = platformContext
+            )
+            IconButton(
+                modifier = Modifier.padding(10.sdp).size(24.sdp).align(Alignment.TopEnd),
+                onClick = backgroundEditClick,
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = Color.White
+                )
+            ) {
+                Icon(imageVector = Icons.Default.Edit, contentDescription = null)
+            }
+            Box(modifier = Modifier.padding(top = 70.sdp, start = 10.sdp)) {
+                val onProfileClick = {
+                    onAction(
+                        BasicScreenAction.OnProfileDialogState(
+                            true
+                        )
+                    )
+                }
+                CircularProfileImage(
+                    modifier = Modifier.clickable(onClick = onProfileClick),
+                    context = platformContext,
+                    data = null,
+                    imageBitmap = basicState.profileImage,
+                    imageSize = 90.sdp
+                )
+                IconButton(
+                    modifier = Modifier.size(20.sdp).align(Alignment.BottomEnd)
+                        .offset(y = (-5).sdp, x = (-5).sdp),
+                    onClick = onProfileClick,
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(imageVector = FeatherIcons.Plus, contentDescription = null)
+                }
+            }
+        }
+
         Column {
             Title(text = "${basicState.userRole.name} Verification", size = 16.ssp)
             SText(text = "one time only", textColor = MaterialTheme.colorScheme.secondary)

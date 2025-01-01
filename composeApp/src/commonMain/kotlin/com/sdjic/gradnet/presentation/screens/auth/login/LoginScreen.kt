@@ -137,8 +137,8 @@ class LoginScreen : Screen {
             Column {
                 CustomInputField(
                     fieldTitle = "Email",
-                    textFieldValue = viewModel.email.value,
-                    onValueChange = { viewModel.email.value = it },
+                    textFieldValue = viewModel.email.value.text,
+                    onValueChange = { viewModel.email.value = viewModel.email.value.copy(it) },
                     placeholder = { Text("Enter email") },
                     trailingIcon = {
                         Icon(

@@ -24,13 +24,13 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
 
     private val prefs = getKoin().get<AppCacheSetting>()
 
-    private val _name = MutableStateFlow(TextFieldValue(""))
+    private val _name = MutableStateFlow("")
     val name = _name.asStateFlow()
 
-    private val _email = MutableStateFlow(TextFieldValue(""))
+    private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
-    private val _phone = MutableStateFlow(TextFieldValue(""))
+    private val _phone = MutableStateFlow("")
     val phone = _phone.asStateFlow()
 
     private val _password = MutableStateFlow(TextFieldValue(""))
@@ -48,11 +48,11 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         _selectedUserRole.value = userRole
     }
 
-    fun onNameChange(newValue: TextFieldValue) {
+    fun onNameChange(newValue: String) {
         _name.value = newValue
     }
 
-    fun onEmailChange(newValue: TextFieldValue) {
+    fun onEmailChange(newValue: String) {
         _email.value = newValue
     }
 
@@ -60,7 +60,7 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         _password.value = newValue
     }
 
-    fun onPhoneChange(newValue: TextFieldValue) {
+    fun onPhoneChange(newValue: String) {
         _phone.value = newValue
     }
 
@@ -76,9 +76,9 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             }
             val result = authRepository.signUp(
                 SignUpRequest(
-                    name = _name.value.text,
-                    email = _email.value.text,
-                    phoneNo = _phone.value.text,
+                    name = _name.value,
+                    email = _email.value,
+                    phoneNo = _phone.value,
                     password = _password.value.text,
                     address = "  "
                 )
@@ -100,13 +100,13 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
     private fun validateInputs(): Map<String, List<String>>? {
         val errors = mutableMapOf<String, MutableList<String>>()
 
-        if (_name.value.text.isBlank()) {
+        if (_name.value.isBlank()) {
             errors.getOrPut("name") { mutableListOf() }.add("Name cannot be empty.")
         }
 
-        if (_email.value.text.isBlank()) {
+        if (_email.value.isBlank()) {
             errors.getOrPut("email") { mutableListOf() }.add("Email cannot be empty.")
-        } else if (!isValidEmail(_email.value.text)) {
+        } else if (!isValidEmail(_email.value)) {
             errors.getOrPut("email") { mutableListOf() }.add("Invalid email format.")
         }
 
@@ -121,9 +121,9 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             errors.getOrPut("role") { mutableListOf() }.add("Role cannot be empty.")
         }
 
-        if (_phone.value.text.isBlank()) {
+        if (_phone.value.isBlank()) {
             errors.getOrPut("phone") { mutableListOf() }.add("Phone cannot be empty.")
-        } else if (!isValidPhone(_phone.value.text)) {
+        } else if (!isValidPhone(_phone.value)) {
             errors.getOrPut("phone") { mutableListOf() }.add("Invalid phone number.")
         }
 

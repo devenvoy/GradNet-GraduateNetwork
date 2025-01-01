@@ -38,8 +38,8 @@ import network.chaintech.sdpcomposemultiplatform.ssp
 @Composable
 fun CustomInputField(
     fieldTitle: String,
-    textFieldValue: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
+    textFieldValue: String,
+    onValueChange: (String) -> Unit,
     minHeight: Dp = 42.sdp,
     singleLine: Boolean = true,
     placeholder: @Composable (() -> Unit)? = null,

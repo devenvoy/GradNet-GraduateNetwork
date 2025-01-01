@@ -1,28 +1,13 @@
 package com.sdjic.gradnet.presentation.screens.auth.register
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -38,12 +23,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.internal.BackHandler
-import com.sdjic.gradnet.presentation.composables.CustomInputField
-import com.sdjic.gradnet.presentation.composables.CustomInputPasswordField
-import com.sdjic.gradnet.presentation.composables.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.RoleSelectionItem
-import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.composables.Title
+import com.sdjic.gradnet.presentation.composables.*
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
@@ -53,7 +33,6 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.Mail
 import compose.icons.feathericons.Phone
-import compose.icons.feathericons.PhoneCall
 import compose.icons.feathericons.User
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
@@ -129,10 +108,10 @@ class SignUpScreen(
                     }
                 )
             }
-        ) {
+        ) { padding ->
             Column(
                 modifier = Modifier
-                    .padding(it)
+                    .padding(padding)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 10.sdp),

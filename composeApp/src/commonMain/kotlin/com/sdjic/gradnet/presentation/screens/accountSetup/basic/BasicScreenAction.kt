@@ -2,9 +2,12 @@ package com.sdjic.gradnet.presentation.screens.accountSetup.basic
 
 import androidx.compose.ui.graphics.ImageBitmap
 
-sealed interface BaseBasicScreenAction {
+sealed interface BasicScreenAction {
     class OnVerificationFieldValueChange(val value: String) : BasicScreenAction
     class OnOtpFieldValueChange(val value: String) : BasicScreenAction
+    class OnNameFieldValueChange(val value: String) : BasicScreenAction
+    class OnAddressFieldValueChange(val value: String) : BasicScreenAction
+    class OnAboutFieldValueChange(val value: String) : BasicScreenAction
     class OnOtpBottomSheetStateChange(val value: Boolean): BasicScreenAction
     class OnBackGroundDialogState(val value: Boolean): BasicScreenAction
     class OnProfileDialogState(val value: Boolean): BasicScreenAction
@@ -14,6 +17,3 @@ sealed interface BaseBasicScreenAction {
     data object ResendOtp : BasicScreenAction
 }
 
-
-sealed interface BasicScreenAction : BaseBasicScreenAction{
-}

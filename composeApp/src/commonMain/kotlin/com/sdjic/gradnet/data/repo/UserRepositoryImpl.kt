@@ -12,7 +12,7 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository ,BaseGateway(h
 
     override suspend fun fetchUser(token: String): Result<BaseUser, ServerError> {
         delay(2000L)
-        return Result.Success(BaseUser.OrganizationUser())
+        return Result.Success(BaseUser.FacultyUser())
     }
 
     override suspend fun updateUser() {

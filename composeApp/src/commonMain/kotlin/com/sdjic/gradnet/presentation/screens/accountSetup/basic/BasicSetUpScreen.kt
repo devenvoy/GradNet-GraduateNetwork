@@ -52,12 +52,12 @@ import androidx.compose.ui.text.withStyle
 import coil3.compose.LocalPlatformContext
 import com.sdjic.gradnet.presentation.composables.BackgroundImage
 import com.sdjic.gradnet.presentation.composables.CircularProfileImage
+import com.sdjic.gradnet.presentation.composables.CustomInputArea
 import com.sdjic.gradnet.presentation.composables.CustomInputField
 import com.sdjic.gradnet.presentation.composables.OtpTextField
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.Title
-import com.sdjic.gradnet.presentation.core.model.BaseUser
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Plus
@@ -71,8 +71,8 @@ import network.chaintech.sdpcomposemultiplatform.ssp
 @Composable
 fun BasicSetUpScreen(
     basicState: BasicState,
+    userRole: UserRole,
     onAction: (BasicScreenAction) -> Unit,
-    baseUser: BaseUser
 ) {
 
     val sheetState = rememberModalBottomSheetState(true)
@@ -88,16 +88,16 @@ fun BasicSetUpScreen(
         shapes = null,
         aspects = listOf(ImageAspectRatio(16, 9)),
         autoZoom = false,
-        imagePickerDialogHandler = { onAction(BaseBasicScreenAction.OnBackGroundDialogState(it)) },
-        selectedImageCallback = { onAction(BaseBasicScreenAction.OnBackgroundImageChange(it)) }
+        imagePickerDialogHandler = { onAction(BasicScreenAction.OnBackGroundDialogState(it)) },
+        selectedImageCallback = { onAction(BasicScreenAction.OnBackgroundImageChange(it)) }
     )
 
     CMPImagePickNCropDialog(
         imageCropper = profileCropper,
         openImagePicker = basicState.openProfileImagePicker,
         autoZoom = true,
-        imagePickerDialogHandler = { onAction(BaseBasicScreenAction.OnProfileDialogState(it)) },
-        selectedImageCallback = { onAction(BaseBasicScreenAction.OnProfileImageChange(it)) }
+        imagePickerDialogHandler = { onAction(BasicScreenAction.OnProfileDialogState(it)) },
+        selectedImageCallback = { onAction(BasicScreenAction.OnProfileImageChange(it)) }
     )
 
 
@@ -109,7 +109,7 @@ fun BasicSetUpScreen(
             dragHandle = null,
             onDismissRequest = {
                 onAction(
-                    BaseBasicScreenAction.OnOtpBottomSheetStateChange(false)
+                    BasicScreenAction.OnOtpBottomSheetStateChange(false)
                 )
             },
         ) {
@@ -117,10 +117,10 @@ fun BasicSetUpScreen(
                 otp = basicState.otpField,
                 email = basicState.otpEmailField,
                 onOtpTextChange = { ns, fill ->
-                    onAction(BaseBasicScreenAction.OnOtpFieldValueChange(ns))
+                    onAction(BasicScreenAction.OnOtpFieldValueChange(ns))
                 },
-                onSubmit = { onAction(BaseBasicScreenAction.VerifyOtp) },
-                onResendClick = { onAction(BaseBasicScreenAction.ResendOtp) },
+                onSubmit = { onAction(BasicScreenAction.VerifyOtp) },
+                onResendClick = { onAction(BasicScreenAction.ResendOtp) },
             )
         }
     }
@@ -132,13 +132,13 @@ fun BasicSetUpScreen(
         ProfileBackgroundImages(onAction, basicState,true)
 
         Column {
-            Title(text = "${baseUser.userRole.name} Verification", size = 16.ssp)
+            Title(text = "${userRole.name} Verification", size = 16.ssp)
             SText(text = "one time only", textColor = MaterialTheme.colorScheme.secondary)
         }
         Spacer(Modifier.height(1.sdp))
         val fieldTitle by remember {
             mutableStateOf(
-                when (baseUser.userRole) {
+                when (userRole) {
                     UserRole.Alumni -> "Spid no"
                     UserRole.Faculty -> "Faculty id"
                     UserRole.Organization -> "Oragnization id"
@@ -149,16 +149,10 @@ fun BasicSetUpScreen(
             fieldTitle = fieldTitle,
             textFieldValue = basicState.verificationField,
             onValueChange = { s ->
-                onAction(
-                    BaseBasicScreenAction.OnVerificationFieldValueChange(s)
-                )
+                onAction(BasicScreenAction.OnVerificationFieldValueChange(s))
             },
-            placeholder = {
-                SText("Enter your $fieldTitle")
-            },
-            supportingText = {
-                SText("Required", textColor = Color.Red)
-            },
+            placeholder = { SText("Enter your $fieldTitle") },
+            supportingText = { SText("Required", textColor = Color.Red) },
             isEnable = !basicState.isVerified,
         )
 
@@ -172,7 +166,7 @@ fun BasicSetUpScreen(
                     contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 8.sdp),
                     onClick = {
                         onAction(
-                            BaseBasicScreenAction.OnOtpBottomSheetStateChange(true)
+                            BasicScreenAction.OnOtpBottomSheetStateChange(true)
                         )
                         keyboardManager?.hide()
                     }) {
@@ -183,6 +177,36 @@ fun BasicSetUpScreen(
                     )
                 }
             }
+        }
+
+        AnimatedVisibility(basicState.isVerified){
+            CustomInputField(
+                fieldTitle = "Name",
+                textFieldValue = basicState.nameField,
+                onValueChange = { s ->
+                    onAction(BasicScreenAction.OnNameFieldValueChange(s))
+                },
+                placeholder = { SText("Enter name") },
+                supportingText = { SText("Required", textColor = Color.Red) },
+            )
+
+            CustomInputArea(
+                fieldTitle = "About",
+                textFieldValue = basicState.aboutField ,
+                onValueChange = { s ->
+                    onAction(BasicScreenAction.OnAboutFieldValueChange(s))
+                },
+                placeholder = { SText("tell about yourself..") },
+            )
+
+            CustomInputArea(
+                fieldTitle = "Address",
+                textFieldValue = basicState.addressField ,
+                onValueChange = { s ->
+                    onAction(BasicScreenAction.OnAddressFieldValueChange(s))
+                },
+                placeholder = { SText("add address") },
+            )
         }
     }
 }
@@ -196,7 +220,7 @@ fun ProfileBackgroundImages(
     val platformContext = LocalPlatformContext.current
     Box {
         val backgroundEditClick = {
-            onAction(BaseBasicScreenAction.OnBackGroundDialogState(true))
+            onAction(BasicScreenAction.OnBackGroundDialogState(true))
         }
         BackgroundImage(
             imageBitmap = basicState.backgroundImage,
@@ -218,7 +242,7 @@ fun ProfileBackgroundImages(
         Box(modifier = Modifier.padding(top = 70.sdp, start = 10.sdp)) {
             val onProfileClick = {
                 onAction(
-                    BaseBasicScreenAction.OnProfileDialogState(
+                    BasicScreenAction.OnProfileDialogState(
                         true
                     )
                 )

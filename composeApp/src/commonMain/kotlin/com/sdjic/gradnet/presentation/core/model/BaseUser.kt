@@ -7,6 +7,7 @@ sealed interface BaseUser {
     val userId: String
     val profilePic: String?
     val backgroundPic: String?
+    val name:String
     val about: String
     val email: String
     val phoneNumber: String
@@ -24,6 +25,7 @@ sealed interface BaseUser {
         override val userId: String = "",
         override val profilePic: String? = null,
         override val backgroundPic: String? = null,
+        override val name:String = "",
         override val about: String = "",
         override val email: String = "",
         override val phoneNumber: String = "",
@@ -42,6 +44,7 @@ sealed interface BaseUser {
         override val userId: String = "",
         override val profilePic: String? = null,
         override val backgroundPic: String? = null,
+        override val name:String = "",
         override val about: String = "",
         override val email: String = "",
         override val phoneNumber: String = "",
@@ -60,6 +63,7 @@ sealed interface BaseUser {
         override val userId: String = "",
         override val profilePic: String? = null,
         override val backgroundPic: String? = null,
+        override val name:String = "",
         override val about: String = "",
         override val email: String = "",
         override val phoneNumber: String = "",

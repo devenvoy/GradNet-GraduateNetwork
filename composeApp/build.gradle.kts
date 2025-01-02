@@ -113,10 +113,7 @@ kotlin {
 
             implementation(libs.kmp.date.time.picker)
 
-//            implementation(libs.peekaboo.ui)
-//            implementation(libs.peekaboo.image.picker)
             implementation("network.chaintech:cmp-image-pick-n-crop:1.0.8")
-
 
             implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
 

@@ -18,6 +18,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +38,10 @@ import com.sdjic.gradnet.presentation.composables.Title
 import com.sdjic.gradnet.presentation.core.model.BaseUser
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScreen
+import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSetUpScreen
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.screens.demo.DemoScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -134,7 +138,7 @@ class SetUpScreen : Screen {
                 setUpAccountViewModel = setUpAccountViewModel,
                 tabs = setUpScreenTabs,
                 pagerState = pagerState,
-                baseUser = baseUser
+                userRole = baseUser.userRole
             )
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -186,7 +190,7 @@ class SetUpScreen : Screen {
                 pagerState = pagerState,
                 tabs = setUpScreenTabs,
                 setUpAccountViewModel = setUpAccountViewModel,
-                baseUser = baseUser
+                userRole = baseUser.userRole
             )
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -238,7 +242,7 @@ class SetUpScreen : Screen {
                 pagerState = pagerState,
                 tabs = setUpScreenTabs,
                 setUpAccountViewModel = setUpAccountViewModel,
-                baseUser = baseUser
+                userRole = baseUser.userRole
             )
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -270,10 +274,15 @@ class SetUpScreen : Screen {
         pagerState: PagerState,
         tabs: List<TabItem>,
         setUpAccountViewModel: SetUpAccountViewModel,
-        baseUser: BaseUser
+        userRole: UserRole
     ) {
         HorizontalPager(modifier = modifier, state = pagerState) { page ->
-            tabs[page].screen(setUpAccountViewModel,baseUser)
+            LaunchedEffect(page) {
+                setUpAccountViewModel.onBasicAction(
+                    BasicScreenAction.OnOtpBottomSheetStateChange(false)
+                )
+            }
+            tabs[page].screen(setUpAccountViewModel, userRole)
         }
     }
 
@@ -302,17 +311,27 @@ class SetUpScreen : Screen {
     sealed class TabItem(
         var icon: Int,
         var title: String,
-        var screen: @Composable (SetUpAccountViewModel,BaseUser) -> Unit
+        var screen: @Composable (SetUpAccountViewModel, UserRole) -> Unit
     ) {
         data object Basic : TabItem(0, "Basic",
-            { viewModel ,baseUser->
+            { viewModel, role ->
                 BasicSetUpScreen(
                     basicState = viewModel.basicState.collectAsState().value,
-                    baseUser = baseUser,
+                    userRole = role,
                     onAction = viewModel::onBasicAction
                 )
             })
-        data object Education : TabItem(0, "Education", { viewModel ,baseUser -> DemoScreen("Education") })
-        data object Profession : TabItem(0, "Profession", { viewModel ,baseUser -> DemoScreen("Profession") })
+
+        data object Education :
+            TabItem(0, "Education", { viewModel, role ->
+                EducationSetUpScreen(
+                    educationState = viewModel.educationState.collectAsState().value,
+                    onAction = viewModel::onEducationAction,
+                    userRole = role
+                )
+            })
+
+        data object Profession :
+            TabItem(0, "Profession", { viewModel, role -> DemoScreen("Profession") })
     }
 }

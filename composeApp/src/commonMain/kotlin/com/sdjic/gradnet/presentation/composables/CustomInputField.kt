@@ -47,7 +47,8 @@ fun CustomInputField(
     prefix: @Composable() (() -> Unit)? = null,
     supportingText: @Composable() (() -> Unit)? = null,
     isEnable: Boolean = true,
-    keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+    keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+    readOnly: Boolean = false
 ) {
     Column(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
@@ -64,6 +65,7 @@ fun CustomInputField(
             shape = RoundedCornerShape(8.sdp),
             trailingIcon = trailingIcon,
             enabled = isEnable,
+            readOnly = readOnly,
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
@@ -151,3 +153,50 @@ fun CustomInputPasswordField(
     }
 }
 
+@Composable
+fun CustomInputArea(
+    fieldTitle: String,
+    textFieldValue: String,
+    onValueChange: (String) -> Unit,
+    singleLine: Boolean = true,
+    placeholder: @Composable() (() -> Unit)? = null,
+    trailingIcon: @Composable() (() -> Unit)? = null,
+    suffix: @Composable() (() -> Unit)? = null,
+    prefix: @Composable() (() -> Unit)? = null,
+    supportingText: @Composable() (() -> Unit)? = null,
+    isEnable: Boolean = true,
+    keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+    height: Dp = 60.sdp
+) {
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Title(
+            text = fieldTitle,
+            modifier = Modifier.padding(start = 2.sdp),
+            textColor = MaterialTheme.colorScheme.onBackground,
+        )
+        OutlinedTextField(
+            value = textFieldValue,
+            onValueChange = onValueChange,
+            shape = RoundedCornerShape(8.sdp),
+            trailingIcon = trailingIcon,
+            enabled = isEnable,
+            modifier = Modifier.fillMaxWidth().height(height),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                unfocusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+            ),
+            suffix = suffix,
+            prefix = prefix,
+            singleLine = singleLine,
+            keyboardOptions = keyboardOption.copy(
+                imeAction = ImeAction.Next
+            ),
+            supportingText = supportingText,
+            textStyle = LocalTextStyle.current.copy(fontSize = 12.ssp),
+            placeholder = placeholder,
+        )
+    }
+}

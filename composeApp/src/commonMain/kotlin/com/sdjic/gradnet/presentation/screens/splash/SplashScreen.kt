@@ -22,7 +22,7 @@ class SplashScreen : Screen {
         LaunchedEffect(Unit) {
             delay(1000)
 //            navigator.replace(HomeScreen())
-            navigator.replace(SetUpScreen())
+            navigator.replace(SetUpScreen(false))
         }
         SplashScreenContent()
     }

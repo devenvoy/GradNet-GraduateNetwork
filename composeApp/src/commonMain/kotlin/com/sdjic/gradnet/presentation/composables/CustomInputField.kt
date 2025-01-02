@@ -158,15 +158,15 @@ fun CustomInputArea(
     fieldTitle: String,
     textFieldValue: String,
     onValueChange: (String) -> Unit,
-    singleLine: Boolean = true,
-    placeholder: @Composable() (() -> Unit)? = null,
-    trailingIcon: @Composable() (() -> Unit)? = null,
-    suffix: @Composable() (() -> Unit)? = null,
-    prefix: @Composable() (() -> Unit)? = null,
-    supportingText: @Composable() (() -> Unit)? = null,
+    singleLine: Boolean = false,
+    placeholder: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    suffix: @Composable (() -> Unit)? = null,
+    prefix: @Composable (() -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
     isEnable: Boolean = true,
     keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-    height: Dp = 60.sdp
+    height: Dp = 80.sdp
 ) {
     Column(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),

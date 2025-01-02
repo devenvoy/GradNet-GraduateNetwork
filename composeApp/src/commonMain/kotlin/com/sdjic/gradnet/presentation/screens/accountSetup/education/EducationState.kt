@@ -6,5 +6,7 @@ data class EducationState(
     val skills: List<String> = emptyList(),
     val languages: List<String> = emptyList(),
     val eductionList: List<EducationModel> = emptyList(),
-    val showEducationBottomSheet: Boolean = false
+    val showEducationBottomSheet: Boolean = false,
+    val showLanguageDialog : Boolean = false,
+    val showSkillDialog: Boolean = false
 )

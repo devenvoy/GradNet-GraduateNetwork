@@ -5,21 +5,29 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,21 +40,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.util.fastForEachIndexed
+import androidx.compose.ui.window.DialogProperties
+import com.sdjic.gradnet.presentation.composables.CustomImageChip
 import com.sdjic.gradnet.presentation.composables.CustomInputArea
 import com.sdjic.gradnet.presentation.composables.CustomInputField
 import com.sdjic.gradnet.presentation.composables.DatePickerDialog
+import com.sdjic.gradnet.presentation.composables.DropDownTextField
+import com.sdjic.gradnet.presentation.composables.PlusIconButton
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.SecondaryOutlinedButton
 import com.sdjic.gradnet.presentation.composables.Title
+import com.sdjic.gradnet.presentation.core.LanguagesList
+import com.sdjic.gradnet.presentation.core.SkillList
 import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun EducationSetUpScreen(
+    isVerified: Boolean,
     educationState: EducationState, onAction: (EducationScreenAction) -> Unit, userRole: UserRole
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -72,27 +88,182 @@ fun EducationSetUpScreen(
         }
     }
 
+    if (educationState.showLanguageDialog) {
+        BasicAlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = {}
+        ) {
+            Surface(
+                modifier = Modifier.padding(20.sdp),
+                shape = RoundedCornerShape(12.sdp)
+            ) {
+                val isAssertExpanded = remember { mutableStateOf(false) }
+                var selectedText by remember { mutableStateOf("") }
+                Column(
+                    modifier = Modifier.padding(10.sdp),
+                ) {
+                    Title(text = "Select Language", size = 16.ssp)
+                    DropDownTextField(
+                        modifier = Modifier.padding(vertical = 10.sdp),
+                        hintText = "Select language",
+                        options = LanguagesList.filter { it !in educationState.languages },
+                        onClick = { isAssertExpanded.value = it },
+                        expanded = isAssertExpanded,
+                        onDismissReq = { isAssertExpanded.value = false },
+                        selectedText = selectedText,
+                        onValueSelected = { selectedText = it }
+                    )
+                    Row(modifier = Modifier.align(Alignment.End)) {
+                        TextButton(onClick = {
+                            isAssertExpanded.value = false
+                            onAction(
+                                EducationScreenAction.OnLanguageDialogStateChange(false)
+                            )
+                        }) {
+                            Text("Cancel")
+                        }
+                        TextButton(onClick = {
+                            onAction(EducationScreenAction.OnAddLanguage(selectedText))
+                            selectedText = ""
+                            isAssertExpanded.value = false
+                            onAction(
+                                EducationScreenAction.OnLanguageDialogStateChange(false)
+                            )
+                        }) {
+                            Text("Ok")
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-    Row(
-        modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        SecondaryOutlinedButton(modifier = Modifier.padding(10.sdp).weight(1f), onClick = {
-            onAction(
-                EducationScreenAction.OnRemoveEducation(0)
-            )
-        }) { Title(text = "remove education") }
-        PrimaryButton(
-            modifier = Modifier.padding(10.sdp).weight(1f), onClick = {
-                onAction(
-                    EducationScreenAction.OnEducationBottomSheetStateChange(true)
-                )
-            }, colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-            )
-        ) { Title(text = "Add Education", textColor = MaterialTheme.colorScheme.background) }
+    if (educationState.showSkillDialog) {
+        BasicAlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            onDismissRequest = {}
+        ) {
+            Surface(
+                modifier = Modifier.padding(20.sdp),
+                shape = RoundedCornerShape(12.sdp)
+            ) {
+                val isAssertExpanded = remember { mutableStateOf(false) }
+                var selectedText by remember { mutableStateOf("") }
+                Column(
+                    modifier = Modifier.padding(10.sdp),
+                ) {
+                    Title(text = "Select Language", size = 16.ssp)
+                    DropDownTextField(
+                        modifier = Modifier.padding(vertical = 10.sdp),
+                        hintText = "Select language",
+                        options = SkillList.filter { it !in educationState.skills }.sorted(),
+                        onClick = { isAssertExpanded.value = it },
+                        expanded = isAssertExpanded,
+                        onDismissReq = { isAssertExpanded.value = false },
+                        selectedText = selectedText,
+                        onValueSelected = { selectedText = it }
+                    )
+                    Row(modifier = Modifier.align(Alignment.End)) {
+                        TextButton(onClick = {
+                            isAssertExpanded.value = false
+                            onAction(
+                                EducationScreenAction.OnSkillDialogStateChange(false)
+                            )
+                        }) {
+                            Text("Cancel")
+                        }
+                        TextButton(onClick = {
+                            onAction(EducationScreenAction.OnAddSkill(selectedText))
+                            selectedText = ""
+                            isAssertExpanded.value = false
+                            onAction(
+                                EducationScreenAction.OnSkillDialogStateChange(false)
+                            )
+                        }) {
+                            Text("Ok")
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(8.sdp),
+        verticalArrangement = Arrangement.spacedBy(8.sdp)
+    ) {
+
+        Row(
+            modifier = Modifier.padding().fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Title(text = "Languages", size = 16.ssp)
+            PlusIconButton {
+                onAction(
+                    EducationScreenAction.OnLanguageDialogStateChange(true)
+                )
+            }
+        }
+
+        FlowRow(
+            Modifier.fillMaxWidth().wrapContentHeight(align = Alignment.Top),
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            educationState.languages.fastForEachIndexed { _, language ->
+                CustomImageChip(
+                    text = language,
+                    modifier = Modifier.padding(2.sdp),
+                    selected = true,
+                    onCancelClick = {
+                        onAction(EducationScreenAction.OnRemoveLanguage(language))
+                    }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.padding().fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Title(text = "Skills", size = 16.ssp)
+            PlusIconButton {
+                onAction(
+                    EducationScreenAction.OnSkillDialogStateChange(true)
+                )
+            }
+        }
+        FlowRow(
+            Modifier.fillMaxWidth().wrapContentHeight(align = Alignment.Top),
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            educationState.skills.fastForEachIndexed { _, skill ->
+                CustomImageChip(
+                    text = skill,
+                    modifier = Modifier.padding(2.sdp),
+                    selected = true,
+                    onCancelClick = {
+                        onAction(EducationScreenAction.OnRemoveSkill(skill))
+                    }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.padding().fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Title(text = "Education", size = 16.ssp)
+            PlusIconButton {
+                onAction(
+                    EducationScreenAction.OnEducationBottomSheetStateChange(true)
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -101,6 +272,7 @@ fun AddEducationModal(
     onSave: (EducationModel) -> Unit,
     onCancel: () -> Unit
 ) {
+
     var eduModel by remember { mutableStateOf(educationModel) }
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
@@ -214,7 +386,10 @@ fun AddEducationModal(
             ) { Title(text = "Cancel") }
             PrimaryButton(
                 modifier = Modifier.padding(10.sdp).weight(1f),
-                onClick = { onSave(eduModel) },
+                onClick = {
+                    onSave(eduModel)
+                    onCancel()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                 )

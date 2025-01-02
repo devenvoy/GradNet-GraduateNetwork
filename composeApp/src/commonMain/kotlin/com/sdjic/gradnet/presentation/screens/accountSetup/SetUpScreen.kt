@@ -9,9 +9,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -48,7 +52,7 @@ import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
-class SetUpScreen : Screen {
+class SetUpScreen(val isEditProfile: Boolean) : Screen {
 
     @Composable
     override fun Content() {
@@ -63,7 +67,17 @@ class SetUpScreen : Screen {
             topBar = {
                 TopAppBar(
                     title = {
-                        Title(text = "Set Up Profile")
+                        Title(text = "${if (isEditProfile) "Edit " else "Set Up "}Profile")
+                    },
+                    navigationIcon = {
+                        if (isEditProfile) {
+                            IconButton(onClick = { navigator.pop() }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "back"
+                                )
+                            }
+                        }
                     }
                 )
             }
@@ -316,6 +330,7 @@ class SetUpScreen : Screen {
         data object Basic : TabItem(0, "Basic",
             { viewModel, role ->
                 BasicSetUpScreen(
+                    isVerified = viewModel.isVerified.collectAsState().value,
                     basicState = viewModel.basicState.collectAsState().value,
                     userRole = role,
                     onAction = viewModel::onBasicAction
@@ -325,6 +340,7 @@ class SetUpScreen : Screen {
         data object Education :
             TabItem(0, "Education", { viewModel, role ->
                 EducationSetUpScreen(
+                    isVerified = viewModel.isVerified.collectAsState().value,
                     educationState = viewModel.educationState.collectAsState().value,
                     onAction = viewModel::onEducationAction,
                     userRole = role

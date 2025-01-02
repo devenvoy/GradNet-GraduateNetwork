@@ -11,4 +11,6 @@ sealed interface EducationScreenAction {
     class OnUpdateEducation(val index: Int, val education: EducationModel) : EducationScreenAction
     class OnRemoveEducation(val index: Int) : EducationScreenAction
     class OnEducationBottomSheetStateChange(val value: Boolean): EducationScreenAction
+    class OnLanguageDialogStateChange(val value: Boolean): EducationScreenAction
+    class OnSkillDialogStateChange(val value: Boolean): EducationScreenAction
 }

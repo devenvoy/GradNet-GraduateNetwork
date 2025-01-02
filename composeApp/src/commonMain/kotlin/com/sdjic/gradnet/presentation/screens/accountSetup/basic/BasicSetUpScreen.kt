@@ -70,6 +70,7 @@ import network.chaintech.sdpcomposemultiplatform.ssp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicSetUpScreen(
+    isVerified: Boolean,
     basicState: BasicState,
     userRole: UserRole,
     onAction: (BasicScreenAction) -> Unit,
@@ -133,7 +134,7 @@ fun BasicSetUpScreen(
 
         Column {
             Title(text = "${userRole.name} Verification", size = 16.ssp)
-            SText(text = "one time only", textColor = MaterialTheme.colorScheme.secondary)
+            SText(text = "only once", textColor = MaterialTheme.colorScheme.secondary)
         }
         Spacer(Modifier.height(1.sdp))
         val fieldTitle by remember {

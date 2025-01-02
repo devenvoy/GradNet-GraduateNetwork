@@ -30,6 +30,9 @@ class SetUpAccountViewModel(
     private val _educationState = MutableStateFlow(EducationState())
     val educationState = _educationState.asStateFlow()
 
+    private val _isVerified = MutableStateFlow(false)
+    val isVerified = _isVerified.asStateFlow()
+
     private val _professionState = MutableStateFlow(ProfessionState())
     val professionState: StateFlow<ProfessionState> get() = _professionState.asStateFlow()
 
@@ -39,10 +42,10 @@ class SetUpAccountViewModel(
     private val prefs = getKoin().get<AppCacheSetting>()
 
     init {
-        fetchBaseUser()
+        fetchUserDetails()
     }
 
-    fun fetchBaseUser() {
+    fun fetchUserDetails() {
         screenModelScope.launch {
             _userData.value = UiState.Loading
             val result = userRepository.fetchUser(prefs.accessToken)
@@ -113,49 +116,81 @@ class SetUpAccountViewModel(
     }
 
     fun onEducationAction(educationScreenAction: EducationScreenAction) {
-        when (educationScreenAction) {
-            is EducationScreenAction.OnAddEducation -> {
-                _educationState.value = _educationState.value.copy(
-                    eductionList = _educationState.value.eductionList + educationScreenAction.education
-                )
-            }
-            is EducationScreenAction.OnUpdateEducation -> {
-                val updatedEducationList = _educationState.value.eductionList.toMutableList().apply {
-                    this[educationScreenAction.index] = educationScreenAction.education
+        screenModelScope.launch {
+            when (educationScreenAction) {
+                is EducationScreenAction.OnAddEducation -> {
+                    _educationState.value = _educationState.value.copy(
+                        eductionList = _educationState.value.eductionList + educationScreenAction.education
+                    )
                 }
-                _educationState.value = _educationState.value.copy(eductionList = updatedEducationList)
-            }
-            is EducationScreenAction.OnRemoveEducation -> {
-                val updatedEducationList = _educationState.value.eductionList.toMutableList().apply {
-                    removeAt(educationScreenAction.index)
-                }
-                _educationState.value = _educationState.value.copy(eductionList = updatedEducationList)
-            }
-            is EducationScreenAction.OnAddLanguage -> {
-                _educationState.value = _educationState.value.copy(
-                    languages = _educationState.value.languages + educationScreenAction.language
-                )
-            }
-            is EducationScreenAction.OnRemoveLanguage -> {
-                _educationState.value = _educationState.value.copy(
-                    languages = _educationState.value.languages.filter { it != educationScreenAction.language }
-                )
-            }
-            is EducationScreenAction.OnAddSkill -> {
-                _educationState.value = _educationState.value.copy(
-                    skills = _educationState.value.skills + educationScreenAction.skill
-                )
-            }
-            is EducationScreenAction.OnRemoveSkill -> {
-                _educationState.value = _educationState.value.copy(
-                    skills = _educationState.value.skills.filter { it != educationScreenAction.skill }
-                )
-            }
 
-            is EducationScreenAction.OnEducationBottomSheetStateChange -> {
-                _educationState.value = _educationState.value.copy(
-                    showEducationBottomSheet = educationScreenAction.value
-                )
+                is EducationScreenAction.OnUpdateEducation -> {
+                    val updatedEducationList =
+                        _educationState.value.eductionList.toMutableList().apply {
+                            this[educationScreenAction.index] = educationScreenAction.education
+                        }
+                    _educationState.value =
+                        _educationState.value.copy(eductionList = updatedEducationList)
+                }
+
+                is EducationScreenAction.OnRemoveEducation -> {
+                    val updatedEducationList =
+                        _educationState.value.eductionList.toMutableList().apply {
+                            removeAt(educationScreenAction.index)
+                        }
+                    _educationState.value =
+                        _educationState.value.copy(eductionList = updatedEducationList)
+                }
+
+                is EducationScreenAction.OnAddLanguage -> {
+                    if (educationScreenAction.language.isNotEmpty()) {
+                        _educationState.value = _educationState.value.copy(
+                            languages = _educationState.value.languages + educationScreenAction.language
+                        )
+                    }
+                }
+
+                is EducationScreenAction.OnRemoveLanguage -> {
+                    _educationState.value = _educationState.value.copy(
+                        languages = _educationState.value.languages.toMutableList().apply {
+                            remove(educationScreenAction.language)
+                        }
+                    )
+                }
+
+                is EducationScreenAction.OnAddSkill -> {
+                    if (educationScreenAction.skill.isNotEmpty()) {
+                        _educationState.value = _educationState.value.copy(
+                            skills = _educationState.value.skills + educationScreenAction.skill
+                        )
+                    }
+                }
+
+                is EducationScreenAction.OnRemoveSkill -> {
+                    _educationState.value = _educationState.value.copy(
+                        skills = _educationState.value.skills.toMutableList().apply {
+                            remove(educationScreenAction.skill)
+                        }
+                    )
+                }
+
+                is EducationScreenAction.OnEducationBottomSheetStateChange -> {
+                    _educationState.value = _educationState.value.copy(
+                        showEducationBottomSheet = educationScreenAction.value
+                    )
+                }
+
+                is EducationScreenAction.OnLanguageDialogStateChange -> {
+                    _educationState.value = _educationState.value.copy(
+                        showLanguageDialog = educationScreenAction.value
+                    )
+                }
+
+                is EducationScreenAction.OnSkillDialogStateChange -> {
+                    _educationState.value = _educationState.value.copy(
+                        showSkillDialog = educationScreenAction.value
+                    )
+                }
             }
         }
     }

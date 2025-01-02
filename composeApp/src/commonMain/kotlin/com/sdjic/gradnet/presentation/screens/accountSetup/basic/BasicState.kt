@@ -11,7 +11,6 @@ data class BasicState(
     val addressField: String = "",
     val backgroundImage: ImageBitmap? = null,
     val profileImage: ImageBitmap? = null,
-    val isVerified: Boolean = false,
     val showOtpBottomSheet: Boolean = false,
     val openBackGroundImagePicker : Boolean = false,
     val openProfileImagePicker : Boolean = false,

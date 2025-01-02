@@ -199,20 +199,20 @@ class SetUpAccountViewModel(
         screenModelScope.launch {
             _professionState.value = when (action) {
                 is ProfessionScreenAction.OnAddExperience -> {
-                    val updatedExperiences = _professionState.value.experiences + action.experience
-                    _professionState.value.copy(experiences = updatedExperiences)
+                    val updatedExperiences = _professionState.value.experienceList + action.experience
+                    _professionState.value.copy(experienceList = updatedExperiences)
                 }
                 is ProfessionScreenAction.OnUpdateExperience -> {
-                    val updatedExperiences = _professionState.value.experiences.toMutableList().apply {
+                    val updatedExperiences = _professionState.value.experienceList.toMutableList().apply {
                         this[action.index] = action.experience
                     }
-                    _professionState.value.copy(experiences = updatedExperiences)
+                    _professionState.value.copy(experienceList = updatedExperiences)
                 }
                 is ProfessionScreenAction.OnRemoveExperience -> {
-                    val updatedExperiences = _professionState.value.experiences.toMutableList().apply {
+                    val updatedExperiences = _professionState.value.experienceList.toMutableList().apply {
                         removeAt(action.index)
                     }
-                    _professionState.value.copy(experiences = updatedExperiences)
+                    _professionState.value.copy(experienceList = updatedExperiences)
                 }
                 is ProfessionScreenAction.OnUpdateLinkedinUrl -> {
                     _professionState.value.copy(linkedinUrl = action.url)
@@ -223,13 +223,28 @@ class SetUpAccountViewModel(
                 is ProfessionScreenAction.OnUpdateTwitterUrl -> {
                     _professionState.value.copy(twitterUrl = action.url)
                 }
+
                 is ProfessionScreenAction.OnAddOtherUrl -> {
-                    val updatedUrls = _professionState.value.otherUrls + action.url
-                    _professionState.value.copy(otherUrls = updatedUrls)
+                    if (action.value.isNotEmpty()) {
+                        _professionState.value.copy(otherUrls = _professionState.value.otherUrls + action.value)
+                    } else {
+                        _professionState.value
+                    }
                 }
                 is ProfessionScreenAction.OnRemoveOtherUrl -> {
-                    val updatedUrls = _professionState.value.otherUrls - action.url
-                    _professionState.value.copy(otherUrls = updatedUrls)
+                    _professionState.value.copy(
+                        otherUrls = _professionState.value.otherUrls.toMutableList().apply {
+                            remove(action.value)
+                        }
+                    )
+                }
+
+                is ProfessionScreenAction.OnExperienceBottomSheetStateChange -> {
+                    _professionState.value.copy(showExperienceBottomSheet = action.value)
+                }
+
+                is ProfessionScreenAction.OnAddOtherUrlDialogStateChange -> {
+                    _professionState.value.copy(showAddOtherUrlDialog = action.value)
                 }
             }
         }

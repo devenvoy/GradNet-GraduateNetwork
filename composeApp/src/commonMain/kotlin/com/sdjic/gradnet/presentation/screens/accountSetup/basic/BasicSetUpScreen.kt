@@ -154,10 +154,10 @@ fun BasicSetUpScreen(
             },
             placeholder = { SText("Enter your $fieldTitle") },
             supportingText = { SText("Required", textColor = Color.Red) },
-            isEnable = !basicState.isVerified,
+            isEnable = !isVerified,
         )
 
-        AnimatedVisibility (!basicState.isVerified && basicState.verificationField.isNotEmpty()) {
+        AnimatedVisibility (!isVerified && basicState.verificationField.isNotEmpty()) {
             val keyboardManager = LocalSoftwareKeyboardController.current
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -180,7 +180,7 @@ fun BasicSetUpScreen(
             }
         }
 
-        AnimatedVisibility(basicState.isVerified){
+        AnimatedVisibility(isVerified){
             CustomInputField(
                 fieldTitle = "Name",
                 textFieldValue = basicState.nameField,

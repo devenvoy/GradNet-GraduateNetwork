@@ -45,8 +45,8 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSetUpScreen
+import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionSetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
-import com.sdjic.gradnet.presentation.screens.demo.DemoScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -348,6 +348,13 @@ class SetUpScreen(val isEditProfile: Boolean) : Screen {
             })
 
         data object Profession :
-            TabItem(0, "Profession", { viewModel, role -> DemoScreen("Profession") })
+            TabItem(0, "Profession", { viewModel, role ->
+                ProfessionSetUpScreen(
+                    isVerified = viewModel.isVerified.collectAsState().value,
+                    professionState = viewModel.professionState.collectAsState().value,
+                    userRole = role,
+                    onAction = viewModel::onProfessionAction
+                )
+            })
     }
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Eye
 import compose.icons.feathericons.EyeOff
@@ -78,7 +79,10 @@ fun CustomInputField(
                 imeAction = ImeAction.Next
             ),
             supportingText = supportingText,
-            textStyle = LocalTextStyle.current.copy(fontSize = 12.ssp),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 12.ssp,
+                fontFamily = displayFontFamily()
+            ),
             placeholder = placeholder,
         )
     }
@@ -147,7 +151,10 @@ fun CustomInputPasswordField(
                 }
             ),
             visualTransformation = if (isPasswordField && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-            textStyle = LocalTextStyle.current.copy(fontSize = 12.ssp),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 12.ssp,
+                fontFamily = displayFontFamily()
+            ),
             placeholder = placeholder,
         )
     }
@@ -195,7 +202,10 @@ fun CustomInputArea(
                 imeAction = ImeAction.Next
             ),
             supportingText = supportingText,
-            textStyle = LocalTextStyle.current.copy(fontSize = 12.ssp),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 12.ssp,
+                fontFamily = displayFontFamily()
+            ),
             placeholder = placeholder,
         )
     }

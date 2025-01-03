@@ -17,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -39,7 +40,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.Title
-import com.sdjic.gradnet.presentation.core.model.BaseUser
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
@@ -47,12 +47,11 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScree
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionSetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
-class SetUpScreen(val isEditProfile: Boolean) : Screen {
+class SetUpScreen(private val isEditProfile: Boolean) : Screen {
 
     @Composable
     override fun Content() {
@@ -81,202 +80,73 @@ class SetUpScreen(val isEditProfile: Boolean) : Screen {
                     }
                 )
             }
-        ) {sPad->
+        )
+        { sPad ->
             val setUpAccountViewModel = koinScreenModel<SetUpAccountViewModel>()
             val scope = rememberCoroutineScope()
             Box {
                 UiStateHandler(
                     uiState = setUpAccountViewModel.userData.collectAsState().value,
-                    content = {baseuser->
-                        when(baseuser){
-                            is BaseUser.AlumniUser -> {
-                                // Alumni
-                                AlumniSetUpScreen(
-                                    sPad,
-                                    scope,
-                                    setUpAccountViewModel,
-                                    baseuser
-                                )
-                            }
-                            is BaseUser.FacultyUser -> {
-                                FacultySetUpScreen(
-                                    sPad,
-                                    scope,
-                                    setUpAccountViewModel,
-                                    baseuser
-                                )
-                            }
-                            is BaseUser.OrganizationUser -> {
-                                OrganizationSetUpScreen(
-                                    sPad,
-                                    scope,
-                                    setUpAccountViewModel,
-                                    baseuser
-                                )
+                    content = { userProfile ->
+                        val userRole by remember { mutableStateOf(userProfile.userRole) }
+
+                        val setUpScreenTabs by remember {
+                            mutableStateOf(
+                                when (userRole) {
+                                    UserRole.Alumni,
+                                    UserRole.Faculty -> listOf(
+                                        TabItem.Basic,
+                                        TabItem.Education,
+                                        TabItem.Profession
+                                    )
+
+                                    UserRole.Organization -> listOf(
+                                        TabItem.Basic,
+                                        TabItem.Profession
+                                    )
+                                }
+                            )
+                        }
+
+                        val pagerState = rememberPagerState(pageCount = { setUpScreenTabs.size })
+
+                        Column(
+                            modifier = Modifier.padding(sPad)
+                        ) {
+                            Tabs(tabs = setUpScreenTabs,
+                                pagerState = pagerState,
+                                onClick = { scope.launch { pagerState.animateScrollToPage(it) } })
+                            TabsContent(
+                                modifier = Modifier.weight(1f),
+                                setUpAccountViewModel = setUpAccountViewModel,
+                                tabs = setUpScreenTabs,
+                                pagerState = pagerState,
+                                userRole = userRole
+                            )
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(16.sdp),
+                            ) {
+                                PrimaryButton(
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF43c71c)
+                                    ),
+                                    modifier = Modifier.padding(10.sdp, 20.sdp).fillMaxWidth(),
+                                    contentPadding = PaddingValues(20.sdp, 10.sdp),
+                                    onClick = { }
+                                ) {
+                                    SText(
+                                        text = "Save",
+                                        fontSize = 14.ssp,
+                                        fontWeight = W600,
+                                        textColor = MaterialTheme.colorScheme.surface,
+                                    )
+                                }
                             }
                         }
                     },
-                    onErrorShowed = {
-                        // logout user
-                    }
+                    onErrorShowed = { }        // logout user
                 )
-            }
-        }
-    }
-
-    @Composable
-    private fun AlumniSetUpScreen(
-        sPad: PaddingValues,
-        scope: CoroutineScope,
-        setUpAccountViewModel: SetUpAccountViewModel,
-        baseUser: BaseUser.AlumniUser
-    ) {
-
-        val setUpScreenTabs by remember  {
-            mutableStateOf(
-                listOf(TabItem.Basic, TabItem.Education, TabItem.Profession)
-            )
-        }
-        val pagerState = rememberPagerState(pageCount = { setUpScreenTabs.size })
-
-        Column(
-            modifier = Modifier.padding(sPad)
-        ) {
-            Tabs(
-                tabs = setUpScreenTabs,
-                pagerState = pagerState,
-                onClick = { scope.launch { pagerState.animateScrollToPage(it) } }
-            )
-            TabsContent(
-                modifier = Modifier.weight(1f),
-                setUpAccountViewModel = setUpAccountViewModel,
-                tabs = setUpScreenTabs,
-                pagerState = pagerState,
-                userRole = baseUser.userRole
-            )
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.sdp),
-            ) {
-                PrimaryButton(
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF43c71c)),
-                    modifier = Modifier
-                        .padding(horizontal = 10.sdp, vertical = 20.sdp)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 10.sdp),
-                    onClick = { }
-                ) {
-                    SText(
-                        text = "Save",
-                        fontSize = 14.ssp,
-                        fontWeight = W600,
-                        textColor = MaterialTheme.colorScheme.surface,
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun FacultySetUpScreen(
-        sPad: PaddingValues,
-        scope: CoroutineScope,
-        setUpAccountViewModel: SetUpAccountViewModel,
-        baseUser: BaseUser.FacultyUser
-    ) {
-        val setUpScreenTabs by remember  {
-            mutableStateOf(
-                listOf(TabItem.Basic, TabItem.Education, TabItem.Profession)
-            )
-        }
-        val pagerState = rememberPagerState(pageCount = { setUpScreenTabs.size })
-
-        Column(
-            modifier = Modifier.padding(sPad)
-        ) {
-            Tabs(
-                tabs = setUpScreenTabs,
-                pagerState = pagerState,
-                onClick = { scope.launch { pagerState.animateScrollToPage(it) } }
-            )
-            TabsContent(
-                modifier = Modifier.weight(1f),
-                pagerState = pagerState,
-                tabs = setUpScreenTabs,
-                setUpAccountViewModel = setUpAccountViewModel,
-                userRole = baseUser.userRole
-            )
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.sdp),
-            ) {
-                PrimaryButton(
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF43c71c)),
-                    modifier = Modifier
-                        .padding(horizontal = 10.sdp, vertical = 20.sdp)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 10.sdp),
-                    onClick = { }
-                ) {
-                    SText(
-                        text = "Save",
-                        fontSize = 14.ssp,
-                        fontWeight = W600,
-                        textColor = MaterialTheme.colorScheme.surface,
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun OrganizationSetUpScreen(
-        sPad: PaddingValues,
-        scope: CoroutineScope,
-        setUpAccountViewModel: SetUpAccountViewModel,
-        baseUser: BaseUser.OrganizationUser
-    ) {
-        val setUpScreenTabs by remember  {
-            mutableStateOf(
-                listOf(TabItem.Basic, TabItem.Profession)
-            )
-        }
-        val pagerState = rememberPagerState(pageCount = { setUpScreenTabs.size })
-
-        Column(
-            modifier = Modifier.padding(sPad)
-        ) {
-            Tabs(
-                tabs = setUpScreenTabs,
-                pagerState = pagerState,
-                onClick = { scope.launch { pagerState.animateScrollToPage(it) } }
-            )
-            TabsContent(
-                modifier = Modifier.weight(1f),
-                pagerState = pagerState,
-                tabs = setUpScreenTabs,
-                setUpAccountViewModel = setUpAccountViewModel,
-                userRole = baseUser.userRole
-            )
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.sdp),
-            ) {
-                PrimaryButton(
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF43c71c)),
-                    modifier = Modifier
-                        .padding(horizontal = 10.sdp, vertical = 20.sdp)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 10.sdp),
-                    onClick = { }
-                ) {
-                    SText(
-                        text = "Save",
-                        fontSize = 14.ssp,
-                        fontWeight = W600,
-                        textColor = MaterialTheme.colorScheme.surface,
-                    )
-                }
             }
         }
     }
@@ -300,15 +170,17 @@ class SetUpScreen(val isEditProfile: Boolean) : Screen {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Tabs(
         pagerState: PagerState,
         onClick: (Int) -> Unit,
         tabs: List<TabItem>
     ) {
-        TabRow(
+        PrimaryTabRow(
             selectedTabIndex = pagerState.currentPage,
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.background,
+//            indicator = { FancyAnimatedIndicatorWithModifier(state) }
         ) {
             tabs.forEachIndexed { index, tab ->
                 Tab(

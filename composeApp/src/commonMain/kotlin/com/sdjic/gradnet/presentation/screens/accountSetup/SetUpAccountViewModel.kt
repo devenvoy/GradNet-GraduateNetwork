@@ -6,6 +6,9 @@ import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.UserRepository
+import com.sdjic.gradnet.presentation.core.model.toBasicState
+import com.sdjic.gradnet.presentation.core.model.toEducationState
+import com.sdjic.gradnet.presentation.core.model.toProfessionState
 import com.sdjic.gradnet.presentation.helper.SetUpOrEditUiState
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
@@ -17,6 +20,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.profession.Profession
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.mp.KoinPlatform.getKoin
 
@@ -30,11 +34,11 @@ class SetUpAccountViewModel(
     private val _educationState = MutableStateFlow(EducationState())
     val educationState = _educationState.asStateFlow()
 
-    private val _isVerified = MutableStateFlow(false)
-    val isVerified = _isVerified.asStateFlow()
-
     private val _professionState = MutableStateFlow(ProfessionState())
     val professionState: StateFlow<ProfessionState> get() = _professionState.asStateFlow()
+
+    private val _isVerified = MutableStateFlow(false)
+    val isVerified = _isVerified.asStateFlow()
 
     private val _userData = MutableStateFlow<SetUpOrEditUiState>(UiState.Idle)
     val userData = _userData.asStateFlow()
@@ -49,8 +53,11 @@ class SetUpAccountViewModel(
         screenModelScope.launch {
             _userData.value = UiState.Loading
             val result = userRepository.fetchUser(prefs.accessToken)
-            result.onSuccess {
-                _userData.value = UiState.Success(it)
+            result.onSuccess { user ->
+                _basicState.update { user.toBasicState() }
+                _educationState.update { user.toEducationState() }
+                _professionState.update { user.toProfessionState() }
+                _userData.value = UiState.Success(user)
             }.onError {
                 _userData.value = UiState.Error(it.detail)
             }

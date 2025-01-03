@@ -75,7 +75,9 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun EducationSetUpScreen(
     isVerified: Boolean,
-    educationState: EducationState, onAction: (EducationScreenAction) -> Unit, userRole: UserRole
+    educationState: EducationState,
+    onAction: (EducationScreenAction) -> Unit,
+    userRole: UserRole
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()

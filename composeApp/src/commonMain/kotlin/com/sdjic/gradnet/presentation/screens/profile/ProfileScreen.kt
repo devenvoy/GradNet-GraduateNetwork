@@ -33,8 +33,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 const val initialImageFloat = 170f
-const val name = "Gurupreet Singh"
-const val email = "gurpreet.usit@gmail.com"
+const val name = "Devansh Amdavadwala"
+const val email = "devanshamdavadwala@gmail.com"
 const val twitterUrl = "https://www.twitter.com/_gurupreet"
 const val linkedInUrl = "https://www.linkedin.com/in/gurupreet-singh-491a7668/"
 const val githubUrl = "https://github.com"

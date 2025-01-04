@@ -232,13 +232,12 @@ fun ProfessionSetUpScreen(
             }
         }
 
-
         Row(
             modifier = Modifier.padding().fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Title(text = "Education", size = 16.ssp)
+            Title(text = "Experience", size = 16.ssp)
             PlusIconButton {
                 onAction(
                     ProfessionScreenAction.OnExperienceBottomSheetStateChange(true)

@@ -20,11 +20,7 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
 import network.chaintech.sdpcomposemultiplatform.sdp
 
-class HomeTab(
-    private val currentKey: String,
-) : Tab {
-
-    private val isSelected = currentKey == key
+object HomeTab : Tab {
 
     override val options: TabOptions
         @Composable
@@ -36,7 +32,7 @@ class HomeTab(
                 TabOptions(
                     index = 0u,
                     title = "Home",
-                    icon = if (isSelected) selectedIcon else defaultIcon
+                    icon = selectedIcon
                 )
             }
         }

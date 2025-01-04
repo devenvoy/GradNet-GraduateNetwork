@@ -1,15 +1,16 @@
 package com.sdjic.gradnet.presentation.screens.home
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -35,20 +36,21 @@ class HomeScreen : Screen {
             tabDisposable = {
                 TabDisposable(
                     navigator = it,
-                    tabs = listOf(HomeTab(it.current.key), ProfileTab)
+                    tabs = listOf(HomeTab, ProfileTab)
                 )
-            }
-        ) { tabNavigator ->
-            Scaffold(
-                content = { CurrentTab() },
-                bottomBar = {
-                    val currentKey by remember { mutableStateOf(tabNavigator.current.key) }
-                    NavigationBar {
-                        TabNavigationItem(HomeTab(currentKey))
-                        TabNavigationItem(ProfileTab)
-                    }
+            }) { tabNavigator ->
+            Scaffold(content = { pVal ->
+                Box(
+                    modifier = Modifier.padding(bottom = pVal.calculateBottomPadding()).fillMaxSize()
+                ) {
+                    CurrentTab()
                 }
-            )
+            }, bottomBar = {
+                NavigationBar {
+                    TabNavigationItem(HomeTab)
+                    TabNavigationItem(ProfileTab)
+                }
+            })
         }
     }
 
@@ -61,11 +63,9 @@ class HomeScreen : Screen {
             icon = {
                 BadgedBox(badge = {}) {
                     Icon(
-                        painter = tab.options.icon!!,
-                        contentDescription = tab.options.title
+                        painter = tab.options.icon!!, contentDescription = tab.options.title
                     )
                 }
-            }
-        )
+            })
     }
 }

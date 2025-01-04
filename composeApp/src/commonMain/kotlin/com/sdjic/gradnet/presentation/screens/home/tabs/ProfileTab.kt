@@ -2,28 +2,28 @@ package com.sdjic.gradnet.presentation.screens.home.tabs
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.sdjic.gradnet.presentation.helper.MyTab
+import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
 
-object ProfileTab : Tab {
+object ProfileTab : MyTab {
 
     override val options: TabOptions
-        @Composable
-        get() {
-            val icon = rememberVectorPainter(Icons.Default.Person)
+       @Composable get() = TabOptions(1u,"Profile")
 
-            return remember {
-                TabOptions(
-                    index = 1u,
-                    title = "Profile",
-                    icon = icon
-                )
-            }
-        }
+    override val tabOption: MyTabOptions
+       @Composable get() = remember {
+           MyTabOptions(
+               index = 1u,
+               title = "Profile",
+               selectedIcon = Icons.Default.Person,
+               unselectedIcon = Icons.Outlined.Person
+           )
+       }
 
     @Composable
     override fun Content() {

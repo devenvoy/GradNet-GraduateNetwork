@@ -10,31 +10,33 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import app.cash.paging.compose.collectAsLazyPagingItems
-import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.composables.Title
+import com.sdjic.gradnet.presentation.helper.MyTab
+import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
 import network.chaintech.sdpcomposemultiplatform.sdp
 
-object HomeTab : Tab {
+object HomeTab : MyTab {
 
     override val options: TabOptions
         @Composable
         get() {
-            val defaultIcon = rememberVectorPainter(Icons.Outlined.Home)
-            val selectedIcon = rememberVectorPainter(Icons.Default.Home)
-
             return remember {
-                TabOptions(
-                    index = 0u,
-                    title = "Home",
-                    icon = selectedIcon
-                )
+                TabOptions(0u, "Home")
             }
+        }
+    override val tabOption: MyTabOptions
+        @Composable get() = remember {
+            MyTabOptions(
+                index = 0u,
+                title = "Home",
+                selectedIcon = Icons.Default.Home,
+                unselectedIcon = Icons.Outlined.Home
+            )
         }
 
     @Composable

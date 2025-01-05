@@ -1,0 +1,19 @@
+package com.sdjic.gradnet.presentation.helper
+
+import androidx.compose.runtime.*
+import kotlinx.coroutines.delay
+import androidx.compose.foundation.pager.PagerState
+
+@Composable
+fun AutoSwipePagerEffect(
+    pagerState: PagerState,
+    durationMillis: Long
+) {
+    LaunchedEffect(pagerState, durationMillis) {
+        while (true) {
+            delay(durationMillis)
+            val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
+            pagerState.animateScrollToPage(nextPage)
+        }
+    }
+}

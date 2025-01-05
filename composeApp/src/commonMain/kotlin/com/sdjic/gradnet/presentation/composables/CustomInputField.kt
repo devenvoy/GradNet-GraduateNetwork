@@ -1,76 +1,91 @@
 package com.sdjic.gradnet.presentation.composables
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.Eye
+import compose.icons.feathericons.EyeOff
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
 @Composable
 fun CustomInputField(
-    fieldTitle: String,
-    textFieldValue: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
-    minHeight: Dp = 46.sdp,
+    fieldTitle: String?= null,
+    textFieldValue: String,
+    onValueChange: (String) -> Unit,
     singleLine: Boolean = true,
-    placeholder: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    isEnable: Boolean = true
+    placeholder: @Composable() (() -> Unit)? = null,
+    trailingIcon: @Composable() (() -> Unit)? = null,
+    suffix: @Composable() (() -> Unit)? = null,
+    prefix: @Composable() (() -> Unit)? = null,
+    supportingText: @Composable() (() -> Unit)? = null,
+    isEnable: Boolean = true,
+    keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+    readOnly: Boolean = false
 ) {
     Column(
-        modifier = Modifier,
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Title(
-            text = fieldTitle,
-            modifier = Modifier.padding(start = 2.sdp),
-            textColor = Color.Black,
-        )
-        TextField(
+        fieldTitle?.let {
+            Title(
+                text = fieldTitle,
+                modifier = Modifier.padding(start = 2.sdp),
+                textColor = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+        OutlinedTextField(
             value = textFieldValue,
             onValueChange = onValueChange,
             shape = RoundedCornerShape(8.sdp),
             trailingIcon = trailingIcon,
             enabled = isEnable,
-            colors = TextFieldDefaults.colors(
-                disabledContainerColor = Color(0xFFF5F5F5),
-                focusedContainerColor = Color(0xFFF5F5F5),
-                unfocusedContainerColor = Color(0xFFF5F5F5),
-                errorContainerColor = Color(0xFFF5F5F5),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+            readOnly = readOnly,
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
             ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(minHeight)
-                .border(width = 1.sdp, color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-                .background(Color.White),
+            suffix = suffix,
+            prefix = prefix,
             singleLine = singleLine,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            textStyle = LocalTextStyle.current.copy(fontSize = 12.ssp),
+            keyboardOptions = keyboardOption.copy(
+                imeAction = ImeAction.Next
+            ),
+            supportingText = supportingText,
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 12.ssp,
+                fontFamily = displayFontFamily()
+            ),
             placeholder = placeholder,
         )
     }
@@ -89,60 +104,114 @@ fun CustomInputPasswordField(
 ) {
     // State to manage password visibility
     var passwordVisible by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
-        modifier = Modifier,
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Title(
             text = fieldTitle,
             modifier = Modifier.padding(start = 2.sdp),
-            textColor = Color.Black,
+            textColor = MaterialTheme.colorScheme.onBackground,
         )
-        TextField(
+        OutlinedTextField(
             value = textFieldValue,
             onValueChange = onValueChange,
             shape = RoundedCornerShape(8.sdp),
             trailingIcon = {
                 if (isPasswordField) {
-                    val visibilityIcon = if (passwordVisible) {
-                        Icons.Default.Visibility
-                    } else {
-                        Icons.Default.VisibilityOff
-                    }
+                    val visibilityIcon =
+                        if (passwordVisible) FeatherIcons.Eye else FeatherIcons.EyeOff
+
                     IconButton(
                         onClick = { passwordVisible = !passwordVisible }
                     ) {
                         Icon(
                             imageVector = visibilityIcon,
                             contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                            tint = Color.Gray
+                            tint = MaterialTheme.colorScheme.onBackground,
                         )
                     }
                 }
             },
             enabled = isEnable,
-            colors = TextFieldDefaults.colors(
-                disabledContainerColor = Color(0xFFF5F5F5),
-                focusedContainerColor = Color(0xFFF5F5F5),
-                unfocusedContainerColor = Color(0xFFF5F5F5),
-                errorContainerColor = Color(0xFFF5F5F5),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(minHeight)
-                .border(width = 1.sdp, color = MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-                .background(Color.White),
+                .height(minHeight),
             singleLine = singleLine,
             keyboardOptions = KeyboardOptions(
-                keyboardType = if (isPasswordField && !passwordVisible) KeyboardType.Password else KeyboardType.Text
+                keyboardType = if (isPasswordField && !passwordVisible) KeyboardType.Password else KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
             ),
             visualTransformation = if (isPasswordField && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-            textStyle = LocalTextStyle.current.copy(fontSize = 12.ssp),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 12.ssp,
+                fontFamily = displayFontFamily()
+            ),
             placeholder = placeholder,
         )
     }
 }
 
+@Composable
+fun CustomInputArea(
+    fieldTitle: String,
+    textFieldValue: String,
+    onValueChange: (String) -> Unit,
+    singleLine: Boolean = false,
+    placeholder: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    suffix: @Composable (() -> Unit)? = null,
+    prefix: @Composable (() -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
+    isEnable: Boolean = true,
+    keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+    height: Dp = 80.sdp
+) {
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Title(
+            text = fieldTitle,
+            modifier = Modifier.padding(start = 2.sdp),
+            textColor = MaterialTheme.colorScheme.onBackground,
+        )
+        OutlinedTextField(
+            value = textFieldValue,
+            onValueChange = onValueChange,
+            shape = RoundedCornerShape(8.sdp),
+            trailingIcon = trailingIcon,
+            enabled = isEnable,
+            modifier = Modifier.fillMaxWidth().height(height),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
+            ),
+            suffix = suffix,
+            prefix = prefix,
+            singleLine = singleLine,
+            keyboardOptions = keyboardOption.copy(
+                imeAction = ImeAction.Next
+            ),
+            supportingText = supportingText,
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 12.ssp,
+                fontFamily = displayFontFamily()
+            ),
+            placeholder = placeholder,
+        )
+    }
+}

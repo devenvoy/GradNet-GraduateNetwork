@@ -1,23 +1,33 @@
 package com.sdjic.gradnet
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
 import com.sdjic.gradnet.di.appModules
-import com.sdjic.gradnet.presentation.screens.demo.TestScreen
+import com.sdjic.gradnet.domain.AppCacheSetting
+import com.sdjic.gradnet.presentation.helper.ConnectivityManager
+import com.sdjic.gradnet.presentation.screens.onboarding.OnBoardingScreen
+import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
+import com.sdjic.gradnet.presentation.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
+import org.koin.compose.getKoin
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    AppTheme {
         KoinApplication(
             application = {
                 modules(appModules)
             }
         ) {
-            Navigator(TestScreen())
+            val keyStore = getKoin().get<AppCacheSetting>()
+            if (keyStore.isLoggedIn) {
+                Navigator(SplashScreen())
+            } else {
+                ConnectivityManager.isConnected // just to call init
+                Navigator(OnBoardingScreen())
+            }
         }
     }
 }

@@ -5,7 +5,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,17 +30,17 @@ fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(14.sdp),
+    shape: Shape = RoundedCornerShape(8.sdp),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         contentColor = Color.White,
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = MaterialTheme.colorScheme.primary,
 
         ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(
-        defaultElevation = 2.sdp
+        defaultElevation = 1.sdp
     ),
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = PaddingValues(vertical = 14.sdp),
+    contentPadding: PaddingValues = PaddingValues(vertical = 10.sdp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -57,26 +63,26 @@ fun SecondaryOutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(10.sdp),
-    colors: ButtonColors = ButtonDefaults.buttonColors(
-        contentColor = MaterialTheme.colorScheme.primaryContainer,
-        containerColor = Color.White,
+    shape: Shape = RoundedCornerShape(8.sdp),
+    colors: ButtonColors = ButtonDefaults.outlinedButtonColors(
+        contentColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.background
     ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(defaultElevation = 1.dp),
     border: BorderStroke? = BorderStroke(1.sdp, MaterialTheme.colorScheme.primary),
-    contentPadding: PaddingValues = PaddingValues(vertical = 14.sdp),
+    contentPadding: PaddingValues = PaddingValues(vertical = 10.sdp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit = {
         Text(
             text = stringResource(Res.string.create_account),
             style = TextStyle(
-                fontSize = 16.ssp,
+                fontSize = 14.ssp,
                 fontWeight = FontWeight.SemiBold
             )
         )
     }
 ) {
-    Button(
+    OutlinedButton(
         modifier = modifier,
         onClick = onClick,
         enabled = enabled,

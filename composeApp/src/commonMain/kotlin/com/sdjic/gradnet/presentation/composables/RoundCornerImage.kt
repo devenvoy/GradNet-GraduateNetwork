@@ -14,9 +14,8 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import network.chaintech.sdpcomposemultiplatform.sdp
 
-
 @Composable
-fun RoundAppIconImage(
+fun RoundedCornerImage(
     modifier: Modifier = Modifier,
     context:PlatformContext,
     data: Any?,

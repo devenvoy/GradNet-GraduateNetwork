@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
@@ -98,7 +99,19 @@ fun ProfileScreen() {
             ) {
                 Spacer(modifier = Modifier.height(100.sdp))
                 TopScrollingContent(scrollState)
-                BottomScrollingContent()
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(8.sdp)
+                ) {
+
+                    EditButtonRow(onEditClick = {}, onShareClick = {})
+                    //        SocialRow()
+                    AboutMeSection()
+                    InterestsSection()
+                    LanguagesSection()
+                    MoreInfoSection()
+                }
             }
         }
     }
@@ -108,8 +121,8 @@ fun ProfileScreen() {
 @Composable
 fun TopAppBarView(scroll: Float) {
     AnimatedVisibility (scroll > initialImageFloat + 350,
-        enter = fadeIn() + slideInVertically(),
-        exit = fadeOut() + slideOutVertically()
+        enter = fadeIn() + expandVertically (),
+        exit = fadeOut() + shrinkVertically()
     ) {
         TopAppBar(
             title = { Text(text = name) },

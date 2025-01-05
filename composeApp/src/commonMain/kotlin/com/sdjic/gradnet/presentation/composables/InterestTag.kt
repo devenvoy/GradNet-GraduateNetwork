@@ -49,7 +49,7 @@ object TagDefaults {
     @Composable
     fun tagColors(
         backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .4f),
-        contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
+        contentColor: Color = MaterialTheme.colorScheme.primary
     ): TagColors = DefaultTagColors(backgroundColor = backgroundColor, contentColor = contentColor)
 }
 

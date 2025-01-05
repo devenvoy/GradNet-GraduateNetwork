@@ -15,7 +15,7 @@ import network.chaintech.sdpcomposemultiplatform.sdp
 
 @Composable
 fun EditButtonRow(onEditClick: () -> Unit, onShareClick: () -> Unit) {
-    Row(modifier = Modifier.padding(vertical = 8.sdp,horizontal = 10.sdp).fillMaxWidth(),
+    Row(modifier = Modifier.padding(8.sdp).fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(20.sdp)) {
         OutlinedButton(
             shape = RoundedCornerShape(4.sdp),

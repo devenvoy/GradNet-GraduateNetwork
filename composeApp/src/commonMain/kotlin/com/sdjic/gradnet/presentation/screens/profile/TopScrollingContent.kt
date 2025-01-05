@@ -4,6 +4,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -15,12 +17,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.LocalPlatformContext
+import com.sdjic.gradnet.presentation.composables.CircularProfileImage
+import com.sdjic.gradnet.presentation.composables.SText
+import com.sdjic.gradnet.presentation.core.DummyDpImage
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_alumni1
+import network.chaintech.sdpcomposemultiplatform.sdp
+import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -30,17 +40,19 @@ fun TopScrollingContent(scrollState: ScrollState) {
         AnimatedImage(scroll = scrollState.value.toFloat())
         Column(
             modifier = Modifier
-                .padding(start = 8.dp, top = 48.dp)
+                .padding(start = 8.sdp, top = 16.sdp)
                 .alpha(animateFloatAsState(if (visibilityChangeFloat) 0f else 1f).value)
         ) {
-            Text(
+            SText(
                 text = name,
-                style = MaterialTheme.typography.headlineSmall.copy(fontSize = 18.sp),
-                modifier = Modifier.padding(bottom = 4.dp)
+                fontSize = 12.ssp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 2.sdp)
             )
-            Text(
+            SText(
                 text = "Android developer",
-                style = MaterialTheme.typography.labelMedium
+                fontSize = 10.ssp,
+                fontWeight = FontWeight(400)
             )
         }
     }
@@ -48,14 +60,14 @@ fun TopScrollingContent(scrollState: ScrollState) {
 
 @Composable
 fun AnimatedImage(scroll: Float) {
-    val dynamicAnimationSizeValue = (initialImageFloat - scroll).coerceIn(36f, initialImageFloat)
-    Image(
-        painter = painterResource(Res.drawable.ic_alumni1),
-        contentScale = ContentScale.Crop,
-        contentDescription = null,
+    val dynamicAnimationSizeValue = (initialImageFloat - scroll).coerceIn(26f, initialImageFloat)
+    val platformContext = LocalPlatformContext.current
+    CircularProfileImage(
         modifier = Modifier
-            .padding(start = 16.dp)
-            .size(animateDpAsState(Dp(dynamicAnimationSizeValue)).value)
-            .clip(CircleShape)
+            .padding(start = 12.sdp)
+            .size(animateDpAsState(Dp(dynamicAnimationSizeValue)).value),
+        context = platformContext,
+        data = DummyDpImage,
+        imageSize = 80.sdp
     )
 }

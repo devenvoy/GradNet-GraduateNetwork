@@ -25,6 +25,7 @@ import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.HomeTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
+import com.sdjic.gradnet.presentation.theme.AppTheme
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -38,22 +39,24 @@ class HomeScreen : Screen {
 
     @Composable
     fun HomeScreenContent() {
-        TabNavigator(ProfileTab, tabDisposable = {
-            TabDisposable(
-                navigator = it, tabs = listOf(HomeTab, ProfileTab)
-            )
-        }) { tabNavigator ->
-            Scaffold(bottomBar = {
-                NavigationBar {
-                    TabNavigationItem(HomeTab)
-                    TabNavigationItem(ProfileTab)
-                }
-            }) { pVal ->
-                Box(
-                    modifier = Modifier.padding(bottom = pVal.calculateBottomPadding())
-                        .fillMaxSize()
-                ) {
-                    CurrentTab()
+        AppTheme {
+            TabNavigator(ProfileTab, tabDisposable = {
+                TabDisposable(
+                    navigator = it, tabs = listOf(HomeTab, ProfileTab)
+                )
+            }) { tabNavigator ->
+                Scaffold(bottomBar = {
+                    NavigationBar {
+                        TabNavigationItem(HomeTab)
+                        TabNavigationItem(ProfileTab)
+                    }
+                }) { pVal ->
+                    Box(
+                        modifier = Modifier.padding(bottom = pVal.calculateBottomPadding())
+                            .fillMaxSize()
+                    ) {
+                        CurrentTab()
+                    }
                 }
             }
         }

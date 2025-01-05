@@ -16,23 +16,20 @@ import network.chaintech.sdpcomposemultiplatform.ssp
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun InterestsSection() {
+fun LanguagesSection() {
     SText(
-        text = "Skills",
+        text = "Languages",
         fontSize = 14.ssp,
         fontWeight = FontWeight.W600,
         textColor = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(start = 6.sdp, top = 12.sdp)
     )
     FlowRow(modifier = Modifier.padding(6.sdp)) {
-        listOf("Supply Chain Management",
-            "Accounting",
-            "Financial Analysis",
-            "Budgeting",
-            "Auditing",
-            "Tax Preparation",
-            "Human Resources Management",
-            "Recruitment",).forEach {
+        listOf( "Hindi",
+            "English",
+            "Gujarati",
+            "Bengali",
+            "Telugu",).forEach {
             InterestTag(it)
         }
     }

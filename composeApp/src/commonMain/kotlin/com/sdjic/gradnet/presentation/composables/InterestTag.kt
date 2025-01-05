@@ -48,8 +48,8 @@ private class DefaultTagColors(
 object TagDefaults {
     @Composable
     fun tagColors(
-        backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .2f),
-        contentColor: Color = MaterialTheme.colorScheme.primary
+        backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .4f),
+        contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
     ): TagColors = DefaultTagColors(backgroundColor = backgroundColor, contentColor = contentColor)
 }
 

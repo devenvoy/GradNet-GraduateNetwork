@@ -63,7 +63,7 @@ fun DropDownTextField(
             )
 
             DropdownMenu(
-                modifier = Modifier.fillMaxWidth(0.8f).heightIn(max = 300.sdp),
+                modifier = Modifier.fillMaxWidth(0.86f).heightIn(max = 300.sdp),
                 expanded = expanded.value,
                 onDismissRequest = onDismissReq,
             ) {

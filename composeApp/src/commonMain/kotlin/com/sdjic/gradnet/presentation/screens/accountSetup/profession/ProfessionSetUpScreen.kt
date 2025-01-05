@@ -120,8 +120,8 @@ fun ProfessionSetUpScreen(
                 Column(
                     modifier = Modifier.padding(10.sdp),
                 ) {
-                    Title(text = "Add Url", size = 16.ssp)
-                    CustomInputField(fieldTitle = "",
+                    Title(text = "Add Url", size = 16.ssp, modifier = Modifier.padding(8.sdp))
+                    CustomInputField(
                         textFieldValue = selectedText,
                         onValueChange = { selectedText = it },
                         placeholder = { SText(text = "enter url") },
@@ -132,7 +132,7 @@ fun ProfessionSetUpScreen(
                             )
                         }
                     )
-                    Row(modifier = Modifier.align(Alignment.End)) {
+                    Row(modifier = Modifier.padding(top = 10.sdp).align(Alignment.End)) {
                         TextButton(onClick = {
                             onAction(
                                 ProfessionScreenAction.OnAddOtherUrlDialogStateChange(false)
@@ -144,7 +144,13 @@ fun ProfessionSetUpScreen(
                             onAction(
                                 ProfessionScreenAction.OnAddOtherUrlDialogStateChange(false)
                             )
-                        }) { SText("Ok", fontSize = 12.ssp) }
+                        }) {
+                            SText(
+                                "Ok",
+                                fontSize = 12.ssp,
+                                textColor = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }
@@ -380,7 +386,7 @@ fun AddExperienceModal(
         ) {
             SecondaryOutlinedButton(
                 modifier = Modifier.padding(10.sdp).weight(1f), onClick = onCancel
-            ) { Title(text = "Cancel") }
+            ) { Title(text = "Cancel", textColor = MaterialTheme.colorScheme.primary) }
             PrimaryButton(
                 modifier = Modifier.padding(10.sdp).weight(1f), onClick = {
                     onSave(expModel)

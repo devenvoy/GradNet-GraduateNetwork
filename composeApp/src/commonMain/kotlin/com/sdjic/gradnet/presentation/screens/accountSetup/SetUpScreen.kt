@@ -17,10 +17,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -177,7 +176,7 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
         onClick: (Int) -> Unit,
         tabs: List<TabItem>
     ) {
-        PrimaryTabRow(
+        SecondaryTabRow(
             selectedTabIndex = pagerState.currentPage,
             containerColor = MaterialTheme.colorScheme.background,
 //            indicator = { FancyAnimatedIndicatorWithModifier(state) }

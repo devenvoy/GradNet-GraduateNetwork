@@ -32,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -108,7 +107,7 @@ fun EducationSetUpScreen(
             onDismissRequest = {}
         ) {
             Surface(
-                modifier = Modifier.padding(20.sdp),
+                modifier = Modifier.padding(10.sdp),
                 shape = RoundedCornerShape(12.sdp)
             ) {
                 val isAssertExpanded = remember { mutableStateOf(false) }
@@ -116,7 +115,11 @@ fun EducationSetUpScreen(
                 Column(
                     modifier = Modifier.padding(10.sdp),
                 ) {
-                    Title(text = "Select Language", size = 16.ssp)
+                    Title(
+                        text = "Select Language",
+                        size = 16.ssp,
+                        modifier = Modifier.padding(8.sdp)
+                    )
                     DropDownTextField(
                         modifier = Modifier.padding(vertical = 10.sdp),
                         hintText = "Select language",
@@ -133,9 +136,7 @@ fun EducationSetUpScreen(
                             onAction(
                                 EducationScreenAction.OnLanguageDialogStateChange(false)
                             )
-                        }) {
-                            Text("Cancel")
-                        }
+                        }) { SText("Cancel", fontSize = 12.ssp) }
                         TextButton(onClick = {
                             onAction(EducationScreenAction.OnAddLanguage(selectedText))
                             selectedText = ""
@@ -144,7 +145,11 @@ fun EducationSetUpScreen(
                                 EducationScreenAction.OnLanguageDialogStateChange(false)
                             )
                         }) {
-                            Text("Ok")
+                            SText(
+                                "Ok",
+                                fontSize = 12.ssp,
+                                textColor = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }
@@ -158,7 +163,7 @@ fun EducationSetUpScreen(
             onDismissRequest = {}
         ) {
             Surface(
-                modifier = Modifier.padding(20.sdp),
+                modifier = Modifier.padding(10.sdp),
                 shape = RoundedCornerShape(12.sdp)
             ) {
                 val isAssertExpanded = remember { mutableStateOf(false) }
@@ -166,10 +171,10 @@ fun EducationSetUpScreen(
                 Column(
                     modifier = Modifier.padding(10.sdp),
                 ) {
-                    Title(text = "Select Language", size = 16.ssp)
+                    Title(text = "Select Skill", size = 16.ssp, modifier = Modifier.padding(8.sdp))
                     DropDownTextField(
                         modifier = Modifier.padding(vertical = 10.sdp),
-                        hintText = "Select language",
+                        hintText = "Select Skill",
                         options = SkillList.filter { it !in educationState.skills }.sorted(),
                         onClick = { isAssertExpanded.value = it },
                         expanded = isAssertExpanded,
@@ -183,7 +188,7 @@ fun EducationSetUpScreen(
                             onAction(
                                 EducationScreenAction.OnSkillDialogStateChange(false)
                             )
-                        }) { Text("Cancel") }
+                        }) { SText("Cancel", fontSize = 12.ssp) }
                         TextButton(onClick = {
                             onAction(EducationScreenAction.OnAddSkill(selectedText))
                             selectedText = ""
@@ -191,7 +196,13 @@ fun EducationSetUpScreen(
                             onAction(
                                 EducationScreenAction.OnSkillDialogStateChange(false)
                             )
-                        }) { Text("Ok") }
+                        }) {
+                            SText(
+                                "Ok",
+                                fontSize = 12.ssp,
+                                textColor = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }
@@ -429,7 +440,7 @@ fun AddEducationModal(
         ) {
             SecondaryOutlinedButton(
                 modifier = Modifier.padding(10.sdp).weight(1f), onClick = onCancel
-            ) { Title(text = "Cancel") }
+            ) { Title(text = "Cancel", textColor = MaterialTheme.colorScheme.primary) }
             PrimaryButton(
                 modifier = Modifier.padding(10.sdp).weight(1f),
                 onClick = {

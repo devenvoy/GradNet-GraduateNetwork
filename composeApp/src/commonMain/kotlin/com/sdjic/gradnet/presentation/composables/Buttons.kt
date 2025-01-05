@@ -65,7 +65,7 @@ fun SecondaryOutlinedButton(
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(8.sdp),
     colors: ButtonColors = ButtonDefaults.outlinedButtonColors(
-        contentColor = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.primary,
         containerColor = MaterialTheme.colorScheme.background
     ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(defaultElevation = 1.dp),

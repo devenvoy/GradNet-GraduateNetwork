@@ -38,7 +38,7 @@ import network.chaintech.sdpcomposemultiplatform.ssp
 
 @Composable
 fun CustomInputField(
-    fieldTitle: String,
+    fieldTitle: String?= null,
     textFieldValue: String,
     onValueChange: (String) -> Unit,
     singleLine: Boolean = true,
@@ -55,11 +55,13 @@ fun CustomInputField(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Title(
-            text = fieldTitle,
-            modifier = Modifier.padding(start = 2.sdp),
-            textColor = MaterialTheme.colorScheme.onBackground,
-        )
+        fieldTitle?.let {
+            Title(
+                text = fieldTitle,
+                modifier = Modifier.padding(start = 2.sdp),
+                textColor = MaterialTheme.colorScheme.onBackground,
+            )
+        }
         OutlinedTextField(
             value = textFieldValue,
             onValueChange = onValueChange,
@@ -69,8 +71,9 @@ fun CustomInputField(
             readOnly = readOnly,
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-                unfocusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
             ),
             suffix = suffix,
             prefix = prefix,
@@ -134,8 +137,9 @@ fun CustomInputPasswordField(
             },
             enabled = isEnable,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-                unfocusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -192,8 +196,9 @@ fun CustomInputArea(
             enabled = isEnable,
             modifier = Modifier.fillMaxWidth().height(height),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-                unfocusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
             ),
             suffix = suffix,
             prefix = prefix,

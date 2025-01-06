@@ -1,7 +1,14 @@
 package com.sdjic.gradnet
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.navigator.Navigator
+import com.mmk.kmpauth.google.GoogleAuthCredentials
+import com.mmk.kmpauth.google.GoogleAuthProvider
 import com.sdjic.gradnet.di.appModules
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.helper.ConnectivityManager
@@ -16,6 +23,16 @@ import org.koin.compose.getKoin
 @Preview
 fun App() {
     AppTheme {
+
+        var authReady by remember{ mutableStateOf(false) }
+
+        LaunchedEffect(Unit){
+            GoogleAuthProvider.create(credentials =
+            GoogleAuthCredentials("352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com"
+            ))
+            authReady = true
+        }
+
         KoinApplication(
             application = {
                 modules(appModules)
@@ -26,7 +43,9 @@ fun App() {
                 Navigator(SplashScreen())
             } else {
                 ConnectivityManager.isConnected // just to call init
-                Navigator(OnBoardingScreen())
+                if(authReady){
+                    Navigator(OnBoardingScreen())
+                }
             }
         }
     }

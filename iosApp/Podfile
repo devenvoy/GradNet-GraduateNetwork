@@ -1,0 +1,12 @@
+# Uncomment the next line to define a global platform for your project
+platform :ios, '15.0'
+# source 'https://github.com/CocoaPods/Specs.git' # CocoaPods public specs
+# source 'https://github.com/Kotlin/kotlin-cocoapods-spec.git' # Kotlin Multiplatform specs
+
+target 'iosApp' do
+  # Include the shared Kotlin/Native module
+#   pod 'MyCocoaPod', :path => '../composeApp'
+  use_frameworks!
+  # Add Google Sign-In dependency
+  pod 'GoogleSignIn'
+end

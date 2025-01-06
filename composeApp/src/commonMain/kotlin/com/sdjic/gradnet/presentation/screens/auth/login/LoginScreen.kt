@@ -30,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.mmk.kmpauth.google.GoogleButtonUiContainer
+import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 import com.sdjic.gradnet.presentation.composables.CustomInputField
 import com.sdjic.gradnet.presentation.composables.CustomInputPasswordField
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
@@ -178,23 +180,17 @@ class LoginScreen : Screen {
                     fontSize = 12.ssp
                 )
             }
-            Image(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(onClick = {
-                        /* val options =
-                             GoogleSignInOptions
-                                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                 .requestIdToken(App.instance.resources.getString(R.string.web_api_key))
-                                 .requestEmail()
-                                 .build()
-                         val gso = GoogleSignIn.getClient(App.instance, options)
-                         gso.signOut()
-                         launcher.launch(gso.signInIntent)*/
-                    }),
-                painter = painterResource(Res.drawable.btn_google_sing_in),
-                contentDescription = "google sign in",
-            )
+
+            //Google Sign-In with Custom Button (only one tap sign-in functionality)
+            GoogleButtonUiContainer(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onGoogleSignInResult = { googleUser ->
+                val idToken = googleUser?.idToken // Send this idToken to your backend to verify
+                println("devansh $idToken")
+            }) {
+                GoogleSignInButton(onClick= {this.onClick()})
+            }
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally

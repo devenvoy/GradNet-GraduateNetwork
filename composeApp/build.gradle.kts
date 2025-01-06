@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.buildConfig)
+
+//    alias(libs.plugins.kotlinCocoapods)
 }
 
 kotlin {
@@ -30,7 +32,6 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
-            linkerOpts.add("-framework AVFoundation")
         }
     }
 
@@ -116,6 +117,10 @@ kotlin {
 
             implementation("network.chaintech:cmp-image-pick-n-crop:1.0.8")
             implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
+
+            implementation("io.github.mirzemehdi:kmpauth-google:2.3.0-beta02") //Google One Tap Sign-In
+//            implementation("io.github.mirzemehdi:kmpauth-firebase:2.3.0-beta02") //Integrated Authentications with Firebase
+            implementation("io.github.mirzemehdi:kmpauth-uihelper:2.3.0-beta02") //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
 
             // for network status
             implementation(libs.connectivity.core)

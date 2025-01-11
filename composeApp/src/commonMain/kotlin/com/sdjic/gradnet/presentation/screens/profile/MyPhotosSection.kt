@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_alumni1
+import gradnet_graduatenetwork.composeapp.generated.resources.ic_alumni
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_degree
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_faculty1
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_organization
@@ -40,7 +40,7 @@ fun MyPhotosSection() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            painter = painterResource(Res.drawable.ic_alumni1),
+            painter = painterResource(Res.drawable.ic_alumni),
             contentDescription = null,
             modifier = imageModifier,
             contentScale = ContentScale.Crop

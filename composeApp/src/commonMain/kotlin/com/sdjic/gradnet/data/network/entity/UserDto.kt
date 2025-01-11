@@ -12,8 +12,6 @@ data class UserDto(
     val email: String?,
     @SerialName("isVerified")
     val isVerified: Boolean?,
-    @SerialName("phoneNo")
-    val phoneNo: String?,
     @SerialName("type")
     val type: String?,
     @SerialName("updatedAt")

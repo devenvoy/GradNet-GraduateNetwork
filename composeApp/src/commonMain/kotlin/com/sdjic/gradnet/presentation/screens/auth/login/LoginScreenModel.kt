@@ -4,6 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import co.touchlab.kermit.Message
+import com.mmk.kmpauth.google.GoogleUser
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting
@@ -47,6 +49,36 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
             }else{
                 _loginState.value = UiState.Error("Not Connected to Internet")
             }
+        }
+    }
+
+    fun  loginWithGoogle(googleUser: GoogleUser) {
+        screenModelScope.launch {
+            _loginState.value = UiState.Loading
+            // Send this idToken to your backend to verify
+            val idToken = googleUser.idToken
+            if(ConnectivityManager.isConnected){
+                val result = authRepository.login(googleUser.email!!,googleUser.email!!.reversed())
+                result.onSuccess {
+                    prefs.accessToken = it.value?.accessToken.toString()
+                    prefs.userId  =it.value?.userDto?.userId.toString()
+                    _loginState.value = UiState.Success(it)
+                }.onError {
+                    _loginState.value = UiState.Error(it.detail)
+                }
+            }else{
+                _loginState.value = UiState.Error("Not Connected to Internet")
+            }
+        }
+    }
+
+    fun showErrorState(message: String){
+        screenModelScope.launch {
+            if(_loginState.value != UiState.Loading){
+                _loginState.value = UiState.Loading
+                delay(1000L)
+            }
+            _loginState.value = UiState.Error(message)
         }
     }
 

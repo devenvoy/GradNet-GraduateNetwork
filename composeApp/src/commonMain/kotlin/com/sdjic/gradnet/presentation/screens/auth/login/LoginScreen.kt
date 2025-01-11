@@ -26,7 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -43,18 +47,22 @@ import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Mail
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.btn_google_sing_in
+import gradnet_graduatenetwork.composeapp.generated.resources.create_account
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import multiplatform.network.cmptoast.showToast
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 class LoginScreen : Screen {
     @Composable
@@ -63,7 +71,7 @@ class LoginScreen : Screen {
         val loginScreenModel = koinScreenModel<LoginScreenModel>()
         LoginScreenContent(
             loginScreenModel = loginScreenModel,
-            onLoginSuccess = {navigator.replace(HomeScreen())},
+            onLoginSuccess = { navigator.replace(HomeScreen()) },
             navigateToSignUp = { navigator.replace(SignUpScreen(true)) },
             navigateToForgotPasswordScreen = {}
         )
@@ -181,14 +189,16 @@ class LoginScreen : Screen {
                 )
             }
 
-            //Google Sign-In with Custom Button (only one tap sign-in functionality)
             GoogleButtonUiContainer(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 onGoogleSignInResult = { googleUser ->
-                val idToken = googleUser?.idToken // Send this idToken to your backend to verify
-                println("devansh $idToken")
-            }) {
-                GoogleSignInButton(onClick= {this.onClick()})
+                    if (googleUser != null) {
+                        viewModel.loginWithGoogle(googleUser)
+                    } else {
+                        viewModel.showErrorState("Login Failed")
+                    }
+                }) {
+                GoogleSignInButton(onClick = { this.onClick() })
             }
 
             Column(
@@ -196,17 +206,31 @@ class LoginScreen : Screen {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(20.sdp))
-                SText(
-                    text = "Don't have an account yet?",
-                    fontSize = 12.ssp,
-                    fontWeight = FontWeight.W400
-                )
-                Spacer(modifier = Modifier.height(10.sdp))
-                SecondaryOutlinedButton(
-                    modifier = Modifier
-                        .padding(horizontal = 10.sdp)
-                        .fillMaxWidth(),
-                    onClick = { navigateToSignUp() }
+                Text(
+                    modifier = Modifier.clickable(onClick = { navigateToSignUp() }),
+                    text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontSize = 12.ssp,
+                            fontWeight = FontWeight.W400,
+                            fontFamily = displayFontFamily()
+                        )
+                    ) {
+                        append("Don't have an account yet?")
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color.Blue,
+                            fontSize = 12.ssp,
+                            fontWeight = FontWeight.W400,
+                            fontFamily = displayFontFamily(),
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    ){
+                        append(stringResource(Res.string.create_account))
+                    }
+                }
                 )
             }
         }

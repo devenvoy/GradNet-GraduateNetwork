@@ -1,5 +1,6 @@
 package com.sdjic.gradnet.presentation.screens.auth.register
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -10,32 +11,45 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.internal.BackHandler
+import com.mmk.kmpauth.google.GoogleButtonUiContainer
+import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 import com.sdjic.gradnet.presentation.composables.*
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.Mail
 import compose.icons.feathericons.Phone
 import compose.icons.feathericons.User
+import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.create_account
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
+import org.jetbrains.compose.resources.stringResource
 
 class SignUpScreen(
     private val showNavigatorIcon: Boolean = false
@@ -59,20 +73,16 @@ class SignUpScreen(
                 onBackPressed = { navigator.replace(LoginScreen()) },
                 showNavigatorIcon = showNavigatorIcon
             )
-            UiStateHandler(
-                uiState = signUpScreenModel.signUpState.collectAsState().value,
+            UiStateHandler(uiState = signUpScreenModel.signUpState.collectAsState().value,
                 onErrorShowed = {},
-                content = {navigator.replace(HomeScreen())}
-            )
+                content = { navigator.replace(HomeScreen()) })
         }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun SignUpScreenContent(
-        viewModel: SignUpScreenModel,
-        onBackPressed: () -> Unit,
-        showNavigatorIcon: Boolean
+        viewModel: SignUpScreenModel, onBackPressed: () -> Unit, showNavigatorIcon: Boolean
     ) {
 
         val keyboardController = LocalSoftwareKeyboardController.current
@@ -80,41 +90,88 @@ class SignUpScreen(
         val scrollBehavior =
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-        Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            topBar = {
-                LargeTopAppBar(
-                    colors = TopAppBarDefaults.largeTopAppBarColors(
-                        scrolledContainerColor = MaterialTheme.colorScheme.background,
-                        containerColor = MaterialTheme.colorScheme.background
-                    ),
-                    scrollBehavior = scrollBehavior,
-                    title = {
+        val dialogState by viewModel.googleProcessDialog.collectAsState()
+
+        val selectedUserRole by viewModel.selectedUserRole.collectAsState()
+
+        if (dialogState) {
+            BasicAlertDialog(properties = DialogProperties(
+                usePlatformDefaultWidth = false, dismissOnClickOutside = false
+            ), onDismissRequest = {
+                viewModel.googleUser.value = null
+                viewModel.changeGoogleDialogState(false)
+            }) {
+                Surface(
+                    modifier = Modifier.padding(10.sdp), shape = MaterialTheme.shapes.medium
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(10.sdp)) {
+
                         Title(
-                            text = "Create free account",
-                            size = if (scrollBehavior.state.collapsedFraction == 1f) 16.ssp else 22.ssp
+                            modifier = Modifier.padding(10.sdp),
+                            size = 16.ssp,
+                            text = "Select account type"
                         )
-                    },
-                    navigationIcon = {
-                        if(showNavigatorIcon){
-                            IconButton(onClick = onBackPressed) {
-                                Icon(
-                                    imageVector = FeatherIcons.ArrowLeft,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
+
+                        RoleSelectionGrid(
+                            userRoles = viewModel.userRoles.value,
+                            onClick = { viewModel.onUserRoleSelected(it) },
+                            selectedUserRole = selectedUserRole
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 10.sdp),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            SecondaryOutlinedButton(onClick = {
+                                viewModel.googleUser.value = null
+                                viewModel.changeGoogleDialogState(false)
+                            }) {
+                                SText(
+                                    text = "Cancel",
+                                    modifier = Modifier.padding(horizontal = 10.sdp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(20.sdp))
+                            PrimaryButton(onClick = {
+                                viewModel.signUpWithGoogle()
+                                viewModel.changeGoogleDialogState(false)
+                            }) {
+                                SText(
+                                    modifier = Modifier.padding(horizontal = 10.sdp),
+                                    text = "Create account",
+                                    textColor = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
                         }
                     }
-                )
+                }
             }
-        ) { padding ->
+        }
+
+        Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
+            LargeTopAppBar(colors = TopAppBarDefaults.largeTopAppBarColors(
+                scrolledContainerColor = MaterialTheme.colorScheme.background,
+                containerColor = MaterialTheme.colorScheme.background
+            ), scrollBehavior = scrollBehavior, title = {
+                Title(
+                    text = "Create account",
+                    size = if (scrollBehavior.state.collapsedFraction == 1f) 16.ssp else 22.ssp
+                )
+            }, navigationIcon = {
+                if (showNavigatorIcon) {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(
+                            imageVector = FeatherIcons.ArrowLeft,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            })
+        }) { padding ->
             Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 10.sdp),
+                modifier = Modifier.padding(padding).fillMaxSize()
+                    .verticalScroll(rememberScrollState()).padding(horizontal = 10.sdp),
                 verticalArrangement = Arrangement.spacedBy(10.sdp)
             ) {
 
@@ -145,7 +202,7 @@ class SignUpScreen(
                     },
                 )
 
-                CustomInputField(
+                /*CustomInputField(
                     fieldTitle = "Phone number",
                     textFieldValue = viewModel.phone.collectAsState().value,
                     onValueChange = { s -> viewModel.onPhoneChange(s) },
@@ -161,7 +218,7 @@ class SignUpScreen(
                         Title(text = "+91 ")
                     },
                     keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Phone)
-                )
+                )*/
 
                 CustomInputPasswordField(
                     fieldTitle = "Password",
@@ -172,42 +229,61 @@ class SignUpScreen(
                 )
 
                 Title(
-                    modifier = Modifier.padding(top = 10.sdp),
-                    text = "Select account type"
+                    modifier = Modifier.padding(top = 10.sdp), text = "Select account type"
                 )
 
                 RoleSelectionGrid(
                     userRoles = viewModel.userRoles.value,
                     onClick = { viewModel.onUserRoleSelected(it) },
-                    selectedUserRole = viewModel.selectedUserRole.collectAsState().value
+                    selectedUserRole = selectedUserRole
                 )
 
                 PrimaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.sdp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 20.sdp),
                     onClick = {
                         keyboardController?.hide()
                         viewModel.signUp()
                     },
                 ) {
                     Text(
-                        text = "Register",
-                        style = TextStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.ssp
+                        text = "Register", style = TextStyle(
+                            fontWeight = FontWeight.SemiBold, fontSize = 16.ssp
                         )
                     )
                 }
-                TextButton(
-                    modifier = Modifier.align(Alignment.End),
-                    onClick = { onBackPressed() }
-                ) {
-                    Text(
-                        text = "Already have an account? Sign in",
-                        style = TextStyle(fontWeight = W400)
-                    )
+
+                GoogleButtonUiContainer(modifier = Modifier.padding(vertical = 10.sdp)
+                    .align(Alignment.CenterHorizontally), onGoogleSignInResult = { googleUser ->
+                    viewModel.googleUser.value = googleUser
+                    viewModel.changeGoogleDialogState(true)
+                }) {
+                    GoogleSignInButton(onClick = { this.onClick() }, text = "Sign up with google")
                 }
+
+                Text(modifier = Modifier.padding(8.sdp).align(Alignment.End)
+                    .clickable(onClick = { onBackPressed() }), text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontSize = 12.ssp,
+                            fontWeight = W400,
+                            fontFamily = displayFontFamily()
+                        )
+                    ) {
+                        append("Already have an account?")
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color.Blue,
+                            fontSize = 12.ssp,
+                            fontWeight = W400,
+                            fontFamily = displayFontFamily(),
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    ) {
+                        append("Sign In")
+                    }
+                })
             }
         }
     }
@@ -216,7 +292,7 @@ class SignUpScreen(
     fun RoleSelectionGrid(
         userRoles: List<UserRole>,
         onClick: (UserRole) -> Unit,
-        selectedUserRole: UserRole,
+        selectedUserRole: UserRole?,
     ) {
         LazyVerticalGrid(
             modifier = Modifier.heightIn(max = 100.sdp),

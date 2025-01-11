@@ -10,8 +10,6 @@ data class SignUpRequest(
     val email: String?,
     @SerialName("password")
     val password: String?,
-    @SerialName("phone")
-    val phone: String?,
     @SerialName("userType")
     val userType: String?,
     @SerialName("username")

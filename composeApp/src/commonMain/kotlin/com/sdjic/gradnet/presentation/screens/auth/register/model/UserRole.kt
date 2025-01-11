@@ -11,9 +11,9 @@ sealed class UserRole(
     val name: String,
     val icon: DrawableResource
 ) {
-    data object Alumni : UserRole(id = 1, name = "Alumni", icon = Res.drawable.ic_alumni1)
-    data object Faculty : UserRole(id = 2, name = "Faculty", icon = Res.drawable.ic_faculty1)
-    data object Organization : UserRole(id = 3, name = "Organization", icon = Res.drawable.ic_organization)
+    data object Alumni : UserRole(id = 1, name = "ALUMNI", icon = Res.drawable.ic_alumni1)
+    data object Faculty : UserRole(id = 2, name = "FACULTY", icon = Res.drawable.ic_faculty1)
+    data object Organization : UserRole(id = 3, name = "ORGANIZATION", icon = Res.drawable.ic_organization)
 }
 
 fun getUserRoles(): List<UserRole> = listOf(

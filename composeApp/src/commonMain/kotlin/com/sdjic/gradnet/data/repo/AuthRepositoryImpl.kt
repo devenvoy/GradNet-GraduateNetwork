@@ -20,8 +20,8 @@ import kotlin.math.sign
 
 class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(httpClient) {
 
-    private val loginPath = "/login"
-    private val signUpPath = "/signup"
+    private val loginPath = "/auth/login"
+    private val signUpPath = "/auth/register"
 
     override suspend fun login(
         email: String,

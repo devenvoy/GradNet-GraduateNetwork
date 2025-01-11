@@ -39,7 +39,7 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
                 val result = authRepository.login(email.value.text, password.value.text)
                 result.onSuccess {
                     prefs.accessToken = it.value?.accessToken.toString()
-                    prefs.userId  =it.value?.userDto?.id.toString()
+                    prefs.userId  =it.value?.userDto?.userId.toString()
                     _loginState.value = UiState.Success(it)
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)

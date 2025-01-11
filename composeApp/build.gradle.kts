@@ -174,7 +174,7 @@ buildConfig {
     buildConfigField("APP_NAME", project.name)
     buildConfigField("APP_VERSION_CODE", project.version.toString())
     buildConfigField("APP_VERSION_NAME", project.version.toString())
-    buildConfigField("BASE_URL", "https://grednet-production-3341.up.railway.app")
+    buildConfigField("BASE_URL", "https://gradnet-server-app.onrender.com")
 }
 
 ksp {

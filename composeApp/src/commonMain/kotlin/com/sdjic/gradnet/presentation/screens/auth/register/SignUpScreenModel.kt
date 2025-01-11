@@ -4,7 +4,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.data.network.entity.ServerResponse
 import com.sdjic.gradnet.data.network.entity.SignUpRequest
+import com.sdjic.gradnet.data.network.entity.SignUpResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting
@@ -76,17 +78,17 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             }
             val result = authRepository.signUp(
                 SignUpRequest(
-                    name = _name.value,
+                    username = _name.value,
                     email = _email.value,
-                    phoneNo = _phone.value,
+                    phone = _phone.value,
                     password = _password.value.text,
-                    address = "  "
+                    userType = _selectedUserRole.value.name
                 )
             )
             if (ConnectivityManager.isConnected) {
-                result.onSuccess {
-//                    prefs.accessToken = it.value?.accessToken.toString()
-                    prefs.userId = it.value?.userId.toString()
+                result.onSuccess { it: ServerResponse<SignUpResponse> ->
+                    prefs.accessToken = it.value?.accessToken.toString()
+                    prefs.userId = it.value?.user?.userId.toString()
                     _signUpState.value = UiState.Success(it)
                 }.onError {
                     _signUpState.value = UiState.Error(it.detail)

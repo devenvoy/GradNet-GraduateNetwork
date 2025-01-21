@@ -183,6 +183,7 @@ ksp {
 
 dependencies {
 
+    implementation(libs.androidx.ui.android)
     // Android
     add("kspAndroid", libs.room.compiler)
 

@@ -62,6 +62,7 @@ compottie="2.0.0-rc02"
 peekaboo = "0.5.2"
 
 connectivity = "1.2.0"
+uiAndroid = "1.7.6"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -158,6 +159,7 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.re
 multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
 kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 composeIcons-featherIcons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "composeIcons" }
+androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
 
 
 [plugins]

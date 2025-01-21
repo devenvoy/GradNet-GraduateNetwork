@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -39,6 +41,8 @@ import com.sdjic.gradnet.presentation.composables.BackgroundImage
 import com.sdjic.gradnet.presentation.composables.CircularProfileImage
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.DummyDpImage
+import com.sdjic.gradnet.presentation.helper.CustomDrawerState
+import com.sdjic.gradnet.presentation.helper.opposite
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Menu
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -65,11 +69,22 @@ const val githubRepoUrl = "https://github.com/Gurupreet/ComposeCookBook"
 
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    modifier: Modifier,
+    drawerState: CustomDrawerState,
+    onDrawerClick: (CustomDrawerState) -> Unit
+) {
     val scrollState = rememberScrollState(0)
+
     Scaffold(
+        modifier = modifier
+            .clickable(enabled = drawerState == CustomDrawerState.Opened) {
+                onDrawerClick(CustomDrawerState.Closed)
+            },
         topBar = {
-            TopAppBarView(scrollState.value.toFloat())
+            TopAppBarView(scrollState.value.toFloat()) {
+                onDrawerClick(drawerState.opposite())
+            }
         }
     ) { paddingValues ->
         Box(
@@ -83,7 +98,7 @@ fun ProfileScreen() {
                     .fillMaxSize()
                     .verticalScroll(state = scrollState)
             ) {
-                Spacer(modifier = Modifier.height(100.sdp))
+                Spacer(modifier = Modifier.height(120.sdp))
                 TopScrollingContent(scrollState)
                 Column(
                     modifier = Modifier
@@ -99,15 +114,28 @@ fun ProfileScreen() {
                     MoreInfoSection()
                 }
             }
+
+            if(scrollState.value < initialImageFloat + 240){
+                IconButton(
+                    modifier = Modifier.align(Alignment.TopEnd).padding(vertical = 28.sdp, horizontal = 4.sdp),
+                    onClick = {
+                        onDrawerClick(drawerState.opposite())
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.background)
+                ) {
+                    Icon(imageVector = FeatherIcons.Menu, contentDescription = null)
+                }
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarView(scroll: Float) {
-    AnimatedVisibility (scroll > initialImageFloat + 350,
-        enter = fadeIn() + expandVertically (),
+fun TopAppBarView(scroll: Float, onMenuClick: () -> Unit) {
+    AnimatedVisibility(
+        scroll > initialImageFloat + 350,
+        enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically()
     ) {
         TopAppBar(
@@ -127,6 +155,9 @@ fun TopAppBarView(scroll: Float) {
                     imageVector = Icons.Default.Menu,
                     contentDescription = null,
                     modifier = Modifier.padding(horizontal = 8.dp)
+                        .clickable(
+                            onClick = onMenuClick
+                        )
                 )
             }
         )
@@ -140,12 +171,11 @@ private fun TopBackground() {
         Color.Transparent,
         MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)
     )
-
     Box(
         modifier = Modifier
-            .height(150.sdp)
+            .height(170.sdp)
             .fillMaxWidth()
-    ){
+    ) {
         val platformContext = LocalPlatformContext.current
         BackgroundImage(
             data = DummyBgImage,
@@ -160,12 +190,5 @@ private fun TopBackground() {
                 .fillMaxWidth()
                 .background(Brush.verticalGradient(gradient))
         )
-
-        Row(modifier = Modifier.padding(top = 25.sdp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.End){
-            IconButton(onClick = {}, colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.background)){
-                Icon(imageVector = FeatherIcons.Menu, contentDescription = null)
-            }
-        }
     }
 }

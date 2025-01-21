@@ -63,9 +63,9 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.Globe
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.cross
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_github_square_brands
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_linkedin_brands
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_twitter_square_brands
+import gradnet_graduatenetwork.composeapp.generated.resources.github
+import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
+import gradnet_graduatenetwork.composeapp.generated.resources.twitter_bird
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -177,7 +177,7 @@ fun ProfessionSetUpScreen(
             placeholder = { SText(text = "github profile url") },
             trailingIcon = {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_github_square_brands),
+                    painter = painterResource(Res.drawable.github),
                     contentDescription = "github"
                 )
             })
@@ -188,7 +188,7 @@ fun ProfessionSetUpScreen(
             placeholder = { SText(text = "linkedin profile url") },
             trailingIcon = {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_linkedin_brands),
+                    painter = painterResource(Res.drawable.linkedin),
                     contentDescription = "LinkedIn"
                 )
             })
@@ -199,7 +199,7 @@ fun ProfessionSetUpScreen(
             placeholder = { SText(text = "twitter profile url") },
             trailingIcon = {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_twitter_square_brands),
+                    painter = painterResource(Res.drawable.twitter_bird),
                     contentDescription = "Twitter"
                 )
             })

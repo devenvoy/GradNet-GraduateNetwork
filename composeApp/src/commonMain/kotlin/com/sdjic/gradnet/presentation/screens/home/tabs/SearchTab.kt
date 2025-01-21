@@ -9,6 +9,8 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.gradnet.presentation.composables.EmptyScreen
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
+import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.search
 
 // for search any account / user /alumni / faculty / company to see details
 object SearchTab : MyTab {
@@ -22,8 +24,8 @@ object SearchTab : MyTab {
             MyTabOptions(
                 index = 2u,
                 title = "Search",
-                selectedIcon = Icons.Default.Search,
-                unselectedIcon = Icons.Outlined.Search
+                selectedIcon = Res.drawable.search,
+                unselectedIcon = Res.drawable.search
             )
         }
 

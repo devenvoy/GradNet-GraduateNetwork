@@ -40,7 +40,6 @@ import com.sdjic.gradnet.presentation.composables.CustomInputField
 import com.sdjic.gradnet.presentation.composables.CustomInputPasswordField
 import com.sdjic.gradnet.presentation.composables.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.composables.SecondaryOutlinedButton
 import com.sdjic.gradnet.presentation.composables.Title
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
@@ -48,16 +47,13 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Mail
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.btn_google_sing_in
+import gradnet_graduatenetwork.composeapp.generated.resources.alternate_email
 import gradnet_graduatenetwork.composeapp.generated.resources.create_account
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
-import multiplatform.network.cmptoast.showToast
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -153,7 +149,7 @@ class LoginScreen : Screen {
                     trailingIcon = {
                         Icon(
                             modifier = Modifier.size(20.sdp),
-                            imageVector = FeatherIcons.Mail,
+                            painter = painterResource(Res.drawable.alternate_email),
                             tint = MaterialTheme.colorScheme.onBackground,
                             contentDescription = "Email icon",
                         )

@@ -74,7 +74,6 @@ fun ProfileScreen() {
     ) { paddingValues ->
         Box(
             modifier = Modifier
-                .padding(paddingValues)
                 .fillMaxSize()
                 .semantics { testTag = "Profile Screen" }
         ) {
@@ -152,21 +151,18 @@ private fun TopBackground() {
             data = DummyBgImage,
             modifier = Modifier,
             context = platformContext,
-            height = 150.sdp
+            height = 180.sdp
         )
 
         Spacer(
             modifier = Modifier
-                .height(150.sdp)
+                .height(180.sdp)
                 .fillMaxWidth()
                 .background(Brush.verticalGradient(gradient))
         )
 
-        Row(modifier = Modifier.padding(top = 15.sdp).fillMaxWidth(),
+        Row(modifier = Modifier.padding(top = 25.sdp).fillMaxWidth(),
             horizontalArrangement = Arrangement.End){
-//            IconButton(onClick = {}, colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.background)){
-//                Icon(imageVector = FeatherIcons.ArrowLeft, contentDescription = null)
-//            }
             IconButton(onClick = {}, colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.background)){
                 Icon(imageVector = FeatherIcons.Menu, contentDescription = null)
             }

@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_github_square_brands
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_linkedin_brands
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_twitter_square_brands
+import gradnet_graduatenetwork.composeapp.generated.resources.github
+import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
+import gradnet_graduatenetwork.composeapp.generated.resources.twitter_bird
 import network.chaintech.sdpcomposemultiplatform.sdp
 import org.jetbrains.compose.resources.painterResource
 
@@ -37,21 +37,21 @@ fun SocialRow() {
         ) {
             IconButton(onClick = { /*launchSocialActivity(context, "github")*/ }) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_github_square_brands),
+                    painter = painterResource(Res.drawable.github),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
             IconButton(onClick = { /*launchSocialActivity(context, "twitter")*/ }) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_twitter_square_brands),
+                    painter = painterResource(Res.drawable.twitter_bird),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
             IconButton(onClick = { /*launchSocialActivity(context, "linkedin")*/ }) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_linkedin_brands),
+                    painter = painterResource(Res.drawable.linkedin),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )

@@ -7,12 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.automirrored.filled.ArrowRight
-import androidx.compose.material.icons.filled.ArrowRight
-import androidx.compose.material.icons.filled.ArrowRightAlt
-import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -23,14 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.core.model.SocialUrls
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.ArrowRight
-import compose.icons.feathericons.Mail
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_github_square_brands
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_linkedin_brands
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_twitter_square_brands
+import gradnet_graduatenetwork.composeapp.generated.resources.github
+import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
+import gradnet_graduatenetwork.composeapp.generated.resources.mail_outline
+import gradnet_graduatenetwork.composeapp.generated.resources.phone
+import gradnet_graduatenetwork.composeapp.generated.resources.twitter_bird
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -48,7 +41,7 @@ fun MoreInfoSection() {
     ContactInfoItem(
         leadingContent = {
             Icon(
-                imageVector = Icons.Rounded.Phone,
+                painter = painterResource(Res.drawable.phone),
                 contentDescription = null,
                 modifier = Modifier.padding(4.sdp).size(22.sdp)
             )
@@ -66,14 +59,13 @@ fun MoreInfoSection() {
                 contentDescription = null
             )
         },
-        modifier = Modifier
-            .clickable(onClick = {})
+        modifier = Modifier.clickable(onClick = {})
     )
     // email
     ContactInfoItem(
         leadingContent = {
             Icon(
-                imageVector = FeatherIcons.Mail,
+                painter = painterResource(Res.drawable.mail_outline),
                 contentDescription = null,
                 modifier = Modifier.padding(6.sdp).size(22.sdp)
             )
@@ -97,7 +89,7 @@ fun MoreInfoSection() {
     ContactInfoItem(
         leadingContent = {
             Icon(
-                painter = painterResource(Res.drawable.ic_github_square_brands),
+                painter = painterResource(Res.drawable.github),
                 modifier = Modifier.padding(6.sdp).size(22.sdp),
                 contentDescription = null
             )
@@ -121,7 +113,7 @@ fun MoreInfoSection() {
     ContactInfoItem(
         leadingContent = {
             Icon(
-                painter = painterResource(Res.drawable.ic_linkedin_brands),
+                painter = painterResource(Res.drawable.linkedin),
                 modifier = Modifier.padding(6.sdp).size(22.sdp),
                 tint = Color(0xFF0A66C2),
                 contentDescription = null
@@ -146,7 +138,7 @@ fun MoreInfoSection() {
     ContactInfoItem(
         leadingContent = {
             Icon(
-                painter = painterResource(Res.drawable.ic_twitter_square_brands),
+                painter = painterResource(Res.drawable.twitter_bird),
                 modifier = Modifier.padding(6.sdp).size(22.sdp),
                 tint = Color(0xFF0A66C2),
                 contentDescription = null

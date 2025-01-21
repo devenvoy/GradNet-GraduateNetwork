@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -31,6 +33,7 @@ import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import network.chaintech.sdpcomposemultiplatform.ssp
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class HomeScreen : Screen {
@@ -65,9 +68,7 @@ class HomeScreen : Screen {
                     Box(
                         modifier = Modifier.padding(bottom = pVal.calculateBottomPadding())
                             .fillMaxSize()
-                    ) {
-                        CurrentTab()
-                    }
+                    ) { CurrentTab() }
                 }
             }
         }
@@ -99,7 +100,8 @@ class HomeScreen : Screen {
                     }
                 }) {
                     Icon(
-                        imageVector = if (isSelected) tab.tabOption.selectedIcon!! else tab.tabOption.unselectedIcon!!,
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(if (isSelected) tab.tabOption.selectedIcon else tab.tabOption.unselectedIcon),
                         contentDescription = tab.options.title
                     )
                 }

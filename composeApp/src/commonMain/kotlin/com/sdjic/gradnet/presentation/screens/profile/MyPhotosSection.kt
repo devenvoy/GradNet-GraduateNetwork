@@ -1,7 +1,11 @@
 package com.sdjic.gradnet.presentation.screens.profile
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_alumni
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_degree
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_faculty1
+import gradnet_graduatenetwork.composeapp.generated.resources.ic_faculty
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_organization
 import org.jetbrains.compose.resources.painterResource
 
@@ -65,7 +69,7 @@ fun MyPhotosSection() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            painter = painterResource(Res.drawable.ic_faculty1),
+            painter = painterResource(Res.drawable.ic_faculty),
             modifier = imageModifier,
             contentDescription = null,
             contentScale = ContentScale.Crop

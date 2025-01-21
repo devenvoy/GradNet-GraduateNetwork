@@ -10,16 +10,25 @@ enum class NavigationItem(
     val title: String,
     val icon: DrawableResource
 ) {
-    Home(
-        icon = Res.drawable.home,
-        title = "Home"
-    ),
     Profile(
         icon = Res.drawable.person,
         title = "Profile"
     ),
+    Home(
+        icon = Res.drawable.home,
+        title = "Home"
+    ),
     Settings(
         icon = Res.drawable.search,
         title = "Settings"
+    ),
+    AboutUs(
+        icon = Res.drawable.person,
+        title = "About us"
+    ),
+    // back
+    Logout(
+        icon = Res.drawable.search,
+        title = "Logout"
     )
 }

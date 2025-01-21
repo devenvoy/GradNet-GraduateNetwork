@@ -65,7 +65,7 @@ object ProfileTab : MyTab {
             derivedStateOf { (scrnWidth * density).roundToInt() }
         }
 
-        val offsetValue by remember { derivedStateOf { (screenWidth.value / 4.5).dp } }
+        val offsetValue by remember { derivedStateOf { -(screenWidth.value / 4.5).dp } }
         val animatedOffset by animateDpAsState(
             targetValue = if (drawerState.isOpened()) offsetValue else 0.dp,
             label = "Animated Offset"

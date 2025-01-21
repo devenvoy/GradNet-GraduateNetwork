@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -23,8 +24,11 @@ import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.helper.MyTab
+import com.sdjic.gradnet.presentation.screens.home.tabs.EventsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.HomeTab
+import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
+import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -40,14 +44,21 @@ class HomeScreen : Screen {
     @Composable
     fun HomeScreenContent() {
         AppTheme {
-            TabNavigator(ProfileTab, tabDisposable = {
-                TabDisposable(
-                    navigator = it, tabs = listOf(HomeTab, ProfileTab)
-                )
-            }) { tabNavigator ->
+            TabNavigator(
+                ProfileTab,
+                tabDisposable = {
+                    TabDisposable(
+                        navigator = it,
+                        tabs = listOf(HomeTab, JobsTab, SearchTab, EventsTab, ProfileTab)
+                    )
+                }
+            ) { tabNavigator ->
                 Scaffold(bottomBar = {
                     NavigationBar {
                         TabNavigationItem(HomeTab)
+                        TabNavigationItem(JobsTab)
+                        TabNavigationItem(SearchTab)
+                        TabNavigationItem(EventsTab)
                         TabNavigationItem(ProfileTab)
                     }
                 }) { pVal ->
@@ -73,11 +84,11 @@ class HomeScreen : Screen {
             label = {
                 SText(
                     tab.options.title,
-                    fontSize = if (isSelected) 12.ssp else 10.ssp,
+                    fontSize = if (isSelected) 12.sp else 10.sp,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight(500)
                 )
             },
-            alwaysShowLabel = true,
+            alwaysShowLabel = false,
             icon = {
                 BadgedBox(badge = {
                     if (tab.tabOption.badgeCount != null && tab.tabOption.badgeCount!! > 0) {

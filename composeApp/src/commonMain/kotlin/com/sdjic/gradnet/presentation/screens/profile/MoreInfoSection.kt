@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.filled.ArrowRight
+import androidx.compose.material.icons.filled.ArrowRight
+import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -17,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.composables.SText
 import com.sdjic.gradnet.presentation.core.model.SocialUrls
 import compose.icons.FeatherIcons
@@ -41,7 +46,13 @@ fun MoreInfoSection() {
     )
     // Phone
     ContactInfoItem(
-        leadingContent = { Icon(imageVector = Icons.Rounded.Phone, contentDescription = null, modifier = Modifier.padding(4.sdp).size(22.sdp)) },
+        leadingContent = {
+            Icon(
+                imageVector = Icons.Rounded.Phone,
+                contentDescription = null,
+                modifier = Modifier.padding(4.sdp).size(22.sdp)
+            )
+        },
         headlineContent = {
             Text(
                 text = "+91 9876543210",
@@ -50,7 +61,8 @@ fun MoreInfoSection() {
         },
         trailingContent = {
             Icon(
-                imageVector = FeatherIcons.ArrowRight,
+                modifier = Modifier.size(16.dp),
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null
             )
         },
@@ -59,7 +71,13 @@ fun MoreInfoSection() {
     )
     // email
     ContactInfoItem(
-        leadingContent = { Icon(imageVector = FeatherIcons.Mail, contentDescription = null,modifier = Modifier.padding(6.sdp).size(22.sdp)) },
+        leadingContent = {
+            Icon(
+                imageVector = FeatherIcons.Mail,
+                contentDescription = null,
+                modifier = Modifier.padding(6.sdp).size(22.sdp)
+            )
+        },
         headlineContent = {
             Text(
                 text = "devanshamdavadwala@gmail.com",
@@ -68,7 +86,8 @@ fun MoreInfoSection() {
         },
         trailingContent = {
             Icon(
-                imageVector = FeatherIcons.ArrowRight,
+                modifier = Modifier.size(16.dp),
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null
             )
         },
@@ -91,7 +110,8 @@ fun MoreInfoSection() {
         },
         trailingContent = {
             Icon(
-                imageVector = FeatherIcons.ArrowRight,
+                modifier = Modifier.size(16.dp),
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null
             )
         },
@@ -115,7 +135,8 @@ fun MoreInfoSection() {
         },
         trailingContent = {
             Icon(
-                imageVector = FeatherIcons.ArrowRight,
+                modifier = Modifier.size(16.dp),
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null
             )
         },
@@ -139,7 +160,8 @@ fun MoreInfoSection() {
         },
         trailingContent = {
             Icon(
-                imageVector = FeatherIcons.ArrowRight,
+                modifier = Modifier.size(16.dp),
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null
             )
         },

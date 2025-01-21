@@ -18,12 +18,12 @@ import com.sdjic.gradnet.presentation.theme.AppTheme
 object ProfileTab : MyTab {
 
     override val options: TabOptions
-       @Composable get() = TabOptions(1u,"Profile")
+       @Composable get() = TabOptions(4u,"Profile")
 
     override val tabOption: MyTabOptions
        @Composable get() = remember {
            MyTabOptions(
-               index = 1u,
+               index = 4u,
                title = "Profile",
                selectedIcon = Icons.Default.Person,
                unselectedIcon = Icons.Outlined.Person

@@ -11,12 +11,8 @@ androidx-lifecycle = "2.8.4"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-multiplatform = "1.7.1"
-fontawesomecompose = "1.0.0"
 junit = "4.13.2"
 
-kmpDateTimePicker = "1.0.5"
-kotlin = "2.1.0"
-kotlinx-coroutines = "1.9.0"
 
 # added
 cmptoast = "1.0.0"
@@ -25,6 +21,7 @@ compose-plugin = "1.6.11"
 kotlinxCoroutinesCore = "1.8.1"
 kotlinxCoroutinesCoreVersion = "1.9.0"
 kotlinxSerializationJson = "1.7.1"
+fontawesomecompose = "1.0.0"
 kotlinxSerializationJsonVersion = "1.7.3"
 materialcolors = "1.0.0"
 multiplatformSettingsNoArg = "1.0.0"
@@ -40,6 +37,11 @@ google-play-services = "23.6.0"
 navigationCompose = "2.8.5"
 
 voyager = "1.1.0-beta02"
+
+
+kmpDateTimePicker = "1.0.5"
+kotlin = "2.1.0"
+kotlinx-coroutines = "1.9.0"
 
 ktor = "3.0.1"
 lifecycleViewModel = "2.8.7"

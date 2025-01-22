@@ -119,9 +119,8 @@ kotlin {
             implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
 
             implementation("io.github.mirzemehdi:kmpauth-google:2.3.0-beta02") //Google One Tap Sign-In
-//            implementation("io.github.mirzemehdi:kmpauth-firebase:2.3.0-beta02") //Integrated Authentications with Firebase
             implementation("io.github.mirzemehdi:kmpauth-uihelper:2.3.0-beta02") //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
-
+//            implementation("androidx.compose.material3:material3-adaptive-navigation-suite")  // ios not available
             // for network status
             implementation(libs.connectivity.core)
             implementation(libs.connectivity.device)

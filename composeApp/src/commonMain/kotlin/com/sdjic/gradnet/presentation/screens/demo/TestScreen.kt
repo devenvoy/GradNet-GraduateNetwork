@@ -15,8 +15,6 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 class TestScreen : Screen {
-    //    private val gradNetDB = getDatabaseBuilder().build().setQueryCoroutineContext(Dispatchers.IO).build()
-//    private val testDao = gradNetDB.testDao
     @Composable
     override fun Content() {
 

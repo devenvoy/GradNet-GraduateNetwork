@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
 import com.sdjic.gradnet.di.appModules
@@ -23,10 +24,9 @@ import org.koin.compose.getKoin
 @Preview
 fun App() {
     AppTheme {
-
         var authReady by remember{ mutableStateOf(false) }
-
         LaunchedEffect(Unit){
+            ConnectivityManager.isConnected // just to call init
             GoogleAuthProvider.create(credentials =
             GoogleAuthCredentials("352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com"
             ))
@@ -40,10 +40,11 @@ fun App() {
         ) {
             val keyStore = getKoin().get<AppCacheSetting>()
             if (keyStore.isLoggedIn) {
-                Navigator(SplashScreen())
+                Navigator(SplashScreen()) {
+                    SlideTransition(it)
+                }
             } else {
-                ConnectivityManager.isConnected // just to call init
-                if(authReady){
+                if (authReady) {
                     Navigator(OnBoardingScreen())
                 }
             }

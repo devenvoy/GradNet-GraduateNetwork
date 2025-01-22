@@ -1,9 +1,10 @@
 package com.sdjic.gradnet.presentation.core.model
 
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.home
+import gradnet_graduatenetwork.composeapp.generated.resources.info_outline
+import gradnet_graduatenetwork.composeapp.generated.resources.logout
 import gradnet_graduatenetwork.composeapp.generated.resources.person
-import gradnet_graduatenetwork.composeapp.generated.resources.search
+import gradnet_graduatenetwork.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.DrawableResource
 
 enum class NavigationItem(
@@ -14,21 +15,16 @@ enum class NavigationItem(
         icon = Res.drawable.person,
         title = "Profile"
     ),
-    Home(
-        icon = Res.drawable.home,
-        title = "Home"
-    ),
     Settings(
-        icon = Res.drawable.search,
+        icon = Res.drawable.settings,
         title = "Settings"
     ),
     AboutUs(
-        icon = Res.drawable.person,
+        icon = Res.drawable.info_outline,
         title = "About us"
     ),
-    // back
     Logout(
-        icon = Res.drawable.search,
+        icon = Res.drawable.logout,
         title = "Logout"
     )
 }

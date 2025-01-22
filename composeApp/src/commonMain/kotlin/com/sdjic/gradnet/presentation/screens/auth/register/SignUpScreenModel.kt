@@ -33,9 +33,6 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
-    private val _phone = MutableStateFlow("")
-    val phone = _phone.asStateFlow()
-
     private val _googleProcessDialog = MutableStateFlow(false)
     val googleProcessDialog = _googleProcessDialog.asStateFlow()
 
@@ -66,10 +63,6 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
 
     fun onPasswordChange(newValue: TextFieldValue) {
         _password.value = newValue
-    }
-
-    fun onPhoneChange(newValue: String) {
-        _phone.value = newValue
     }
 
     fun changeGoogleDialogState(newValue: Boolean){
@@ -171,15 +164,9 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                 .add("Password must be at least 6 characters long.")
         }
 
-        if (_selectedUserRole.value != null) {
+        if (_selectedUserRole.value == null) {
             errors.getOrPut("role") { mutableListOf() }.add("Please select a your account type.")
         }
-
-       /* if (_phone.value.isBlank()) {
-            errors.getOrPut("phone") { mutableListOf() }.add("Phone cannot be empty.")
-        } else if (!isValidPhone(_phone.value)) {
-            errors.getOrPut("phone") { mutableListOf() }.add("Invalid phone number.")
-        }*/
 
         return if (errors.isEmpty()) null else errors
     }

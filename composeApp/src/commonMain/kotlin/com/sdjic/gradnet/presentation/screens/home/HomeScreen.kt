@@ -7,16 +7,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -25,13 +28,14 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.sdjic.gradnet.presentation.composables.SText
+import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.EventsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.HomeTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
-import com.sdjic.gradnet.presentation.theme.AppTheme
+import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -40,33 +44,43 @@ class HomeScreen : Screen {
     @Preview
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+
         HomeScreenContent()
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun HomeScreenContent() {
-        AppTheme {
+        val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
+        val navigator = LocalNavigator.currentOrThrow
+
+        val bottomTabList = listOf(
+            HomeTab,
+            JobsTab,
+            SearchTab,
+            EventsTab,
+            ProfileTab(navigator)
+        )
+
+        CompositionLocalProvider(LocalScrollBehavior provides scrollBehavior) {
             TabNavigator(
-                ProfileTab,
+                bottomTabList.last(),
                 tabDisposable = {
                     TabDisposable(
                         navigator = it,
-                        tabs = listOf(HomeTab, JobsTab, SearchTab, EventsTab, ProfileTab)
+                        tabs = bottomTabList
                     )
                 }
-            ) { tabNavigator ->
-                Scaffold(bottomBar = {
-                    NavigationBar {
-                        TabNavigationItem(HomeTab)
-                        TabNavigationItem(JobsTab)
-                        TabNavigationItem(SearchTab)
-                        TabNavigationItem(EventsTab)
-                        TabNavigationItem(ProfileTab)
-                    }
-                }) { pVal ->
+            ) {
+                Scaffold(
+                    bottomBar = {
+                        BottomAppBar(scrollBehavior = scrollBehavior) {
+                            bottomTabList.forEach { TabNavigationItem(it) }
+                        }
+                    }) { pVal ->
                     Box(
-                        modifier = Modifier.padding(bottom = pVal.calculateBottomPadding())
+                        modifier = Modifier
+                            .padding(bottom = pVal.calculateBottomPadding())
                             .fillMaxSize()
                     ) { CurrentTab() }
                 }
@@ -82,11 +96,14 @@ class HomeScreen : Screen {
         NavigationBarItem(
             selected = isSelected,
             onClick = { tabNavigator.current = tab },
+            colors = NavigationBarItemDefaults.colors(
+                unselectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = .8f)
+            ),
             label = {
                 SText(
                     tab.options.title,
-                    fontSize = if (isSelected) 12.sp else 10.sp,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight(500)
+                    fontSize = 10.ssp,
+                    fontWeight = FontWeight.W700
                 )
             },
             alwaysShowLabel = false,
@@ -100,7 +117,7 @@ class HomeScreen : Screen {
                     }
                 }) {
                     Icon(
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(22.sdp),
                         painter = painterResource(if (isSelected) tab.tabOption.selectedIcon else tab.tabOption.unselectedIcon),
                         contentDescription = tab.options.title
                     )

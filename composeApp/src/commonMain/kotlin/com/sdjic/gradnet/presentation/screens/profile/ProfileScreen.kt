@@ -35,8 +35,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import coil3.compose.LocalPlatformContext
-import com.sdjic.gradnet.presentation.composables.BackgroundImage
-import com.sdjic.gradnet.presentation.composables.CircularProfileImage
+import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
+import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.DummyDpImage
 import com.sdjic.gradnet.presentation.helper.CustomDrawerState

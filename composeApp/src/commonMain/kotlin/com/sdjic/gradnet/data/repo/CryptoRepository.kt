@@ -2,7 +2,6 @@ package com.sdjic.gradnet.data.repo
 
 import com.sdjic.gradnet.data.network.entity.CryptoResponse
 import com.sdjic.gradnet.data.network.utils.BaseGateway
-import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.utils.PaginationItems
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get

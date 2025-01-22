@@ -50,16 +50,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
-import com.sdjic.gradnet.presentation.composables.CustomImageChip
-import com.sdjic.gradnet.presentation.composables.CustomInputArea
-import com.sdjic.gradnet.presentation.composables.CustomInputField
 import com.sdjic.gradnet.presentation.composables.DatePickerDialog
-import com.sdjic.gradnet.presentation.composables.DropDownTextField
-import com.sdjic.gradnet.presentation.composables.PlusIconButton
-import com.sdjic.gradnet.presentation.composables.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.composables.SecondaryOutlinedButton
-import com.sdjic.gradnet.presentation.composables.Title
+import com.sdjic.gradnet.presentation.composables.button.PlusIconButton
+import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
+import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
+import com.sdjic.gradnet.presentation.composables.filter.CustomImageChip
+import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.gradnet.presentation.composables.text.Title
+import com.sdjic.gradnet.presentation.composables.textInput.CustomInputArea
+import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
+import com.sdjic.gradnet.presentation.composables.textInput.DropDownTextField
 import com.sdjic.gradnet.presentation.core.LanguagesList
 import com.sdjic.gradnet.presentation.core.SkillList
 import com.sdjic.gradnet.presentation.core.model.EducationModel
@@ -237,7 +237,7 @@ fun EducationSetUpScreen(
                     text = language,
                     modifier = Modifier.padding(2.sdp),
                     selected = true,
-                    onCancelClick = {
+                    onClick = {
                         onAction(EducationScreenAction.OnRemoveLanguage(language))
                     }
                 )
@@ -265,7 +265,7 @@ fun EducationSetUpScreen(
                     text = skill,
                     modifier = Modifier.padding(2.sdp),
                     selected = true,
-                    onCancelClick = {
+                    onClick = {
                         onAction(EducationScreenAction.OnRemoveSkill(skill))
                     }
                 )

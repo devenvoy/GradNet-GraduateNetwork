@@ -3,6 +3,7 @@ package com.sdjic.gradnet.presentation.helper
 import androidx.compose.material3.BottomAppBarScrollBehavior
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.compositionLocalOf
+import cafe.adriel.voyager.navigator.Navigator
 import com.sdjic.gradnet.data.network.entity.LoginResponse
 import com.sdjic.gradnet.data.network.entity.ServerResponse
 import com.sdjic.gradnet.data.network.entity.SignUpResponse
@@ -23,4 +24,9 @@ typealias SetUpOrEditUiState = UiState<UserProfile>
 @OptIn(ExperimentalMaterial3Api::class)
 val LocalScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> {
     error("No ScrollBehavior provided")
+}
+
+
+val LocalRootNavigator = compositionLocalOf<Navigator>{
+    error("No Navigator provided")
 }

@@ -21,9 +21,9 @@ import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sdjic.gradnet.presentation.composables.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.composables.SecondaryOutlinedButton
+import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
+import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
+import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.helper.AutoSwipePagerEffect
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen

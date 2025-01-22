@@ -7,16 +7,13 @@ import com.sdjic.gradnet.data.network.entity.ServerResponse
 import com.sdjic.gradnet.data.network.entity.SignUpRequest
 import com.sdjic.gradnet.data.network.entity.SignUpResponse
 import com.sdjic.gradnet.data.network.utils.BaseGateway
-import com.sdjic.gradnet.data.network.utils.NetworkError
 import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import kotlin.math.sign
 
 class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(httpClient) {
 

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -21,14 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.presentation.composables.CustomDrawer
+import com.sdjic.gradnet.presentation.composables.drawer.CustomDrawer
 import com.sdjic.gradnet.presentation.core.model.NavigationItem
 import com.sdjic.gradnet.presentation.helper.CustomDrawerState
-import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
+import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.helper.coloredShadow
@@ -43,7 +41,7 @@ import network.chaintech.sdpcomposemultiplatform.getScreenWidth
 import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
-class ProfileTab(private val parentNavigator: Navigator) : MyTab {
+object ProfileTab : MyTab {
 
     override val options: TabOptions
         @Composable get() = TabOptions(4u, "Me")
@@ -58,7 +56,7 @@ class ProfileTab(private val parentNavigator: Navigator) : MyTab {
             )
         }
 
-    @OptIn(InternalVoyagerApi::class, ExperimentalMaterial3Api::class)
+    @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
         val appCacheSetting = koinInject<AppCacheSetting>()
@@ -66,6 +64,7 @@ class ProfileTab(private val parentNavigator: Navigator) : MyTab {
         var selectedNavigationItem by remember { mutableStateOf(NavigationItem.Profile) }
         val scrnWidth = getScreenWidth()
         val density = LocalDensity.current.density
+        val parentNavigator = LocalRootNavigator.current
         val screenWidth = remember {
             derivedStateOf { (scrnWidth * density).roundToInt() }
         }
@@ -108,8 +107,7 @@ class ProfileTab(private val parentNavigator: Navigator) : MyTab {
 
                         NavigationItem.Logout -> {
                             appCacheSetting.logout {
-                                parentNavigator.popUntilRoot()
-                                parentNavigator.replace(OnBoardingScreen())
+                                parentNavigator.replaceAll(OnBoardingScreen())
                             }
                         }
                     }

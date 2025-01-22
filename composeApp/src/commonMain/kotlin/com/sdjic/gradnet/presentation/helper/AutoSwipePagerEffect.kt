@@ -1,8 +1,9 @@
 package com.sdjic.gradnet.presentation.helper
 
-import androidx.compose.runtime.*
-import kotlinx.coroutines.delay
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
 
 @Composable
 fun AutoSwipePagerEffect(

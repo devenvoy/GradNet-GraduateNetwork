@@ -27,12 +27,13 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.sdjic.gradnet.presentation.composables.SText
+import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.EventsTab
-import com.sdjic.gradnet.presentation.screens.home.tabs.HomeTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
+import com.sdjic.gradnet.presentation.screens.home.tabs.PostTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -44,7 +45,6 @@ class HomeScreen : Screen {
     @Preview
     @Composable
     override fun Content() {
-
         HomeScreenContent()
     }
 
@@ -55,34 +55,38 @@ class HomeScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         val bottomTabList = listOf(
-            HomeTab,
+            PostTab,
             JobsTab,
             SearchTab,
             EventsTab,
-            ProfileTab(navigator)
+            ProfileTab
         )
 
         CompositionLocalProvider(LocalScrollBehavior provides scrollBehavior) {
-            TabNavigator(
-                bottomTabList.last(),
-                tabDisposable = {
-                    TabDisposable(
-                        navigator = it,
-                        tabs = bottomTabList
-                    )
-                }
-            ) {
-                Scaffold(
-                    bottomBar = {
-                        BottomAppBar(scrollBehavior = scrollBehavior) {
-                            bottomTabList.forEach { TabNavigationItem(it) }
+            CompositionLocalProvider(LocalRootNavigator provides navigator) {
+                TabNavigator(
+                    bottomTabList.last(),
+                    tabDisposable = {
+                        TabDisposable(
+                            navigator = it,
+                            tabs = bottomTabList
+                        )
+                    }
+                ) {
+                    Scaffold(
+                        bottomBar = {
+                            BottomAppBar(scrollBehavior = scrollBehavior) {
+                                bottomTabList.forEach { TabNavigationItem(it) }
+                            }
+                        }) { pVal ->
+                        Box(
+                            modifier = Modifier
+                                .padding(bottom = pVal.calculateBottomPadding())
+                                .fillMaxSize()
+                        ) {
+                            CurrentTab()
                         }
-                    }) { pVal ->
-                    Box(
-                        modifier = Modifier
-                            .padding(bottom = pVal.calculateBottomPadding())
-                            .fillMaxSize()
-                    ) { CurrentTab() }
+                    }
                 }
             }
         }

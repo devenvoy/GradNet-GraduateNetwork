@@ -13,8 +13,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import coil3.compose.LocalPlatformContext
-import com.sdjic.gradnet.presentation.composables.CircularProfileImage
-import com.sdjic.gradnet.presentation.composables.SText
+import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
+import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.core.DummyDpImage
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp

@@ -4,9 +4,6 @@ platform :ios, '15.0'
 # source 'https://github.com/Kotlin/kotlin-cocoapods-spec.git' # Kotlin Multiplatform specs
 
 target 'iosApp' do
-  # Include the shared Kotlin/Native module
-#   pod 'MyCocoaPod', :path => '../composeApp'
-  use_frameworks!
-  # Add Google Sign-In dependency
-  pod 'GoogleSignIn'
+use_frameworks!
+pod 'GoogleSignIn'
 end

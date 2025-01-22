@@ -11,8 +11,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.buildConfig)
-
-//    alias(libs.plugins.kotlinCocoapods)
 }
 
 kotlin {
@@ -32,6 +30,7 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
+//            linkerOpts.add("-GoogleSignIn")
         }
     }
 
@@ -97,9 +96,6 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.encoding)
             implementation(libs.ktor.client.serialization)
-
-            implementation(libs.materialcolors)
-            implementation (libs.fontawesomecompose)
             implementation(libs.composeIcons.featherIcons)
 
             api(libs.moko.permissions)

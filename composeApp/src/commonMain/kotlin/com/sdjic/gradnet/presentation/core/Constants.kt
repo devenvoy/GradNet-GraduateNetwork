@@ -1,7 +1,7 @@
 package com.sdjic.gradnet.presentation.core
 
 import androidx.compose.ui.unit.dp
-import com.sdjic.gradnet.data.network.entity.UserDto
+import com.sdjic.gradnet.data.network.entity.dto.UserDto
 
 val LanguagesList = listOf(
     "Hindi",

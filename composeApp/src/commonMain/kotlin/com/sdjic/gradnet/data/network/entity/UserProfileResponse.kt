@@ -1,5 +1,8 @@
 package com.sdjic.gradnet.data.network.entity
 
+import com.sdjic.gradnet.data.network.entity.dto.EducationDto
+import com.sdjic.gradnet.data.network.entity.dto.ExperienceDto
+import com.sdjic.gradnet.data.network.entity.dto.URLDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

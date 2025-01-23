@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.data.network.entity
+package com.sdjic.gradnet.data.network.entity.dto
 
 
 import kotlinx.serialization.SerialName
@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserDto(
     @SerialName("createdAt")
-    val createdAt: String?,
+    val createdAt: String? = null,
     @SerialName("email")
     val email: String?,
     @SerialName("isVerified")

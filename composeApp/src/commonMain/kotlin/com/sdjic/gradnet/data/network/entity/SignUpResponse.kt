@@ -1,6 +1,7 @@
 package com.sdjic.gradnet.data.network.entity
 
 
+import com.sdjic.gradnet.data.network.entity.dto.UserDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

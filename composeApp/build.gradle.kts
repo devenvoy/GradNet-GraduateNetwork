@@ -30,7 +30,6 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
-//            linkerOpts.add("-GoogleSignIn")
         }
     }
 
@@ -111,17 +110,18 @@ kotlin {
 
             implementation(libs.kmp.date.time.picker)
 
-            implementation("network.chaintech:cmp-image-pick-n-crop:1.0.8")
-            implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
+            implementation(libs.cmp.image.pick.n.crop)
+            implementation(libs.paging.compose.common)
 
-            implementation("io.github.mirzemehdi:kmpauth-google:2.3.0-beta02") //Google One Tap Sign-In
-            implementation("io.github.mirzemehdi:kmpauth-uihelper:2.3.0-beta02") //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
-//            implementation("androidx.compose.material3:material3-adaptive-navigation-suite")  // ios not available
+            implementation(libs.kmpauth.google) //Google One Tap Sign-In
+            implementation(libs.kmpauth.uihelper) //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
             // for network status
             implementation(libs.connectivity.core)
             implementation(libs.connectivity.device)
             implementation(libs.connectivity.compose.device)
 
+            implementation(libs.composeSettings.ui)
+            implementation(libs.composeSettings.ui.extended)
         }
 
         iosMain.dependencies {
@@ -166,7 +166,7 @@ dependencies {
 buildConfig {
     // BuildConfig configuration here.
     // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
-    buildConfigField("APP_NAME", project.name)
+    buildConfigField("APP_NAME", project.project.name)
     buildConfigField("APP_VERSION_CODE", project.version.toString())
     buildConfigField("APP_VERSION_NAME", project.version.toString())
     buildConfigField("BASE_URL", "https://gradnet-server-app.onrender.com")

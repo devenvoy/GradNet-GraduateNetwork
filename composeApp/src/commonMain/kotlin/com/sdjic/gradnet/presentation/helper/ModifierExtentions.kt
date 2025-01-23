@@ -2,6 +2,7 @@ package com.sdjic.gradnet.presentation.helper
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +19,9 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.sdjic.gradnet.presentation.core.TOP_BAR_HEIGHT
 
 fun Modifier.horizontalGradientBackground(
     colors: List<Color>
@@ -180,4 +184,30 @@ fun LazyListState.isScrollingUp(): State<Boolean> {
             }
         }
     }
+}
+
+@Composable
+fun rememberTopBarVisibilityState(listState: LazyListState, threshold: Int = 60): Pair<Boolean, Dp> {
+    val topBarVisible = remember { mutableStateOf(true) }
+    val topBarHeight = remember { mutableStateOf(TOP_BAR_HEIGHT) }
+    var lastScrollOffset by remember { mutableStateOf(0) }
+
+    LaunchedEffect(listState.firstVisibleItemScrollOffset) {
+        val currentOffset = listState.firstVisibleItemScrollOffset
+
+        if (currentOffset > lastScrollOffset) {
+            if (currentOffset > threshold) {
+                topBarVisible.value = false
+                topBarHeight.value = 0.dp
+            }
+        }
+        else if (currentOffset < lastScrollOffset) {
+            topBarVisible.value = true
+            topBarHeight.value = TOP_BAR_HEIGHT
+        }
+
+        lastScrollOffset = currentOffset
+    }
+
+    return Pair(topBarVisible.value, topBarHeight.value)
 }

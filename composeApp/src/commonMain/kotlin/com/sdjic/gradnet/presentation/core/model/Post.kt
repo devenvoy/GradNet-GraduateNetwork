@@ -7,4 +7,5 @@ data class Post(
     val user: UserDto,
     val content: String,
     val images: List<String>,
+    val createdAt: String
 )

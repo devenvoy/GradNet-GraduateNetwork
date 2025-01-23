@@ -124,7 +124,7 @@ class HomeScreen : Screen {
                     }
                 }) {
                     Icon(
-                        modifier = Modifier.size(22.sdp),
+                        modifier = Modifier.size(21.sdp),
                         painter = painterResource(if (isSelected) tab.tabOption.selectedIcon else tab.tabOption.unselectedIcon),
                         contentDescription = tab.options.title
                     )

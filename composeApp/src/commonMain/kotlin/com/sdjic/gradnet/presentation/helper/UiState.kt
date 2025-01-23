@@ -26,7 +26,6 @@ val LocalScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> {
     error("No ScrollBehavior provided")
 }
 
-
 val LocalRootNavigator = compositionLocalOf<Navigator>{
     error("No Navigator provided")
 }

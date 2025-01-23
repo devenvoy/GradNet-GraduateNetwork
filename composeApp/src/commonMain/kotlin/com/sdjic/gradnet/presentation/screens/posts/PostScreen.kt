@@ -2,41 +2,59 @@ package com.sdjic.gradnet.presentation.screens.posts
 
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +62,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
@@ -53,6 +73,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.sdjic.gradnet.presentation.composables.LoadingAnimation
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.text.ExpandableText
@@ -64,14 +85,21 @@ import com.sdjic.gradnet.presentation.core.LOREM
 import com.sdjic.gradnet.presentation.core.getEmptyUserDto
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
-import com.sdjic.gradnet.presentation.helper.isScrollingUp
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.helper.rememberTopBarVisibilityState
 import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
 import com.sdjic.gradnet.presentation.screens.onboarding.onboardingList
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.app_name
 import gradnet_graduatenetwork.composeapp.generated.resources.heart
 import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import network.chaintech.sdpcomposemultiplatform.getScreenWidth
+import network.chaintech.sdpcomposemultiplatform.sdp
+import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 
 class PostScreen : Screen {
@@ -81,37 +109,70 @@ class PostScreen : Screen {
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    private @Composable
+    @Composable
     fun PostScreenContent() {
         val listState = rememberLazyListState()
+        val scope = rememberCoroutineScope()
+        val pullToRefreshState = rememberPullToRefreshState()
+        val modalSheetState = rememberModalBottomSheetState()
         val scrollBehavior = LocalScrollBehavior.current
+
+        var isRefreshing by remember { mutableStateOf(false) }
+        val (isTopBarVisible, topBarHeight) = rememberTopBarVisibilityState(listState)
+
         val postScreenModel = koinScreenModel<PostScreenModel>()
+
+        val padding by animateDpAsState(
+            targetValue = topBarHeight,
+            animationSpec = tween(durationMillis = 150)
+        )
+
         Scaffold(
             floatingActionButton = {
                 AnimatedVisibility(
-                    visible = listState.isScrollingUp().value,
-                    enter = fadeIn(),
-                    exit = fadeOut()
+                    visible = isTopBarVisible, enter = fadeIn(), exit = fadeOut()
                 ) {
-                    FloatingActionButton(
-                        onClick = {
-
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = null
-                        )
+                    FloatingActionButton(onClick = {}) {
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                     }
                 }
-            }
-        ) { pVal ->
-            Column {
-                Row(){
+            }) { pVal ->
+
+            if (postScreenModel.showFilterSheet.collectAsState().value) {
+                ModalBottomSheet(
+                    sheetState = modalSheetState,
+                    dragHandle = null,
+                    containerColor = MaterialTheme.colorScheme.background,
+                    onDismissRequest = {
+                        isRefreshing = true
+                        scope.launch { modalSheetState.hide() }
+                        postScreenModel.onAction(PostScreenAction.OnFilterSheetStateChange(false))
+                        postScreenModel.onAction(PostScreenAction.OnUpdateFilter)
+                        isRefreshing = false
+                    }
+                ) {
+                    FilterBottomSheetContent(
+                        onDismiss = {},
+                        postScreenModel = postScreenModel
+                    )
                 }
+            }
+
+            PullToRefreshBox(
+                modifier = Modifier.statusBarsPadding(),
+                isRefreshing = isRefreshing,
+                state = pullToRefreshState,
+                onRefresh = {
+                    scope.launch {
+                        isRefreshing = true
+                        delay(2000L)
+                        isRefreshing = false
+                    }
+                }
+            ) {
                 LazyColumn(
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .padding(pVal),
+                        .padding(top = padding),
                     state = listState,
                 ) {
                     items(10) {
@@ -120,6 +181,7 @@ class PostScreen : Screen {
                             post = Post(
                                 postId = 1,
                                 user = getEmptyUserDto(),
+                                createdAt = "1h",
                                 content = LOREM,
                                 images = listOf(
                                     DummyBgImage,
@@ -128,13 +190,96 @@ class PostScreen : Screen {
                                 ),
                             )
                         )
-
                     }
                 }
+                TopBar(topBarHeight = topBarHeight, onClick = {
+                    postScreenModel.onAction(PostScreenAction.OnFilterSheetStateChange(true))
+                })
             }
         }
     }
 
+    @Composable
+    fun FilterBottomSheetContent(
+        onDismiss: () -> Unit,
+        postScreenModel: PostScreenModel
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(12.sdp),
+        ) {
+
+            Box(
+                modifier = Modifier.width(50.sdp).height(3.sdp).clip(RoundedCornerShape(50))
+                    .background(Color(0xFFBBC0C4)).align(Alignment.CenterHorizontally)
+            )
+
+            Title(
+                text = "Filters",
+                size = 16.ssp,
+                textColor = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(vertical = 8.sdp).align(Alignment.CenterHorizontally)
+            )
+
+            SettingsCheckbox(
+                state = postScreenModel.selectAllUserTypes.value,
+                title = { Text(text = "Select All", fontWeight = FontWeight.W600) },
+                enabled = true,
+                onCheckedChange = { postScreenModel.onAction(PostScreenAction.OnToggleSelectAll) },
+            )
+
+            postScreenModel.userTypeFilters.collectAsState().value
+                .forEachIndexed { ixd, filter ->
+                    SettingsCheckbox(
+                        modifier = Modifier.padding(start = 10.dp)
+                            .offset(y = (-20 * (ixd + 1)).dp),
+                        state = filter.value,
+                        title = { Text(text = filter.key.lowercase().capitalize()) },
+                        enabled = true,
+                        onCheckedChange = {
+                            postScreenModel.onAction(
+                                PostScreenAction.OnFilterChange(
+                                    filter.copy(value = !filter.value)
+                                )
+                            )
+                        },
+                    )
+                }
+
+
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun TopBar(topBarHeight: Dp, onClick: () -> Unit) {
+        TopAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(topBarHeight)
+                .animateContentSize(animationSpec = tween(durationMillis = 150)),
+            title = {
+                Text(
+                    text = stringResource(Res.string.app_name),
+                    style = TextStyle(
+                        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+            },
+            actions = {
+                IconButton(onClick = onClick) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Default.FilterList,
+                        contentDescription = null
+                    )
+                }
+            }
+        )
+    }
 
 
     @Composable
@@ -159,15 +304,14 @@ class PostScreen : Screen {
                         fontWeight = FontWeight(700)
                     )
                     SText(
-                        "  . 1h",
+                        "  . ${post.createdAt}",
                         fontSize = 12.sp,
                         fontWeight = FontWeight(400),
                         textColor = Color.Gray
                     )
                 }
                 ExpandableText(
-                    text = LOREM,
-                    fontSize = 15.sp
+                    text = post.content, fontSize = 15.sp
                 )
                 if (post.images.isNotEmpty()) {
                     PostImages(images = post.images)
@@ -180,7 +324,9 @@ class PostScreen : Screen {
                         painter = painterResource(if (isLiked) Res.drawable.heart else Res.drawable.heart_outlined),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp).clickable(onClick = { isLiked = !isLiked }),
-                        tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurface.copy(.2f)
+                        tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurface.copy(
+                            .2f
+                        )
                     )
                     Icon(
                         imageVector = Icons.Outlined.Share,
@@ -190,44 +336,52 @@ class PostScreen : Screen {
                     )
                 }
                 HorizontalDivider(
-                    thickness = .5.dp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(.2f)
+                    thickness = .5.dp, color = MaterialTheme.colorScheme.onSurface.copy(.2f)
                 )
             }
         }
     }
 
     @Composable
-    fun ColumnScope.PostImages(images: List<String>) {
+    fun PostImages(images: List<String>) {
         val pagerState = rememberPagerState(initialPage = 0, pageCount = { images.size })
         HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxWidth().heightIn(max = 200.dp)
+            state = pagerState, modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp)
         ) { page ->
 
             val painterReq = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalPlatformContext.current)
-                    .data(images[page])
-                    .crossfade(true)
-                    .crossfade(300)
-                    .build()
+                model = ImageRequest.Builder(LocalPlatformContext.current).data(images[page])
+                    .crossfade(true).crossfade(300).build()
             )
 
             when (painterReq.state.collectAsState().value) {
                 is AsyncImagePainter.State.Success -> {
+
+                    val intrinsicHeight = painterReq.intrinsicSize.height
+                    val intrinsicWidth = painterReq.intrinsicSize.width
+                    val screenWidth = getScreenWidth()
+                    val aspectRatio = intrinsicWidth / intrinsicHeight
+                    val calculatedHeight by remember {
+                        derivedStateOf {
+                            (screenWidth / aspectRatio).coerceAtMost(300f).dp
+                        }
+                    }
+
                     Image(
+                        contentScale = ContentScale.FillBounds,
                         painter = painterReq,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.FillBounds
+                        modifier = Modifier.fillMaxWidth().height(calculatedHeight)
+                            .clip(RoundedCornerShape(8.dp))
                     )
                 }
 
-                AsyncImagePainter.State.Empty,
-                is AsyncImagePainter.State.Error -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
                         Title(
-                            "error",
+                            text = "error",
                             modifier = Modifier.clickable(onClick = { painterReq.restart() })
                         )
                     }
@@ -235,8 +389,7 @@ class PostScreen : Screen {
 
                 is AsyncImagePainter.State.Loading -> {
                     Box(
-                        modifier = Modifier.size(60.dp),
-                        contentAlignment = Alignment.Center
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                     ) {
                         LoadingAnimation()
                     }
@@ -262,7 +415,4 @@ class PostScreen : Screen {
             }
         }
     }
-
-
-
 }

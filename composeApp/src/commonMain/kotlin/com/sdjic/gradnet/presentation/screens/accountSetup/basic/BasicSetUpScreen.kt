@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
@@ -133,7 +134,7 @@ fun BasicSetUpScreen(
         ProfileBackgroundImages(onAction, basicState,true)
 
         Column {
-            Title(text = "${userRole.name} Verification", size = 16.ssp)
+            Title(text = "${userRole.name.capitalize()} Verification", size = 16.ssp)
             SText(text = "only once", textColor = MaterialTheme.colorScheme.secondary)
         }
         Spacer(Modifier.height(1.sdp))
@@ -142,7 +143,7 @@ fun BasicSetUpScreen(
                 when (userRole) {
                     UserRole.Alumni -> "Spid no"
                     UserRole.Faculty -> "Faculty id"
-                    UserRole.Organization -> "Oragnization id"
+                    UserRole.Organization -> "Organization id"
                 }
             )
         }

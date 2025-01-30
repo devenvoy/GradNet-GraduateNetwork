@@ -70,6 +70,7 @@ const val githubRepoUrl = "https://github.com/Gurupreet/ComposeCookBook"
 fun ProfileScreen(
     modifier: Modifier,
     drawerState: CustomDrawerState,
+    onEditClick: () -> Unit = {},
     onDrawerClick: (CustomDrawerState) -> Unit
 ) {
     val scrollState = rememberScrollState(0)
@@ -103,8 +104,7 @@ fun ProfileScreen(
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(8.sdp)
                 ) {
-
-                    EditButtonRow(onEditClick = {}, onShareClick = {})
+                    EditButtonRow(onEditClick = onEditClick, onShareClick = {})
                     //        SocialRow()
                     AboutMeSection()
                     InterestsSection()
@@ -145,7 +145,8 @@ fun TopAppBarView(scroll: Float, onMenuClick: () -> Unit) {
                         .padding(vertical = 4.dp, horizontal = 8.dp),
                     context = platformContext,
                     data = DummyDpImage,
-                    imageSize = 30.sdp
+                    borderWidth = 0.dp,
+                    imageSize = 32.dp
                 )
             },
             actions = {

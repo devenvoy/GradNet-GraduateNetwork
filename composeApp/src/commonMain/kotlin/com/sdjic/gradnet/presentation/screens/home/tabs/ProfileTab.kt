@@ -31,6 +31,7 @@ import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.helper.coloredShadow
 import com.sdjic.gradnet.presentation.helper.isOpened
+import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.demo.TestScreen
 import com.sdjic.gradnet.presentation.screens.onboarding.OnBoardingScreen
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
@@ -124,6 +125,7 @@ object ProfileTab : MyTab {
                         shadowRadius = 50.dp
                     ),
                 drawerState = drawerState,
+                onEditClick = { parentNavigator.push(SetUpScreen(true))},
                 onDrawerClick = { drawerState = it }
             )
         }

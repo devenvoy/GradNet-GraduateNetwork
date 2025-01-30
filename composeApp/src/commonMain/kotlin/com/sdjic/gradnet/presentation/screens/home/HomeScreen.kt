@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.BottomAppBar
@@ -18,8 +19,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -78,7 +81,8 @@ class HomeScreen : Screen {
                 ) {
                     Scaffold(
                         bottomBar = {
-                            BottomAppBar(scrollBehavior = scrollBehavior) {
+                            BottomAppBar(scrollBehavior = scrollBehavior
+                            , modifier = Modifier.padding(12.dp).clip(RoundedCornerShape(12.dp))) {
                                 bottomTabList.forEach { TabNavigationItem(it) }
                             }
                         }) { pVal ->
@@ -104,13 +108,14 @@ class HomeScreen : Screen {
             selected = isSelected,
             onClick = { tabNavigator.current = tab },
             colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = MaterialTheme.colorScheme.primary,
                 unselectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = .8f)
             ),
             label = {
                 SText(
                     tab.options.title,
                     fontSize = 10.ssp,
-                    fontWeight = FontWeight.W700
+                    fontWeight = FontWeight.W600,
                 )
             },
             alwaysShowLabel = false,

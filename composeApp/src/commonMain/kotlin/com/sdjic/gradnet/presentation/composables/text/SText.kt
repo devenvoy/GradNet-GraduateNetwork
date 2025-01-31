@@ -17,6 +17,7 @@ fun SText(
     modifier: Modifier = Modifier,
     textColor: Color = MaterialTheme.colorScheme.onBackground,
     fontSize: TextUnit = 10.ssp,
+    lineHeight: TextUnit = TextUnit.Unspecified,
     fontWeight: FontWeight? = null,
 ) {
     Text(
@@ -26,7 +27,8 @@ fun SText(
         style = TextStyle(
             fontWeight = fontWeight,
             color = textColor,
-            fontSize = fontSize
+            fontSize = fontSize,
+            lineHeight = lineHeight
         ),
     )
 }

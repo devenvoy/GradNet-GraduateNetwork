@@ -93,6 +93,7 @@ import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.app_name
 import gradnet_graduatenetwork.composeapp.generated.resources.heart
 import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
+import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.getScreenWidth
@@ -281,62 +282,60 @@ class PostScreen : Screen {
         )
     }
 
-
     @Composable
     fun PostItem(post: Post) {
         val platformContext = LocalPlatformContext.current
         var isLiked by remember { mutableStateOf(false) }
-        Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-            CircularProfileImage(
-                context = platformContext,
-                data = DummyDpImage,
-                imageSize = 42.dp,
-                borderWidth = 0.dp
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    SText(
-                        text = post.user.username ?: "",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight(700)
-                    )
-                    SText(
-                        "  . ${post.createdAt}",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight(400),
-                        textColor = Color.Gray
-                    )
-                }
-                ExpandableText(
-                    text = post.content, fontSize = 15.sp
+        Column(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+        ) {
+            Row {
+                CircularProfileImage(
+                    context = platformContext,
+                    data = DummyDpImage,
+                    imageSize = 36.dp,
+                    borderWidth = 0.dp
                 )
-                if (post.images.isNotEmpty()) {
-                    PostImages(images = post.images)
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Icon(
-                        painter = painterResource(if (isLiked) Res.drawable.heart else Res.drawable.heart_outlined),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp).clickable(onClick = { isLiked = !isLiked }),
-                        tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurface.copy(
-                            .2f
+                Column(modifier = Modifier.padding(horizontal = 6.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        SText(
+                            text = post.user.username ?: "",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight(800)
                         )
-                    )
-                    Icon(
-                        imageVector = Icons.Outlined.Share,
-                        contentDescription = null,
-                        modifier = Modifier.clickable(onClick = {}),
-                        tint = MaterialTheme.colorScheme.onSurface.copy(.2f)
+                        SText(
+                            text = "  . ${post.createdAt}",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(400),
+                            textColor = Color.Gray
+                        )
+                    }
+                    ExpandableText(
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        text = post.content,
+                        fontSize = 14.sp,
                     )
                 }
-                HorizontalDivider(
-                    thickness = .5.dp, color = MaterialTheme.colorScheme.onSurface.copy(.2f)
+            }
+            if (post.images.isNotEmpty()) {
+                PostImages(images = post.images)
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.sdp)
+            ) {
+                Icon(
+                    painter = painterResource(if (isLiked) Res.drawable.heart else Res.drawable.heart_outlined),
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp).clickable(onClick = { isLiked = !isLiked }),
+                    tint = if (isLiked) Color.Red
+                    else MaterialTheme.colorScheme.onSurface.copy(.4f)
+                )
+                Icon(
+                    painter = painterResource(Res.drawable.ic_share),
+                    contentDescription = null,
+                    modifier = Modifier.clickable(onClick = {}).size(28.dp),
+                    tint = MaterialTheme.colorScheme.onSurface.copy(.4f)
                 )
             }
         }
@@ -345,72 +344,77 @@ class PostScreen : Screen {
     @Composable
     fun PostImages(images: List<String>) {
         val pagerState = rememberPagerState(initialPage = 0, pageCount = { images.size })
-        HorizontalPager(
-            state = pagerState, modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp)
-        ) { page ->
+        Box {
+            HorizontalPager(
+                state = pagerState, modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp)
+            ) { page ->
 
-            val painterReq = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalPlatformContext.current).data(images[page])
-                    .crossfade(true).crossfade(300).build()
-            )
+                val painterReq = rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalPlatformContext.current).data(images[page])
+                        .crossfade(true).crossfade(300).build()
+                )
 
-            when (painterReq.state.collectAsState().value) {
-                is AsyncImagePainter.State.Success -> {
+                when (painterReq.state.collectAsState().value) {
+                    is AsyncImagePainter.State.Success -> {
 
-                    val intrinsicHeight = painterReq.intrinsicSize.height
-                    val intrinsicWidth = painterReq.intrinsicSize.width
-                    val screenWidth = getScreenWidth()
-                    val aspectRatio = intrinsicWidth / intrinsicHeight
-                    val calculatedHeight by remember {
-                        derivedStateOf {
-                            (screenWidth / aspectRatio).coerceAtMost(300f).dp
+                        val intrinsicHeight = painterReq.intrinsicSize.height
+                        val intrinsicWidth = painterReq.intrinsicSize.width
+                        val screenWidth = getScreenWidth()
+                        val aspectRatio = intrinsicWidth / intrinsicHeight
+                        val calculatedHeight by remember {
+                            derivedStateOf {
+                                (screenWidth / aspectRatio).coerceAtMost(300f).dp
+                            }
+                        }
+
+                        Image(
+                            contentScale = ContentScale.FillBounds,
+                            painter = painterReq,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(calculatedHeight)
+                                .clip(RoundedCornerShape(4.dp))
+                        )
+                    }
+
+                    AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Error -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                        ) {
+                            Title(
+                                text = "error",
+                                modifier = Modifier.clickable(onClick = { painterReq.restart() })
+                            )
                         }
                     }
 
-                    Image(
-                        contentScale = ContentScale.FillBounds,
-                        painter = painterReq,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().height(calculatedHeight)
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                }
-
-                AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                    ) {
-                        Title(
-                            text = "error",
-                            modifier = Modifier.clickable(onClick = { painterReq.restart() })
-                        )
-                    }
-                }
-
-                is AsyncImagePainter.State.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                    ) {
-                        LoadingAnimation()
+                    is AsyncImagePainter.State.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                        ) {
+                            LoadingAnimation()
+                        }
                     }
                 }
             }
-        }
-        if (images.size > 1) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                onboardingList.forEachIndexed { index, _ ->
-                    OnboardingPagerSlide(
-                        isSelected = index == pagerState.currentPage,
-                        selectedColor = MaterialTheme.colorScheme.primary,
-                        unselectedColor = Color.Gray,
-                        size = if (index == pagerState.currentPage) 6 else 4,
-                        spacer = 4,
-                        selectedLength = 6
-                    )
+            if (images.size > 1) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+                        .padding(bottom = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    onboardingList.forEachIndexed { index, _ ->
+                        OnboardingPagerSlide(
+                            isSelected = index == pagerState.currentPage,
+                            selectedColor = MaterialTheme.colorScheme.primary,
+                            unselectedColor = Color(0xFFD9D9D9),
+                            size = if (index == pagerState.currentPage) 6 else 4,
+                            spacer = 4,
+                            selectedLength = 12
+                        )
+                    }
                 }
             }
         }

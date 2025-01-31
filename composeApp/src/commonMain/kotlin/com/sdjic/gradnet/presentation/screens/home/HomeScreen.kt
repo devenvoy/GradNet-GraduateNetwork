@@ -13,6 +13,7 @@ import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,6 +50,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class HomeScreen : Screen {
     override val key: ScreenKey = uniqueScreenKey
+
     @Preview
     @Composable
     override fun Content() {
@@ -81,8 +84,11 @@ class HomeScreen : Screen {
                 ) {
                     Scaffold(
                         bottomBar = {
-                            BottomAppBar(scrollBehavior = scrollBehavior
-                            , modifier = Modifier.padding(12.dp).clip(RoundedCornerShape(12.dp))) {
+                            BottomAppBar(
+                                modifier = Modifier.shadow(16.dp),
+                                scrollBehavior = scrollBehavior,
+                                containerColor = MaterialTheme.colorScheme.background
+                            ) {
                                 bottomTabList.forEach { TabNavigationItem(it) }
                             }
                         }) { pVal ->

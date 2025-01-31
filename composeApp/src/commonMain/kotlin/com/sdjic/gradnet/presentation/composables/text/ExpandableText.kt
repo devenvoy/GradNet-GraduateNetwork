@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
 const val DEFAULT_MINIMUM_TEXT_LINE = 3
 
@@ -48,7 +50,7 @@ fun ExpandableText(
     text: String,
     collapsedMaxLine: Int = DEFAULT_MINIMUM_TEXT_LINE,
     showMoreText: String = "... Show More",
-    showMoreStyle: SpanStyle = SpanStyle(fontWeight = FontWeight.Bold),
+    showMoreStyle: SpanStyle = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF4987FB)),
     showLessText: String = " Show Less",
     showLessStyle: SpanStyle = showMoreStyle,
     textAlign: TextAlign? = null,
@@ -102,7 +104,8 @@ fun ExpandableText(
             },
             style = style,
             textAlign = textAlign,
-            fontSize = fontSize
+            fontSize = fontSize,
+            lineHeight = 14.sp
         )
     }
 }

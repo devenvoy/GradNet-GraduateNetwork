@@ -65,7 +65,7 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         _password.value = newValue
     }
 
-    fun changeGoogleDialogState(newValue: Boolean){
+    fun changeGoogleDialogState(newValue: Boolean) {
         _googleProcessDialog.value = newValue
     }
 
@@ -75,8 +75,6 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             val validationResult = validateInputs()
             if (validationResult != null) {
                 _signUpState.value = UiState.ValidationError(validationResult)
-                delay(200)
-                _signUpState.value = UiState.Idle
                 return@launch
             }
             if (ConnectivityManager.isConnected) {
@@ -101,17 +99,17 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         }
     }
 
-    fun signUpWithGoogle(){
+    fun signUpWithGoogle() {
         screenModelScope.launch {
             _signUpState.value = UiState.Loading
-            if(googleUser.value != null){
-                if(_selectedUserRole.value != null){
+            if (googleUser.value != null) {
+                if (_selectedUserRole.value != null) {
                     if (ConnectivityManager.isConnected) {
                         val result = authRepository.signUp(
                             SignUpRequest(
                                 username = googleUser.value!!.displayName,
-                                email =  googleUser.value!!.email,
-                                password =  googleUser.value!!.email!!.reversed(),
+                                email = googleUser.value!!.email,
+                                password = googleUser.value!!.email!!.reversed(),
                                 userType = _selectedUserRole.value!!.name
                             )
                         )
@@ -125,18 +123,18 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                     } else {
                         _signUpState.value = UiState.Error("Not Connected to Internet")
                     }
-                }else{
+                } else {
                     showErrorState("Please select your account type")
                 }
-            }else{
+            } else {
                 showErrorState("Google Sign up Failed")
             }
         }
     }
 
-    fun showErrorState(message: String){
+    fun showErrorState(message: String) {
         screenModelScope.launch {
-            if(_signUpState.value != UiState.Loading){
+            if (_signUpState.value != UiState.Loading) {
                 _signUpState.value = UiState.Loading
                 delay(1000L)
             }
@@ -144,28 +142,27 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         }
     }
 
-    private fun validateInputs(): Map<String, List<String>>? {
-        val errors = mutableMapOf<String, MutableList<String>>()
+    private fun validateInputs(): List<String>? {
+        val errors = mutableListOf<String>()
 
         if (_name.value.isBlank()) {
-            errors.getOrPut("name") { mutableListOf() }.add("Please enter your name")
+            errors.add("Please enter your name")
         }
 
         if (_email.value.isBlank()) {
-            errors.getOrPut("email") { mutableListOf() }.add("Please Enter an email address")
+            errors.add("Please Enter an email address")
         } else if (!isValidEmail(_email.value)) {
-            errors.getOrPut("email") { mutableListOf() }.add("Invalid email format.")
+            errors.add("Invalid email format.")
         }
 
         if (_password.value.text.isBlank()) {
-            errors.getOrPut("password") { mutableListOf() }.add("Please Enter a password")
+            errors.add("Please Enter a password")
         } else if (_password.value.text.length < 6) {
-            errors.getOrPut("password") { mutableListOf() }
-                .add("Password must be at least 6 characters long.")
+            errors.add("Password must be at least 6 characters long.")
         }
 
         if (_selectedUserRole.value == null) {
-            errors.getOrPut("role") { mutableListOf() }.add("Please select a your account type.")
+            errors.add("Please select a your account type.")
         }
 
         return if (errors.isEmpty()) null else errors

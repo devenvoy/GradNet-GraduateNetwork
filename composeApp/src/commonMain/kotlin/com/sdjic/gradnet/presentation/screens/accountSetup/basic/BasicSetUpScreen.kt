@@ -76,7 +76,6 @@ fun BasicSetUpScreen(
     userRole: UserRole,
     onAction: (BasicScreenAction) -> Unit,
 ) {
-
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
     val profileCropper = rememberImageCropper()
@@ -134,7 +133,7 @@ fun BasicSetUpScreen(
         ProfileBackgroundImages(onAction, basicState,true)
 
         Column {
-            Title(text = "${userRole.name.capitalize()} Verification", size = 16.ssp)
+            Title(text = "${userRole.name.lowercase().capitalize()} Verification", size = 16.ssp)
             SText(text = "only once", textColor = MaterialTheme.colorScheme.secondary)
         }
         Spacer(Modifier.height(1.sdp))

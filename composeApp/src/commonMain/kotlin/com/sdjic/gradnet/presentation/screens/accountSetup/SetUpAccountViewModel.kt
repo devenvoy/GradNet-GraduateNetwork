@@ -307,6 +307,7 @@ class SetUpAccountViewModel(
     private fun resendOtp() {
         screenModelScope.launch {
             _setUpOrEditState.update { UiState.Loading }
+            onBasicAction(BasicScreenAction.OnOtpFieldValueChange(""))
             userRepository.sendOtp(_basicState.value.verificationField)
                 .apply {
                     onSuccess { r ->

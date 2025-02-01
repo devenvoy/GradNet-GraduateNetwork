@@ -32,8 +32,6 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
             val validationResult = validateInputs()
             if (validationResult != null) {
                 _loginState.value = UiState.ValidationError(validationResult)
-                delay(200)
-                _loginState.value = UiState.Idle
                 return@launch
             }
             if(ConnectivityManager.isConnected){
@@ -81,19 +79,18 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
         }
     }
 
-    private fun validateInputs(): Map<String, List<String>>? {
-        val errors = mutableMapOf<String, MutableList<String>>()
+    private fun validateInputs(): List<String>? {
+        val errors = mutableListOf<String>()
         if (email.value.text.isBlank()) {
-            errors.getOrPut("email") { mutableListOf() }.add("Email cannot be empty.")
+            errors.add("Email cannot be empty.")
         } else if (!isValidEmail(email.value.text)) {
-            errors.getOrPut("email") { mutableListOf() }.add("Invalid email format.")
+            errors.add("Invalid email format.")
         }
 
         if (password.value.text.isBlank()) {
-            errors.getOrPut("password") { mutableListOf() }.add("Password cannot be empty.")
+            errors.add("Password cannot be empty.")
         } else if (password.value.text.length < 6) {
-            errors.getOrPut("password") { mutableListOf() }
-                .add("Password must be at least 6 characters long.")
+            errors.add("Password must be at least 6 characters long.")
         }
 
         return if (errors.isEmpty()) null else errors

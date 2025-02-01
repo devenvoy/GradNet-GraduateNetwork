@@ -79,7 +79,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.sdp.ssp.compose.multiplatform)
-            implementation(libs.cmptoast)
+//            implementation(libs.cmptoast)
+            implementation(libs.sonner)
 
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)

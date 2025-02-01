@@ -99,6 +99,7 @@ compottie-network = { module = "io.github.alexzhirkevich:compottie-network", ver
 compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottie" }
 
 cmptoast = { module = "network.chaintech:cmptoast", version.ref = "cmptoast" }
+sonner = { module = "io.github.dokar3:sonner", version = "0.3.8" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 
 kotlinx-coroutines-core-v164 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion" }

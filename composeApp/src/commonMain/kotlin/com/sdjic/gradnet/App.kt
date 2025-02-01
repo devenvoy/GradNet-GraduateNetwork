@@ -1,16 +1,21 @@
 package com.sdjic.gradnet
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
+import com.mmk.kmpauth.google.GoogleAuthCredentials
+import com.mmk.kmpauth.google.GoogleAuthProvider
 import com.sdjic.gradnet.di.appModules
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.helper.ConnectivityManager
 import com.sdjic.gradnet.presentation.screens.onboarding.OnBoardingScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
-import multiplatform.network.cmptoast.ToastDuration
-import multiplatform.network.cmptoast.showToast
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 import org.koin.compose.getKoin
@@ -19,6 +24,15 @@ import org.koin.compose.getKoin
 @Preview
 fun App() {
     AppTheme {
+        var authReady by remember{ mutableStateOf(false) }
+        LaunchedEffect(Unit){
+            ConnectivityManager.isConnected // just to call init
+            GoogleAuthProvider.create(credentials =
+            GoogleAuthCredentials("352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com"
+            ))
+            authReady = true
+        }
+
         KoinApplication(
             application = {
                 modules(appModules)
@@ -26,10 +40,13 @@ fun App() {
         ) {
             val keyStore = getKoin().get<AppCacheSetting>()
             if (keyStore.isLoggedIn) {
-                Navigator(SplashScreen())
+                Navigator(SplashScreen()) {
+                    SlideTransition(it)
+                }
             } else {
-                ConnectivityManager.isConnected // just to call init
-                Navigator(OnBoardingScreen())
+                if (authReady) {
+                    Navigator(OnBoardingScreen())
+                }
             }
         }
     }

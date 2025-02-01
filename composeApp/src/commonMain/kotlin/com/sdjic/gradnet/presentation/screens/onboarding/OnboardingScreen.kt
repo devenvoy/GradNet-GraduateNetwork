@@ -1,9 +1,7 @@
 package com.sdjic.gradnet.presentation.screens.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Album
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -22,13 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sdjic.gradnet.presentation.composables.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.composables.SecondaryOutlinedButton
+import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
+import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
+import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.gradnet.presentation.helper.AutoSwipePagerEffect
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -54,24 +50,25 @@ fun OnBoardingScreenContent(
 ) {
 
     val pagerState: PagerState = rememberPagerState(
-        pageCount = { onboardingList.size },
-        initialPageOffsetFraction = 0f
+        pageCount = { onboardingList.size }
     )
 
+    AutoSwipePagerEffect(pagerState = pagerState, durationMillis = 2000L)
+
     Scaffold { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.weight(1f)
             ) { page: Int ->
                 OnboardingPagerItem(onboardingList[page])
             }
             Column(
-                modifier = Modifier.align(Alignment.BottomCenter).padding(20.sdp),
+                modifier = Modifier.padding(vertical = 30.sdp, horizontal = 20.sdp),
                 verticalArrangement = Arrangement.spacedBy(10.sdp)
             ) {
                 Row(
@@ -84,9 +81,9 @@ fun OnBoardingScreenContent(
                             isSelected = index == pagerState.currentPage,
                             selectedColor = MaterialTheme.colorScheme.primary,
                             unselectedColor = Color.Gray,
-                            size = 6,
-                            spacer = 6,
-                            selectedLength = 12
+                            size = 8,
+                            spacer = 8,
+                            selectedLength = 14
                         )
                     }
                 }

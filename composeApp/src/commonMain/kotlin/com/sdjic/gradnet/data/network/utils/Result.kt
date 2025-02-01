@@ -3,6 +3,7 @@ package com.sdjic.gradnet.data.network.utils
 
 sealed interface Result<out D, out E: Error> {
     data class Success<out D>(val data: D): Result<D, Nothing>
+    data object Loading : Result<Nothing, Nothing>
     data class Error<out E: com.sdjic.gradnet.data.network.utils.Error>(val error: E): Result<Nothing, E>
 }
 
@@ -10,6 +11,7 @@ inline fun <T, E: Error, R> Result<T, E>.map(map: (T) -> R): Result<R, E> {
     return when(this) {
         is Result.Error -> Result.Error(error)
         is Result.Success -> Result.Success(map(data))
+        Result.Loading -> Result.Loading
     }
 }
 
@@ -24,6 +26,8 @@ inline fun <T, E: Error> Result<T, E>.onSuccess(action: (T) -> Unit): Result<T, 
             action(data)
             this
         }
+
+        Result.Loading -> this
     }
 }
 inline fun <T, E: Error> Result<T, E>.onError(action: (E) -> Unit): Result<T, E> {
@@ -33,6 +37,18 @@ inline fun <T, E: Error> Result<T, E>.onError(action: (E) -> Unit): Result<T, E>
             this
         }
         is Result.Success -> this
+        Result.Loading -> this
+    }
+}
+
+inline fun <T, E : Error> Result<T, E>.onLoading(action: () -> Unit): Result<T, E> {
+    return when (this) {
+        is Result.Error -> this
+        is Result.Success -> this
+        Result.Loading -> {
+            action()
+            this
+        }
     }
 }
 

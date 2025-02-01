@@ -4,7 +4,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.mmk.kmpauth.google.GoogleUser
+import com.sdjic.gradnet.data.network.entity.ServerResponse
 import com.sdjic.gradnet.data.network.entity.SignUpRequest
+import com.sdjic.gradnet.data.network.entity.SignUpResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting
@@ -24,14 +27,14 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
 
     private val prefs = getKoin().get<AppCacheSetting>()
 
-    private val _name = MutableStateFlow(TextFieldValue(""))
+    private val _name = MutableStateFlow("")
     val name = _name.asStateFlow()
 
-    private val _email = MutableStateFlow(TextFieldValue(""))
+    private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
 
-    private val _phone = MutableStateFlow(TextFieldValue(""))
-    val phone = _phone.asStateFlow()
+    private val _googleProcessDialog = MutableStateFlow(false)
+    val googleProcessDialog = _googleProcessDialog.asStateFlow()
 
     private val _password = MutableStateFlow(TextFieldValue(""))
     val password = _password.asStateFlow()
@@ -41,18 +44,20 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
 
     val userRoles = mutableStateOf(getUserRoles())
 
-    private val _selectedUserRole = MutableStateFlow(userRoles.value[0])
+    val googleUser = mutableStateOf<GoogleUser?>(null)
+
+    private val _selectedUserRole = MutableStateFlow<UserRole?>(null)
     val selectedUserRole = _selectedUserRole.asStateFlow()
 
     fun onUserRoleSelected(userRole: UserRole) {
         _selectedUserRole.value = userRole
     }
 
-    fun onNameChange(newValue: TextFieldValue) {
+    fun onNameChange(newValue: String) {
         _name.value = newValue
     }
 
-    fun onEmailChange(newValue: TextFieldValue) {
+    fun onEmailChange(newValue: String) {
         _email.value = newValue
     }
 
@@ -60,8 +65,8 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         _password.value = newValue
     }
 
-    fun onPhoneChange(newValue: TextFieldValue) {
-        _phone.value = newValue
+    fun changeGoogleDialogState(newValue: Boolean) {
+        _googleProcessDialog.value = newValue
     }
 
     fun signUp() {
@@ -70,23 +75,20 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             val validationResult = validateInputs()
             if (validationResult != null) {
                 _signUpState.value = UiState.ValidationError(validationResult)
-                delay(200)
-                _signUpState.value = UiState.Idle
                 return@launch
             }
-            val result = authRepository.signUp(
-                SignUpRequest(
-                    name = _name.value.text,
-                    email = _email.value.text,
-                    phoneNo = _phone.value.text,
-                    password = _password.value.text,
-                    address = "  "
-                )
-            )
             if (ConnectivityManager.isConnected) {
-                result.onSuccess {
-//                    prefs.accessToken = it.value?.accessToken.toString()
-                    prefs.userId = it.value?.userId.toString()
+                val result = authRepository.signUp(
+                    SignUpRequest(
+                        username = _name.value,
+                        email = _email.value,
+                        password = _password.value.text,
+                        userType = _selectedUserRole.value!!.name
+                    )
+                )
+                result.onSuccess { it: ServerResponse<SignUpResponse> ->
+                    prefs.accessToken = it.value?.accessToken.toString()
+                    prefs.userId = it.value?.user?.userId.toString()
                     _signUpState.value = UiState.Success(it)
                 }.onError {
                     _signUpState.value = UiState.Error(it.detail)
@@ -97,34 +99,70 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         }
     }
 
-    private fun validateInputs(): Map<String, List<String>>? {
-        val errors = mutableMapOf<String, MutableList<String>>()
+    fun signUpWithGoogle() {
+        screenModelScope.launch {
+            _signUpState.value = UiState.Loading
+            if (googleUser.value != null) {
+                if (_selectedUserRole.value != null) {
+                    if (ConnectivityManager.isConnected) {
+                        val result = authRepository.signUp(
+                            SignUpRequest(
+                                username = googleUser.value!!.displayName,
+                                email = googleUser.value!!.email,
+                                password = googleUser.value!!.email!!.reversed(),
+                                userType = _selectedUserRole.value!!.name
+                            )
+                        )
+                        result.onSuccess { it: ServerResponse<SignUpResponse> ->
+                            prefs.accessToken = it.value?.accessToken.toString()
+                            prefs.userId = it.value?.user?.userId.toString()
+                            _signUpState.value = UiState.Success(it)
+                        }.onError {
+                            _signUpState.value = UiState.Error(it.detail)
+                        }
+                    } else {
+                        _signUpState.value = UiState.Error("Not Connected to Internet")
+                    }
+                } else {
+                    showErrorState("Please select your account type")
+                }
+            } else {
+                showErrorState("Google Sign up Failed")
+            }
+        }
+    }
 
-        if (_name.value.text.isBlank()) {
-            errors.getOrPut("name") { mutableListOf() }.add("Name cannot be empty.")
+    fun showErrorState(message: String) {
+        screenModelScope.launch {
+            if (_signUpState.value != UiState.Loading) {
+                _signUpState.value = UiState.Loading
+                delay(1000L)
+            }
+            _signUpState.value = UiState.Error(message)
+        }
+    }
+
+    private fun validateInputs(): List<String>? {
+        val errors = mutableListOf<String>()
+
+        if (_name.value.isBlank()) {
+            errors.add("Please enter your name")
         }
 
-        if (_email.value.text.isBlank()) {
-            errors.getOrPut("email") { mutableListOf() }.add("Email cannot be empty.")
-        } else if (!isValidEmail(_email.value.text)) {
-            errors.getOrPut("email") { mutableListOf() }.add("Invalid email format.")
+        if (_email.value.isBlank()) {
+            errors.add("Please Enter an email address")
+        } else if (!isValidEmail(_email.value)) {
+            errors.add("Invalid email format.")
         }
 
         if (_password.value.text.isBlank()) {
-            errors.getOrPut("password") { mutableListOf() }.add("Password cannot be empty.")
+            errors.add("Please Enter a password")
         } else if (_password.value.text.length < 6) {
-            errors.getOrPut("password") { mutableListOf() }
-                .add("Password must be at least 6 characters long.")
+            errors.add("Password must be at least 6 characters long.")
         }
 
-        if (_selectedUserRole.value.name.isBlank()) {
-            errors.getOrPut("role") { mutableListOf() }.add("Role cannot be empty.")
-        }
-
-        if (_phone.value.text.isBlank()) {
-            errors.getOrPut("phone") { mutableListOf() }.add("Phone cannot be empty.")
-        } else if (!isValidPhone(_phone.value.text)) {
-            errors.getOrPut("phone") { mutableListOf() }.add("Invalid phone number.")
+        if (_selectedUserRole.value == null) {
+            errors.add("Please select a your account type.")
         }
 
         return if (errors.isEmpty()) null else errors
@@ -139,9 +177,4 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         val indianPhonePattern = "^[6-9]\\d{9}$"
         return phone.matches(indianPhonePattern.toRegex())
     }
-
-    fun verifyOtp() {}
-
-    fun resendOtp() {}
-
 }

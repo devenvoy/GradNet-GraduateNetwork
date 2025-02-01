@@ -1,5 +1,10 @@
 package com.sdjic.gradnet.di.platform_di
 
+import android.content.Context
+import android.content.pm.ApplicationInfo
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.sdjic.gradnet.GradNetApp
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -20,5 +25,22 @@ actual fun getHttpClient(): HttpClient{
                 }
             )
         }
+        if (isDebugBuild(GradNetApp.AppContext)) {
+            engine {
+                addInterceptor(getChuckerInterceptor(GradNetApp.AppContext))
+            }
+        }
     }
+}
+
+private fun isDebugBuild(context: Context): Boolean {
+    return (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+}
+
+private fun getChuckerInterceptor(context: Context): ChuckerInterceptor {
+    return ChuckerInterceptor.Builder(context = context)
+        .collector(collector = ChuckerCollector(context, showNotification = true))
+        .maxContentLength(Long.MAX_VALUE)
+        .alwaysReadResponseBody(true)
+        .build()
 }

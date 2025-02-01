@@ -26,25 +26,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sdjic.gradnet.presentation.composables.CustomInputField
-import com.sdjic.gradnet.presentation.composables.CustomInputPasswordField
-import com.sdjic.gradnet.presentation.composables.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.composables.SecondaryOutlinedButton
-import com.sdjic.gradnet.presentation.composables.Title
+import com.mmk.kmpauth.google.GoogleButtonUiContainer
+import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
+import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
+import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.gradnet.presentation.composables.text.Title
+import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
+import com.sdjic.gradnet.presentation.composables.textInput.CustomInputPasswordField
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Mail
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.btn_google_sing_in
+import gradnet_graduatenetwork.composeapp.generated.resources.alternate_email
+import gradnet_graduatenetwork.composeapp.generated.resources.create_account
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
@@ -53,6 +58,7 @@ import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 class LoginScreen : Screen {
     @Composable
@@ -61,7 +67,7 @@ class LoginScreen : Screen {
         val loginScreenModel = koinScreenModel<LoginScreenModel>()
         LoginScreenContent(
             loginScreenModel = loginScreenModel,
-            onLoginSuccess = {navigator.replace(HomeScreen())},
+            onLoginSuccess = { navigator.replace(HomeScreen()) },
             navigateToSignUp = { navigator.replace(SignUpScreen(true)) },
             navigateToForgotPasswordScreen = {}
         )
@@ -134,30 +140,29 @@ class LoginScreen : Screen {
                 size = 22.ssp,
                 textColor = MaterialTheme.colorScheme.onSurface,
             )
-            Column {
-                CustomInputField(
-                    fieldTitle = "Email",
-                    textFieldValue = viewModel.email.value,
-                    onValueChange = { viewModel.email.value = it },
-                    placeholder = { Text("Enter email") },
-                    trailingIcon = {
-                        Icon(
-                            modifier = Modifier.size(20.sdp),
-                            imageVector = FeatherIcons.Mail,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = "Email icon",
-                        )
-                    },
-                )
-                Spacer(modifier = Modifier.height(10.sdp))
-                CustomInputPasswordField(
-                    fieldTitle = "Password",
-                    textFieldValue = viewModel.password.value,
-                    onValueChange = { viewModel.password.value = it },
-                    placeholder = { Text("Password") },
-                    isPasswordField = true
-                )
-            }
+            CustomInputField(
+                fieldTitle = "Email",
+                textFieldValue = viewModel.email.value.text,
+                onValueChange = { viewModel.email.value = viewModel.email.value.copy(it) },
+                placeholder = { Text("Enter email") },
+                trailingIcon = {
+                    Icon(
+                        modifier = Modifier.size(20.sdp),
+                        painter = painterResource(Res.drawable.alternate_email),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = "Email icon",
+                    )
+                },
+            )
+//            Spacer(modifier = Modifier.height(10.sdp))
+            CustomInputPasswordField(
+                fieldTitle = "Password",
+                textFieldValue = viewModel.password.value,
+                onValueChange = { viewModel.password.value = it },
+                placeholder = { Text("Password") },
+                isPasswordField = true
+            )
+            Spacer(modifier = Modifier.height(4.sdp))
             PrimaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { viewModel.login() },
@@ -178,39 +183,49 @@ class LoginScreen : Screen {
                     fontSize = 12.ssp
                 )
             }
-            Image(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(onClick = {
-                        /* val options =
-                             GoogleSignInOptions
-                                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                 .requestIdToken(App.instance.resources.getString(R.string.web_api_key))
-                                 .requestEmail()
-                                 .build()
-                         val gso = GoogleSignIn.getClient(App.instance, options)
-                         gso.signOut()
-                         launcher.launch(gso.signInIntent)*/
-                    }),
-                painter = painterResource(Res.drawable.btn_google_sing_in),
-                contentDescription = "google sign in",
-            )
+
+            GoogleButtonUiContainer(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onGoogleSignInResult = { googleUser ->
+                    if (googleUser != null) {
+                        viewModel.loginWithGoogle(googleUser)
+                    } else {
+                        viewModel.showErrorState("Login Failed")
+                    }
+                }) {
+                GoogleSignInButton(onClick = { this.onClick() })
+            }
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(20.sdp))
-                SText(
-                    text = "Don't have an account yet?",
-                    fontSize = 12.ssp,
-                    fontWeight = FontWeight.W400
-                )
-                Spacer(modifier = Modifier.height(10.sdp))
-                SecondaryOutlinedButton(
-                    modifier = Modifier
-                        .padding(horizontal = 10.sdp)
-                        .fillMaxWidth(),
-                    onClick = { navigateToSignUp() }
+                Text(
+                    modifier = Modifier.clickable(onClick = { navigateToSignUp() }),
+                    text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontSize = 12.ssp,
+                            fontWeight = FontWeight.W400,
+                            fontFamily = displayFontFamily()
+                        )
+                    ) {
+                        append("Don't have an account yet?")
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 12.ssp,
+                            fontWeight = FontWeight.W400,
+                            fontFamily = displayFontFamily(),
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    ){
+                        append(stringResource(Res.string.create_account))
+                    }
+                }
                 )
             }
         }

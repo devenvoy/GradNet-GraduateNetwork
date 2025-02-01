@@ -27,11 +27,11 @@ fun OnboardingPagerSlide(
     ) {
         val color: Color by animateColorAsState(
             targetValue = if (isSelected) selectedColor else unselectedColor,
-            animationSpec = tween(durationMillis = 1000)
+            animationSpec = tween(durationMillis = 500)
         )
         val width: Dp by animateDpAsState(
             targetValue = if (isSelected) selectedLength.sdp else size.sdp,
-            animationSpec = tween(durationMillis = 1000)
+            animationSpec = tween(durationMillis = 500)
         )
 
         Box(

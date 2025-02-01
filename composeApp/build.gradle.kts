@@ -30,7 +30,6 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
-            linkerOpts.add("-framework AVFoundation")
         }
     }
 
@@ -41,6 +40,7 @@ kotlin {
 
             implementation(compose.uiTooling)
             implementation(libs.ktor.client.okhttp)
+            implementation("com.github.chuckerteam.chucker:library:4.1.0")
         }
 
         commonMain.dependencies {
@@ -56,6 +56,7 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenModel)
             implementation(libs.voyager.transitions)
+            implementation(libs.voyager.tabNavigator)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
@@ -63,8 +64,6 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(libs.mvvm.core)
-
-//            implementation("network.chaintech:cmp-preference:1.0.0")
 
             // #1 - Basic settings
             implementation(libs.multiplatform.settings.no.arg)
@@ -80,7 +79,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.sdp.ssp.compose.multiplatform)
-            implementation(libs.cmptoast)
+//            implementation(libs.cmptoast)
+            implementation(libs.sonner)
 
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
@@ -96,9 +96,6 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.encoding)
             implementation(libs.ktor.client.serialization)
-
-            implementation(libs.materialcolors)
-            implementation (libs.fontawesomecompose)
             implementation(libs.composeIcons.featherIcons)
 
             api(libs.moko.permissions)
@@ -114,17 +111,18 @@ kotlin {
 
             implementation(libs.kmp.date.time.picker)
 
-            implementation(libs.peekaboo.ui)
-            implementation(libs.peekaboo.image.picker)
+            implementation(libs.cmp.image.pick.n.crop)
+            implementation(libs.paging.compose.common)
 
-            implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
-
+            implementation(libs.kmpauth.google) //Google One Tap Sign-In
+            implementation(libs.kmpauth.uihelper) //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
+            // for network status
             implementation(libs.connectivity.core)
             implementation(libs.connectivity.device)
-
-            // For compose support
             implementation(libs.connectivity.compose.device)
 
+            implementation(libs.composeSettings.ui)
+            implementation(libs.composeSettings.ui.extended)
         }
 
         iosMain.dependencies {
@@ -168,12 +166,10 @@ dependencies {
 
 buildConfig {
     // BuildConfig configuration here.
-    // https://github.com/gmazzo/gradle-buildconfig-plugin#usage-in-kts
-    buildConfigField("APP_NAME", project.name)
+    buildConfigField("APP_NAME", project.project.name)
     buildConfigField("APP_VERSION_CODE", project.version.toString())
     buildConfigField("APP_VERSION_NAME", project.version.toString())
-    buildConfigField("BASE_URL", "https://grednet-production-3341.up.railway.app")
-
+    buildConfigField("BASE_URL", "https://grednet-production.up.railway.app")
 }
 
 ksp {
@@ -182,6 +178,8 @@ ksp {
 
 dependencies {
 
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.ui.android)
     // Android
     add("kspAndroid", libs.room.compiler)
 

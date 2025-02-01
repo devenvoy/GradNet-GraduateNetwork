@@ -13,6 +13,4 @@ import com.sdjic.gradnet.presentation.core.model.UserProfile
 interface AuthRepository {
     suspend fun login(email: String, password: String): Result<ServerResponse<LoginResponse>, ServerError>
     suspend fun signUp(signUpRequest: SignUpRequest): Result<ServerResponse<SignUpResponse>, ServerError>
-    suspend fun verifyUser(verificationId:String) : Result<ServerResponse<VerifyUserResponse>,ServerError>
-    suspend fun verifiedOtp(verificationId:String,otp:String) : Result<ServerResponse<UserProfileResponse>,ServerError>
 }

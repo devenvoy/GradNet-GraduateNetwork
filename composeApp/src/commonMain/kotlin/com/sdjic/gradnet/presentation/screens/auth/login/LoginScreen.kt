@@ -140,30 +140,29 @@ class LoginScreen : Screen {
                 size = 22.ssp,
                 textColor = MaterialTheme.colorScheme.onSurface,
             )
-            Column {
-                CustomInputField(
-                    fieldTitle = "Email",
-                    textFieldValue = viewModel.email.value.text,
-                    onValueChange = { viewModel.email.value = viewModel.email.value.copy(it) },
-                    placeholder = { Text("Enter email") },
-                    trailingIcon = {
-                        Icon(
-                            modifier = Modifier.size(20.sdp),
-                            painter = painterResource(Res.drawable.alternate_email),
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = "Email icon",
-                        )
-                    },
-                )
-                Spacer(modifier = Modifier.height(10.sdp))
-                CustomInputPasswordField(
-                    fieldTitle = "Password",
-                    textFieldValue = viewModel.password.value,
-                    onValueChange = { viewModel.password.value = it },
-                    placeholder = { Text("Password") },
-                    isPasswordField = true
-                )
-            }
+            CustomInputField(
+                fieldTitle = "Email",
+                textFieldValue = viewModel.email.value.text,
+                onValueChange = { viewModel.email.value = viewModel.email.value.copy(it) },
+                placeholder = { Text("Enter email") },
+                trailingIcon = {
+                    Icon(
+                        modifier = Modifier.size(20.sdp),
+                        painter = painterResource(Res.drawable.alternate_email),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = "Email icon",
+                    )
+                },
+            )
+//            Spacer(modifier = Modifier.height(10.sdp))
+            CustomInputPasswordField(
+                fieldTitle = "Password",
+                textFieldValue = viewModel.password.value,
+                onValueChange = { viewModel.password.value = it },
+                placeholder = { Text("Password") },
+                isPasswordField = true
+            )
+            Spacer(modifier = Modifier.height(4.sdp))
             PrimaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { viewModel.login() },
@@ -217,7 +216,7 @@ class LoginScreen : Screen {
                     }
                     withStyle(
                         style = SpanStyle(
-                            color = Color.Blue,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 12.ssp,
                             fontWeight = FontWeight.W400,
                             fontFamily = displayFontFamily(),

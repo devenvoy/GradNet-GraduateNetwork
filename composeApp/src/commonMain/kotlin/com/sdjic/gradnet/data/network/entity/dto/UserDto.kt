@@ -6,18 +6,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserDto(
-    @SerialName("createdAt")
-    val createdAt: String? = null,
-    @SerialName("email")
-    val email: String?,
-    @SerialName("isVerified")
-    val isVerified: Boolean?,
-    @SerialName("type")
-    val type: String?,
-    @SerialName("updatedAt")
-    val updatedAt: String?,
-    @SerialName("userId")
-    val userId: String?,
-    @SerialName("username")
-    val username: String?
+    @SerialName("id") val userId: String?,
+    @SerialName("name") val username: String = "",
+    @SerialName("email") val email: String = "",
+    @SerialName("role") val userType: String = "",
+    @SerialName("verified") val isVerified: Boolean = false,
+    @SerialName("createdAt") val createdAt: String = "",
+    @SerialName("updatedAt") val updatedAt: String = "",
 )

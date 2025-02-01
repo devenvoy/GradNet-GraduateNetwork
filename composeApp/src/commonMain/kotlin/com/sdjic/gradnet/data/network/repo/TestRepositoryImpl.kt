@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.data.repo
+package com.sdjic.gradnet.data.network.repo
 
 import com.sdjic.gradnet.data.local.entity.Test
 import com.sdjic.gradnet.data.local.room.TestDao

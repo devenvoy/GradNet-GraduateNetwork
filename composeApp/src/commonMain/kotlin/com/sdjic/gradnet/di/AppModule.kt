@@ -3,10 +3,10 @@ package com.sdjic.gradnet.di
 import com.sdjic.gradnet.data.local.preference.AppCacheSettingImpl
 import com.sdjic.gradnet.data.local.room.GradNetDB
 import com.sdjic.gradnet.data.network.source.CoinPagingSource
-import com.sdjic.gradnet.data.repo.AuthRepositoryImpl
-import com.sdjic.gradnet.data.repo.CryptoRepository
-import com.sdjic.gradnet.data.repo.TestRepositoryImpl
-import com.sdjic.gradnet.data.repo.UserRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.CryptoRepository
+import com.sdjic.gradnet.data.network.repo.TestRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.UserRepositoryImpl
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
 import com.sdjic.gradnet.di.platform_di.platformModule
@@ -39,7 +39,7 @@ val userCases = module {
 
 val repositoryModule = module {
 
-    single<AuthRepository>{  AuthRepositoryImpl(get())}
+    single<AuthRepository>{  AuthRepositoryImpl(get()) }
     single <UserRepository>{ UserRepositoryImpl(get()) }
 
     // trying only

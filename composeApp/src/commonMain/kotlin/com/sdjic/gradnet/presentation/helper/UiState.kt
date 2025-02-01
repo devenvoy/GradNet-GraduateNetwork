@@ -19,7 +19,8 @@ sealed class UiState<out T> {
 
 typealias LoginUiState = UiState<ServerResponse<LoginResponse>>
 typealias SignUpUiState = UiState<ServerResponse<SignUpResponse>>
-typealias SetUpOrEditUiState = UiState<UserProfile>
+typealias SetUpOrEditUiState = UiState<String>
+typealias FetchUserUiState = UiState<UserProfile>
 
 @OptIn(ExperimentalMaterial3Api::class)
 val LocalScrollBehavior = compositionLocalOf<BottomAppBarScrollBehavior> {

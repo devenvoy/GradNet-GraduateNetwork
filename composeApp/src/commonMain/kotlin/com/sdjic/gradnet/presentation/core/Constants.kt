@@ -203,10 +203,10 @@ fun getEmptyUserDto() = UserDto(
     userId = "1",
     email = "test@gmail.com",
     isVerified = true,
-    type = "alumni",
+    userType = "alumni",
     username = "Devansh amdavadwala",
-    createdAt = null,
-    updatedAt = null,
+    createdAt = "",
+    updatedAt = "",
 )
 
 val DummyBgImage =

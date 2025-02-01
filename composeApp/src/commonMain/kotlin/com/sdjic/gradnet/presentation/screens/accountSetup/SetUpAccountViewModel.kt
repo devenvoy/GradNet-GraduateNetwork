@@ -9,6 +9,7 @@ import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.presentation.core.model.toBasicState
 import com.sdjic.gradnet.presentation.core.model.toEducationState
 import com.sdjic.gradnet.presentation.core.model.toProfessionState
+import com.sdjic.gradnet.presentation.helper.FetchUserUiState
 import com.sdjic.gradnet.presentation.helper.SetUpOrEditUiState
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
@@ -17,6 +18,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSc
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationState
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,8 +42,11 @@ class SetUpAccountViewModel(
     private val _isVerified = MutableStateFlow(false)
     val isVerified = _isVerified.asStateFlow()
 
-    private val _userData = MutableStateFlow<SetUpOrEditUiState>(UiState.Idle)
+    private val _userData = MutableStateFlow<FetchUserUiState>(UiState.Idle)
     val userData = _userData.asStateFlow()
+
+    private val _setUpOrEditState = MutableStateFlow<SetUpOrEditUiState>(UiState.Idle)
+    val setUpOrEditState = _setUpOrEditState.asStateFlow()
 
     private val prefs = getKoin().get<AppCacheSetting>()
 
@@ -64,11 +69,11 @@ class SetUpAccountViewModel(
         }
     }
 
-
     fun onBasicAction(basicScreenAction: BasicScreenAction) {
         when (basicScreenAction) {
-            BasicScreenAction.ResendOtp -> verifyOtp()
-            BasicScreenAction.VerifyOtp -> resendOtp()
+
+            BasicScreenAction.ResendOtp -> resendOtp()
+            BasicScreenAction.VerifyOtp -> verifyOtp()
 
             is BasicScreenAction.OnVerificationFieldValueChange -> {
                 _basicState.value =
@@ -206,27 +211,35 @@ class SetUpAccountViewModel(
         screenModelScope.launch {
             _professionState.value = when (action) {
                 is ProfessionScreenAction.OnAddExperience -> {
-                    val updatedExperiences = _professionState.value.experienceList + action.experience
+                    val updatedExperiences =
+                        _professionState.value.experienceList + action.experience
                     _professionState.value.copy(experienceList = updatedExperiences)
                 }
+
                 is ProfessionScreenAction.OnUpdateExperience -> {
-                    val updatedExperiences = _professionState.value.experienceList.toMutableList().apply {
-                        this[action.index] = action.experience
-                    }
+                    val updatedExperiences =
+                        _professionState.value.experienceList.toMutableList().apply {
+                            this[action.index] = action.experience
+                        }
                     _professionState.value.copy(experienceList = updatedExperiences)
                 }
+
                 is ProfessionScreenAction.OnRemoveExperience -> {
-                    val updatedExperiences = _professionState.value.experienceList.toMutableList().apply {
-                        removeAt(action.index)
-                    }
+                    val updatedExperiences =
+                        _professionState.value.experienceList.toMutableList().apply {
+                            removeAt(action.index)
+                        }
                     _professionState.value.copy(experienceList = updatedExperiences)
                 }
+
                 is ProfessionScreenAction.OnUpdateLinkedinUrl -> {
                     _professionState.value.copy(linkedinUrl = action.url)
                 }
+
                 is ProfessionScreenAction.OnUpdateGithubUrl -> {
                     _professionState.value.copy(githubUrl = action.url)
                 }
+
                 is ProfessionScreenAction.OnUpdateTwitterUrl -> {
                     _professionState.value.copy(twitterUrl = action.url)
                 }
@@ -238,6 +251,7 @@ class SetUpAccountViewModel(
                         _professionState.value
                     }
                 }
+
                 is ProfessionScreenAction.OnRemoveOtherUrl -> {
                     _professionState.value.copy(
                         otherUrls = _professionState.value.otherUrls.toMutableList().apply {
@@ -257,9 +271,52 @@ class SetUpAccountViewModel(
         }
     }
 
+    fun showErrorState(message: String) {
+        screenModelScope.launch {
+            if (_setUpOrEditState.value != UiState.Loading) {
+                _setUpOrEditState.value = UiState.Loading
+                delay(1000L)
+            }
+            _setUpOrEditState.value = UiState.Error(message)
+        }
+    }
 
-    private fun verifyOtp() {}
+    private fun verifyOtp() {
+        screenModelScope.launch {
+            _setUpOrEditState.update { UiState.Loading }
+            listOf(_basicState.value.verificationField, _basicState.value.otpField)
+                .any { it.isEmpty() }.also {
+                    if (it) {
+                        showErrorState("otp can not be verified"); return@launch
+                    }
+                }
+            val result = userRepository.verifyOtp(
+                _basicState.value.verificationField,
+                _basicState.value.otpField
+            )
+            result.onSuccess {
+                // todo check response and how can update ui on success
+                // also update access token here
+                _isVerified.value = true
+            }.onError {
+                showErrorState(it.detail)
+            }
+        }
+    }
 
-    private fun resendOtp() {}
-
+    private fun resendOtp() {
+        screenModelScope.launch {
+            _setUpOrEditState.update { UiState.Loading }
+            userRepository.sendOtp(_basicState.value.verificationField)
+                .apply {
+                    onSuccess { r ->
+                        _setUpOrEditState.update { UiState.Success(r.detail) }
+                        onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(true))
+                    }
+                    onError { e ->
+                        _setUpOrEditState.update { UiState.Error(e.detail) }
+                    }
+                }
+        }
+    }
 }

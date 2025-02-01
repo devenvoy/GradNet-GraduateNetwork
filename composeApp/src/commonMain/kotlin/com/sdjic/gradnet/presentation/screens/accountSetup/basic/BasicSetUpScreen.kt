@@ -168,6 +168,9 @@ fun BasicSetUpScreen(
                     contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 8.sdp),
                     onClick = {
                         onAction(
+                            BasicScreenAction.ResendOtp
+                        )
+                        onAction(
                             BasicScreenAction.OnOtpBottomSheetStateChange(true)
                         )
                         keyboardManager?.hide()

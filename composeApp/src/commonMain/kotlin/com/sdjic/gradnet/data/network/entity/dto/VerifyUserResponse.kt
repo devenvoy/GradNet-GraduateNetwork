@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class VerifyUserResponse(
     @SerialName("email")
-    var email: String = "",
+    var email: String,
     @SerialName("verify_id")
-    var verifyId: String = ""
+    var verifyId: String
 )

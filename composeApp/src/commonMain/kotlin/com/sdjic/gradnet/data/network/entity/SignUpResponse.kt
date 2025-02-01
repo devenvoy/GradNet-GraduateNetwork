@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SignUpResponse(
-    @SerialName("authToken")
+    @SerialName("access_token")
     val accessToken: String?,
     @SerialName("user")
     val user: UserDto?

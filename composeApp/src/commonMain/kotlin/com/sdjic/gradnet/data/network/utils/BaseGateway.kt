@@ -1,7 +1,7 @@
 package com.sdjic.gradnet.data.network.utils
 
 import co.touchlab.kermit.Logger
-import com.sdjic.gradnet.data.network.entity.ServerError
+import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.domain.utils.InternetException
 import com.sdjic.gradnet.domain.utils.PaginationItems
 import com.sdjic.gradnet.domain.utils.UnknownErrorException

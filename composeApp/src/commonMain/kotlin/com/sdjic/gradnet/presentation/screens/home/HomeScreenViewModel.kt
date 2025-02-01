@@ -6,7 +6,7 @@ import app.cash.paging.PagingData
 import app.cash.paging.cachedIn
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.sdjic.gradnet.data.network.entity.CryptoResponse
+import com.sdjic.gradnet.data.network.entity.response.CryptoResponse
 import com.sdjic.gradnet.data.network.source.CoinPagingSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

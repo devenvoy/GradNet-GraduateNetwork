@@ -5,9 +5,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.mmk.kmpauth.google.GoogleUser
-import com.sdjic.gradnet.data.network.entity.ServerResponse
-import com.sdjic.gradnet.data.network.entity.SignUpRequest
-import com.sdjic.gradnet.data.network.entity.SignUpResponse
+import com.sdjic.gradnet.data.network.entity.response.ServerResponse
+import com.sdjic.gradnet.data.network.entity.response.SignUpRequest
+import com.sdjic.gradnet.data.network.entity.response.SignUpResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting

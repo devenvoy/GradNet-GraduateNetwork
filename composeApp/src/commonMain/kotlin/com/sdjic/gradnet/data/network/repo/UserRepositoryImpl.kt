@@ -1,9 +1,9 @@
 package com.sdjic.gradnet.data.network.repo
 
 import GradNet_GraduateNetwork.composeApp.BuildConfig
-import com.sdjic.gradnet.data.network.entity.ServerError
-import com.sdjic.gradnet.data.network.entity.ServerResponse
-import com.sdjic.gradnet.data.network.entity.UserProfileResponse
+import com.sdjic.gradnet.data.network.entity.response.ServerError
+import com.sdjic.gradnet.data.network.entity.response.ServerResponse
+import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
 import com.sdjic.gradnet.data.network.entity.dto.VerifyUserResponse
 import com.sdjic.gradnet.data.network.utils.BaseGateway
 import com.sdjic.gradnet.data.network.utils.Result

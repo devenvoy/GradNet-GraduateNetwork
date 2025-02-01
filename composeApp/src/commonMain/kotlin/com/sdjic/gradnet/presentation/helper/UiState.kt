@@ -4,9 +4,9 @@ import androidx.compose.material3.BottomAppBarScrollBehavior
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.compositionLocalOf
 import cafe.adriel.voyager.navigator.Navigator
-import com.sdjic.gradnet.data.network.entity.LoginResponse
-import com.sdjic.gradnet.data.network.entity.ServerResponse
-import com.sdjic.gradnet.data.network.entity.SignUpResponse
+import com.sdjic.gradnet.data.network.entity.response.LoginResponse
+import com.sdjic.gradnet.data.network.entity.response.ServerResponse
+import com.sdjic.gradnet.data.network.entity.response.SignUpResponse
 import com.sdjic.gradnet.presentation.core.model.UserProfile
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

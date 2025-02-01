@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.data.network.entity
+package com.sdjic.gradnet.data.network.entity.response
 
 
 import kotlinx.serialization.SerialName

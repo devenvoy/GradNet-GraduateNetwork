@@ -53,6 +53,7 @@ import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
 import com.sdjic.gradnet.presentation.composables.filter.RoleSelectionItem
+import com.sdjic.gradnet.presentation.composables.images.BackButton
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
@@ -180,13 +181,7 @@ class SignUpScreen(
                 )
             }, navigationIcon = {
                 if (showNavigatorIcon) {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = FeatherIcons.ArrowLeft,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                    BackButton(onBackPressed)
                 }
             })
         }) { padding ->

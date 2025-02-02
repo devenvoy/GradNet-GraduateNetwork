@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
-import network.chaintech.sdpcomposemultiplatform.ssp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun Label(
@@ -15,7 +15,7 @@ fun Label(
     modifier: Modifier = Modifier,
     fontWeight: FontWeight = FontWeight.Bold,
     textColor: Color = MaterialTheme.colorScheme.onBackground,
-    size: TextUnit = 32.ssp
+    size: TextUnit = 26.sp
 ) {
     Text(
         modifier = modifier,

@@ -123,6 +123,7 @@ kotlin {
 
             implementation(libs.composeSettings.ui)
             implementation(libs.composeSettings.ui.extended)
+            implementation("com.github.skydoves:orbital:0.4.0")
         }
 
         iosMain.dependencies {

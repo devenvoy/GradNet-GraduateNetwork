@@ -1,24 +1,41 @@
 package com.sdjic.gradnet.presentation.screens.event
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,54 +43,67 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.data.network.entity.dto.EventDto
-import com.sdjic.gradnet.presentation.composables.EmptyScreen
 import com.sdjic.gradnet.presentation.composables.images.BannerWidget
+import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.gradnet.presentation.composables.text.Title
+import com.sdjic.gradnet.presentation.core.DummyBgImage
+import com.sdjic.gradnet.presentation.helper.AutoSwipePagerEffect
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 
-
-// for see about university and current affairs
 class EventScreen : Screen {
     @Composable
     override fun Content() {
         EventScreenContent()
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    private @Composable
+    private
+    @Composable
     fun EventScreenContent() {
         val eventScreenModel = koinScreenModel<EventScreenModel>()
-
+        val navigator = LocalNavigator.currentOrThrow
         val list by eventScreenModel.eventList.collectAsStateWithLifecycle()
 
-        BottomSheetScaffold(
-            sheetContent = {
-                EmptyScreen()
-            }
-        ){
-            Column {
-                BannerCarouselWidget(
-                    list,
-                )
+        Scaffold { pVal ->
+            Column(
+                modifier = Modifier.padding(pVal).fillMaxSize(),
+            ) {
+                Row(
+                    modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Title("Trending Events")
+                    TextButton(onClick = {}) {
+                        SText("View more")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                }
+
+                BannerCarouselWidget(list){
+                    navigator.push(EventDetailScreen(it))
+                }
             }
         }
-
-        /*LazyColumn {
-            items(list) {
-                Text(list.toString())
-            }
-        }*/
     }
 
     @Composable
     fun BannerCarouselWidget(
         banners: List<EventDto?>,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
+        onBannerClick: (EventDto) -> Unit = {}
     ) {
-        val pagerState = rememberPagerState(
-            initialPage = 2,
-            pageCount = { banners.size }
-        )
+        val pagerState = rememberPagerState(pageCount = { banners.size })
+        if (banners.isNotEmpty()) {
+            AutoSwipePagerEffect(pagerState, 2000L)
+        }
 
         Box(
             contentAlignment = Alignment.BottomCenter,
@@ -81,26 +111,47 @@ class EventScreen : Screen {
         ) {
             HorizontalPager(
                 state = pagerState,
-                contentPadding = PaddingValues(horizontal = 16.dp),
+                contentPadding = PaddingValues(horizontal = 32.dp),
                 pageSpacing = 8.dp,
                 verticalAlignment = Alignment.Top,
             ) { page ->
-                banners[page]?.eventPic?.let {
-                    BannerWidget(
-                        imageUrl = banners[page]?.eventPic!!,
-                        contentDescription = banners[page]?.eventTitle
-                    )
+                Card(
+                    modifier = Modifier.height(if (pagerState.currentPage == page) 220.dp else 200.dp)
+                        .offset(y = if (pagerState.currentPage == page) (-10).dp else 0.dp)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.BottomStart
+                    ) {
+                        BannerWidget(
+                            imageUrl = banners[page]?.eventPic ?: DummyBgImage,
+                            contentDescription = banners[page]?.eventTitle,
+                            modifier = Modifier.fillMaxHeight()
+                                .clickable { banners[page]?.let { onBannerClick(it) } }
+                        )
+                        Column(
+                            modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                        ) {
+                            Title(
+                                text = banners[page]?.eventTitle ?: "",
+                                textColor = MaterialTheme.colorScheme.background
+                            )
+                            SText(
+                                text = banners[page]?.description ?: "",
+                                textColor = MaterialTheme.colorScheme.background.copy(.7f)
+                            )
+                        }
+                    }
                 }
             }
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .padding(bottom = 16.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(pagerState.pageCount) { iteration ->
                     val color =
-                        if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                        if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary else Color.LightGray
                     Box(
                         modifier = Modifier
                             .padding(2.dp)

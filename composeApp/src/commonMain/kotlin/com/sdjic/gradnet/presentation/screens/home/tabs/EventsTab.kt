@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.transitions.ScaleTransition
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.event.EventScreen
@@ -31,6 +32,8 @@ object EventsTab : MyTab {
 
     @Composable
     override fun Content() {
-        Navigator(EventScreen())
+        Navigator(EventScreen()){
+            ScaleTransition(it)
+        }
     }
 }

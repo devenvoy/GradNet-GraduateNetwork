@@ -23,7 +23,8 @@ fun CustomImageChip(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showEndIcon: Boolean = true
 ) {
     Surface(
         color = when {
@@ -54,7 +55,7 @@ fun CustomImageChip(
                 modifier = Modifier.padding(8.sdp),
                 textColor = MaterialTheme.colorScheme.onSecondary
             )
-            if (selected) {
+            if (selected && showEndIcon) {
                 Icon(
                     imageVector = Icons.Filled.Done,
                     contentDescription = "Done icon",

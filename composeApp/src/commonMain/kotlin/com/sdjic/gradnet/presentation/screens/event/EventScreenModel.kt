@@ -29,8 +29,6 @@ class EventScreenModel(
             startDate = null,
             endDate = null
         )
-        _eventList.update {
-            result?.value?.eventDtos ?: it
-        }
+        _eventList.update { result?.value?.eventDtos ?: it }
     }
 }

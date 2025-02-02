@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -115,7 +116,7 @@ class LoginScreen : Screen {
         UiStateHandler(
             uiState = loginState,
             onErrorShowed = {},
-            content = { onLoginSuccess() }
+            content = { LaunchedEffect(Unit) { onLoginSuccess() } }
         )
     }
 
@@ -204,28 +205,28 @@ class LoginScreen : Screen {
                 Text(
                     modifier = Modifier.clickable(onClick = { navigateToSignUp() }),
                     text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontSize = 12.ssp,
-                            fontWeight = FontWeight.W400,
-                            fontFamily = displayFontFamily()
-                        )
-                    ) {
-                        append("Don't have an account yet?")
+                        withStyle(
+                            style = SpanStyle(
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 12.ssp,
+                                fontWeight = FontWeight.W400,
+                                fontFamily = displayFontFamily()
+                            )
+                        ) {
+                            append("Don't have an account yet?")
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 12.ssp,
+                                fontWeight = FontWeight.W400,
+                                fontFamily = displayFontFamily(),
+                                textDecoration = TextDecoration.Underline,
+                            )
+                        ) {
+                            append(stringResource(Res.string.create_account))
+                        }
                     }
-                    withStyle(
-                        style = SpanStyle(
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 12.ssp,
-                            fontWeight = FontWeight.W400,
-                            fontFamily = displayFontFamily(),
-                            textDecoration = TextDecoration.Underline,
-                        )
-                    ){
-                        append(stringResource(Res.string.create_account))
-                    }
-                }
                 )
             }
         }

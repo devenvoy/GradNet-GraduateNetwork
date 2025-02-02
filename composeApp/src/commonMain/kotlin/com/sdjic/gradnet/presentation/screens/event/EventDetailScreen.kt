@@ -76,13 +76,13 @@ class EventDetailScreen(
                 modifier = Modifier.padding(it)
                     .verticalScroll(rememberScrollState())
             ) {
-                eventDto.eventPic?.let {
+//                eventDto.eventPic?.let {
                     BannerWidget(
                         modifier = Modifier.height(250.dp),
-                        imageUrl = eventDto.eventPic,
+                        imageUrl = eventDto.eventPic ?: DummyBgImage,
                         contentDescription = null
                     )
-                }
+//                }
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)

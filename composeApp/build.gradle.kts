@@ -44,85 +44,51 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
             implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-
-            // Navigator
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.screenModel)
-            implementation(libs.voyager.transitions)
-            implementation(libs.voyager.tabNavigator)
-
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-
+            implementation(compose.runtime)
             implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
-            implementation(libs.mvvm.core)
-
-            // #1 - Basic settings
-            implementation(libs.multiplatform.settings.no.arg)
-
-            // #2 - For custom class serialization
-            implementation(libs.kotlinx.serialization.json.v141)
-            implementation(libs.multiplatform.settings.serialization)
-
-            // #3 - For observing values as flows
-            implementation(libs.kotlinx.coroutines.core.v164)
-            implementation(libs.multiplatform.settings.coroutines)
-
-            implementation(libs.kotlinx.datetime)
-
-            implementation(libs.sdp.ssp.compose.multiplatform)
-//            implementation(libs.cmptoast)
-            implementation(libs.sonner)
-
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
+            implementation(compose.foundation)
+            implementation(compose.components.resources)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.androidx.lifecycle.runtime.compose)
 
             implementation(libs.retrofit)
 
-            implementation(libs.coil.compose)
-            implementation(libs.coil.network.ktor)
+            implementation(libs.mvvm.core)
 
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.encoding)
-            implementation(libs.ktor.client.serialization)
+            implementation(libs.kotlinx.datetime)
+
+            implementation(compose.materialIconsExtended)
+
+            implementation(libs.kotlinx.serialization.json.v141)
+            implementation(libs.kotlinx.coroutines.core.v164)
+            implementation(libs.sdp.ssp.compose.multiplatform)
+
+            implementation(libs.bundles.koin)
+            implementation(libs.bundles.ktor)
+            implementation(libs.bundles.coil)
+            api(libs.bundles.moko.permissions)
+            implementation(libs.bundles.paging)
+            implementation(libs.bundles.voyager)
+            implementation(libs.bundles.compottie)
+            implementation(libs.bundles.connectivity)
+            implementation(libs.bundles.androidx.room)
+            implementation(libs.bundles.compose.settings)
+            implementation(libs.bundles.multiplatform.settings)
+
+            implementation(libs.sonner)
             implementation(libs.composeIcons.featherIcons)
-
-            api(libs.moko.permissions)
-            api(libs.moko.permissions.compose)
 
             implementation(libs.kermit)
             implementation(libs.kstore)
 
-            implementation(libs.compottie)
-            implementation(libs.compottie.dot)
-            implementation(libs.compottie.network)
-            implementation(libs.compottie.resources)
-
             implementation(libs.kmp.date.time.picker)
-
             implementation(libs.cmp.image.pick.n.crop)
-            implementation(libs.paging.compose.common)
 
-            implementation(libs.kmpauth.google) //Google One Tap Sign-In
-            implementation(libs.kmpauth.uihelper) //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
-            // for network status
-            implementation(libs.connectivity.core)
-            implementation(libs.connectivity.device)
-            implementation(libs.connectivity.compose.device)
+            implementation(libs.kmpauth.google)
+            implementation(libs.kmpauth.uihelper)
 
-            implementation(libs.composeSettings.ui)
-            implementation(libs.composeSettings.ui.extended)
             implementation("com.github.skydoves:orbital:0.4.0")
         }
 

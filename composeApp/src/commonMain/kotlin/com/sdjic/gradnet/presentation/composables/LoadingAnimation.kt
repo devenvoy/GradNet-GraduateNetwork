@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -36,7 +37,7 @@ fun LoadingAnimation() {
             .alpha(1f - progress)
             .border(
                 5.dp,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onBackground,
                 shape = CircleShape
             )
     )

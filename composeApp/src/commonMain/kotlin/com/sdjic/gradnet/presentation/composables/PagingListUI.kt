@@ -27,12 +27,12 @@ import app.cash.paging.compose.LazyPagingItems
 
 @Composable
 fun <T : Any> PagingListUI(
+    modifier: Modifier = Modifier,
     data: LazyPagingItems<T>,
     content: @Composable (T) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 

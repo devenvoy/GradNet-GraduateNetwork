@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.cash.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
+import com.sdjic.gradnet.presentation.composables.PagingListUI
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
@@ -30,19 +31,18 @@ class JobScreen : Screen {
         val viewModel = koinScreenModel<HomeScreenViewModel>()
         val data = viewModel.coinList.collectAsLazyPagingItems()
         Scaffold {
-            LazyColumn(modifier = Modifier.padding(it).padding(10.sdp)) {
-                items(data.itemCount) {
-                    ListItem(
-                        headlineContent = {
-                            Title(data[it]?.name ?: "")
-                        },
-                        supportingContent = {
-                            data[it]?.let {
-                                SText(it.toString())
-                            }
-                        }
-                    )
-                }
+            PagingListUI(
+                modifier = Modifier.padding(it).padding(10.sdp),
+                data = data
+            ) { item ->
+                ListItem(
+                    headlineContent = {
+                        Title(item.name)
+                    },
+                    supportingContent = {
+                        SText(item.toString())
+                    }
+                )
             }
         }
     }

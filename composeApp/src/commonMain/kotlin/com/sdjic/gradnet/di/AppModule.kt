@@ -2,7 +2,6 @@ package com.sdjic.gradnet.di
 
 import com.sdjic.gradnet.data.local.preference.AppCacheSettingImpl
 import com.sdjic.gradnet.data.local.room.GradNetDB
-import com.sdjic.gradnet.data.network.source.CoinPagingSource
 import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.CryptoRepository
 import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
@@ -38,7 +37,6 @@ val screenModelsModule = module {
 }
 
 val userCases = module {
-    single { CoinPagingSource(get()) }
 }
 
 val repositoryModule = module {

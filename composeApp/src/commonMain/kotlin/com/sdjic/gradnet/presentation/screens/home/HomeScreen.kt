@@ -3,6 +3,8 @@ package com.sdjic.gradnet.presentation.screens.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -115,7 +117,8 @@ class HomeScreen : Screen {
             onClick = { tabNavigator.current = tab },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = MaterialTheme.colorScheme.primary,
-                unselectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = .8f)
+                unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f),
+                indicatorColor = MaterialTheme.colorScheme.primary.copy(.1f)
             ),
             label = {
                 SText(
@@ -135,7 +138,7 @@ class HomeScreen : Screen {
                     }
                 }) {
                     Icon(
-                        modifier = Modifier.size(21.sdp),
+                        modifier = Modifier.size(20.sdp),
                         painter = painterResource(if (isSelected) tab.tabOption.selectedIcon else tab.tabOption.unselectedIcon),
                         contentDescription = tab.options.title
                     )

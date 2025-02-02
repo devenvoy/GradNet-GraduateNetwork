@@ -3,7 +3,6 @@ package com.sdjic.gradnet.data.network.utils
 import co.touchlab.kermit.Logger
 import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.domain.utils.InternetException
-import com.sdjic.gradnet.domain.utils.PaginationItems
 import com.sdjic.gradnet.domain.utils.UnknownErrorException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -88,8 +87,4 @@ abstract class BaseGateway(val client: HttpClient) {
         keys.containsAll(errorCodes.toList())
 
     private fun Map<String, String>.getOrEmpty(key: String): String = get(key) ?: ""
-
-    fun <T> paginateData(result: List<T>, page: Int, total: Long): PaginationItems<T> {
-        return PaginationItems(total = total, page = page, items = result)
-    }
 }

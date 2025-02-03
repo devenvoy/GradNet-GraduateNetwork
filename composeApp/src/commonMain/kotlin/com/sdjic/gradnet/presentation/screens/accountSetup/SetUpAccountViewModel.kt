@@ -1,11 +1,14 @@
 package com.sdjic.gradnet.presentation.screens.accountSetup
 
+import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.data.network.utils.toUserProfile
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.UserRepository
+import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.core.model.toBasicState
 import com.sdjic.gradnet.presentation.core.model.toEducationState
 import com.sdjic.gradnet.presentation.core.model.toProfessionState
@@ -59,14 +62,16 @@ class SetUpAccountViewModel(
             _userData.value = UiState.Loading
             val result = userRepository.fetchUser(prefs.accessToken)
             result.onSuccess { user ->
-                _basicState.update { user.toBasicState() }
-                _educationState.update { user.toEducationState() }
-                _professionState.update { user.toProfessionState() }
-                _userData.value = UiState.Success(user)
-            }.onError {
-                _userData.value = UiState.Error(it.detail)
-            }
+                user.value?.let { updateUserData(user.value.toUserProfile()) }
+            }.onError { _userData.value = UiState.Error(it.detail) }
         }
+    }
+
+    private fun updateUserData(user: UserProfile) {
+        _basicState.update { user.toBasicState() }
+        _educationState.update { user.toEducationState() }
+        _professionState.update { user.toProfessionState() }
+        _userData.value = UiState.Success(user)
     }
 
     fun onBasicAction(basicScreenAction: BasicScreenAction) {
@@ -96,6 +101,7 @@ class SetUpAccountViewModel(
             }
 
             is BasicScreenAction.OnBackgroundImageChange -> {
+                uploadImage(basicScreenAction.value, "BACKGROUND")
                 _basicState.value =
                     _basicState.value.copy(backgroundImage = basicScreenAction.value)
             }
@@ -106,6 +112,7 @@ class SetUpAccountViewModel(
             }
 
             is BasicScreenAction.OnProfileImageChange -> {
+                uploadImage(basicScreenAction.value, "PROFILE")
                 _basicState.value =
                     _basicState.value.copy(profileImage = basicScreenAction.value)
             }
@@ -318,6 +325,25 @@ class SetUpAccountViewModel(
                         _setUpOrEditState.update { UiState.Error(e.detail) }
                     }
                 }
+        }
+    }
+
+    private fun uploadImage(image: ImageBitmap, type: String) = screenModelScope.launch {
+        _setUpOrEditState.update { UiState.Loading }
+        userRepository.updateUserImages(
+            token = prefs.accessToken,
+            imageBitmap = image,
+            type = type
+        ).apply {
+            onSuccess { r ->
+                r.value?.let { user ->
+                    updateUserData(user.toUserProfile())
+                    _setUpOrEditState.update { UiState.Success(r.detail) }
+                }
+            }
+            onError { e ->
+                _setUpOrEditState.update { UiState.Error(e.detail) }
+            }
         }
     }
 }

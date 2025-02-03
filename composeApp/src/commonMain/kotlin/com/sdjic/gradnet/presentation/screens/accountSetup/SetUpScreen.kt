@@ -1,5 +1,6 @@
 package com.sdjic.gradnet.presentation.screens.accountSetup
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
@@ -37,6 +39,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.dokar.sonner.ToastType
+import com.dokar.sonner.Toaster
+import com.dokar.sonner.ToasterDefaults
+import com.dokar.sonner.rememberToasterState
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
@@ -48,6 +54,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSe
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionSetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
@@ -149,6 +156,29 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                         }
                     },
                     onErrorShowed = { }        // logout user
+                )
+
+
+                UiStateHandler(
+                    uiState = setUpAccountViewModel.setUpOrEditState.collectAsState().value,
+                    content={
+                        val toaster = rememberToasterState()
+                        LaunchedEffect(Clock.System.now()) {
+                            toaster.show(
+                                message =it,
+                                duration = ToasterDefaults.DurationLong,
+                                type = ToastType.Success
+                            )
+                        }
+                        Toaster(
+                            state = toaster,
+                            richColors = true,
+                            darkTheme = isSystemInDarkTheme(),
+                            showCloseButton = true,
+                            alignment = Alignment.BottomCenter,
+                        )
+                    },
+                    onErrorShowed = {}
                 )
             }
         }

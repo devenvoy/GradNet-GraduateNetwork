@@ -246,9 +246,7 @@ fun ProfileBackgroundImages(
         Box(modifier = Modifier.padding(top = 70.sdp, start = 10.sdp)) {
             val onProfileClick = {
                 onAction(
-                    BasicScreenAction.OnProfileDialogState(
-                        true
-                    )
+                    BasicScreenAction.OnProfileDialogState(true)
                 )
             }
             CircularProfileImage(

@@ -27,8 +27,8 @@ sealed class UiState<out T> {
     ) : UiState<Nothing>()
 }
 
-typealias LoginUiState = UiState<ServerResponse<LoginResponse>>
-typealias SignUpUiState = UiState<ServerResponse<SignUpResponse>>
+typealias LoginUiState = UiState<Boolean>
+typealias SignUpUiState = UiState<Boolean>
 typealias SetUpOrEditUiState = UiState<String>
 typealias FetchUserUiState = UiState<UserProfile>
 

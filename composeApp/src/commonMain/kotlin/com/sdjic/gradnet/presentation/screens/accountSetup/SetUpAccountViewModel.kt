@@ -306,6 +306,7 @@ class SetUpAccountViewModel(
                 }
             }.onError {
                 showErrorState(it.detail)
+                onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
             }
         }
     }

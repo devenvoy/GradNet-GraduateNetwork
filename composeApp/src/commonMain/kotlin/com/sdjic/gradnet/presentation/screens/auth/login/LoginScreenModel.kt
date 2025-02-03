@@ -37,9 +37,12 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
             if(ConnectivityManager.isConnected){
                 val result = authRepository.login(email.value.text, password.value.text)
                 result.onSuccess {
-                    prefs.accessToken = it.value?.accessToken.toString()
-                    prefs.userId  =it.value?.userDto?.userId.toString()
-                    _loginState.value = UiState.Success(it)
+                    it.value?.let { res ->
+                        prefs.accessToken = res.accessToken.toString()
+                        prefs.userId = res.userDto?.userId.toString()
+                        prefs.isVerified = res.userDto?.isVerified == true
+                        _loginState.value = UiState.Success(res.userDto?.isVerified == true)
+                    }
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
                 }
@@ -57,9 +60,12 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
             if(ConnectivityManager.isConnected){
                 val result = authRepository.login(googleUser.email!!,googleUser.email!!.reversed())
                 result.onSuccess {
-                    prefs.accessToken = it.value?.accessToken.toString()
-                    prefs.userId  =it.value?.userDto?.userId.toString()
-                    _loginState.value = UiState.Success(it)
+                    it.value?.let { res ->
+                        prefs.accessToken = res.accessToken.toString()
+                        prefs.userId = res.userDto?.userId.toString()
+                        prefs.isVerified = res.userDto?.isVerified == true
+                        _loginState.value = UiState.Success(res.userDto?.isVerified == true)
+                    }
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
                 }

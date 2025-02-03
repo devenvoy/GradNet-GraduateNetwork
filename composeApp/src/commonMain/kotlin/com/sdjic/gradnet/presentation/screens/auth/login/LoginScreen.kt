@@ -42,9 +42,9 @@ import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputPasswordField
-import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
@@ -68,7 +68,9 @@ class LoginScreen : Screen {
         val loginScreenModel = koinScreenModel<LoginScreenModel>()
         LoginScreenContent(
             loginScreenModel = loginScreenModel,
-            onLoginSuccess = { navigator.replace(HomeScreen()) },
+            onLoginResult = {
+                    navigator.replace(if (it) HomeScreen() else SetUpScreen(false))
+            },
             navigateToSignUp = { navigator.replace(SignUpScreen(true)) },
             navigateToForgotPasswordScreen = {}
         )
@@ -78,7 +80,7 @@ class LoginScreen : Screen {
     @Composable
     fun LoginScreenContent(
         loginScreenModel: LoginScreenModel,
-        onLoginSuccess: () -> Unit,
+        onLoginResult: (Boolean) -> Unit,
         navigateToSignUp: () -> Unit,
         navigateToForgotPasswordScreen: () -> Unit
     ) {
@@ -103,21 +105,13 @@ class LoginScreen : Screen {
                 contentDescription = "loader"
             )
             SignInLayout(loginScreenModel, navigateToSignUp, navigateToForgotPasswordScreen)
-            LoginStateUI(
-                loginState = loginState,
-                onLoginSuccess = onLoginSuccess
+
+            UiStateHandler(
+                uiState = loginState,
+                onErrorShowed = {},
+                content = { LaunchedEffect(Unit) { onLoginResult(it) } }
             )
         }
-
-    }
-
-    @Composable
-    fun LoginStateUI(loginState: UiState<Any>, onLoginSuccess: () -> Unit) {
-        UiStateHandler(
-            uiState = loginState,
-            onErrorShowed = {},
-            content = { LaunchedEffect(Unit) { onLoginSuccess() } }
-        )
     }
 
     @Composable

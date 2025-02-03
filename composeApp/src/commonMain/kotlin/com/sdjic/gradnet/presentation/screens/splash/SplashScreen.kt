@@ -11,18 +11,25 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.LocalPlatformContext
+import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.composables.images.RoundedCornerImage
+import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import kotlinx.coroutines.delay
+import org.koin.compose.koinInject
 
 class SplashScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val pref = koinInject<AppCacheSetting>()
         LaunchedEffect(Unit) {
             delay(1000)
-            navigator.replace(HomeScreen())
-//            navigator.replace(SetUpScreen(false))
+            if (pref.isVerified) {
+                navigator.replace(HomeScreen())
+            } else {
+                navigator.replace(SetUpScreen(false))
+            }
         }
         SplashScreenContent()
     }

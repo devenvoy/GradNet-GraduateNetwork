@@ -19,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -61,12 +60,12 @@ import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputPasswordField
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import compose.icons.FeatherIcons
-import compose.icons.feathericons.ArrowLeft
 import compose.icons.feathericons.User
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.alternate_email
@@ -99,7 +98,9 @@ class SignUpScreen(
             UiStateHandler(uiState = signUpScreenModel.signUpState.collectAsState().value,
                 onErrorShowed = {},
                 content = {
-                    LaunchedEffect(Unit) { navigator.replace(HomeScreen()) }
+                    LaunchedEffect(Unit) {
+                        navigator.replace(if (it) HomeScreen() else SetUpScreen(false))
+                    }
                 })
         }
     }

@@ -86,10 +86,13 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                         userType = _selectedUserRole.value!!.name
                     )
                 )
-                result.onSuccess { it: ServerResponse<SignUpResponse> ->
-                    prefs.accessToken = it.value?.accessToken.toString()
-                    prefs.userId = it.value?.user?.userId.toString()
-                    _signUpState.value = UiState.Success(it)
+                result.onSuccess {
+                    it.value?.let { res ->
+                        prefs.accessToken = res.accessToken.toString()
+                        prefs.userId = res.user?.userId.toString()
+                        prefs.isVerified = res.user?.isVerified == true
+                        _signUpState.value = UiState.Success(res.user?.isVerified == true)
+                    }
                 }.onError {
                     _signUpState.value = UiState.Error(it.detail)
                 }
@@ -113,10 +116,13 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                                 userType = _selectedUserRole.value!!.name
                             )
                         )
-                        result.onSuccess { it: ServerResponse<SignUpResponse> ->
-                            prefs.accessToken = it.value?.accessToken.toString()
-                            prefs.userId = it.value?.user?.userId.toString()
-                            _signUpState.value = UiState.Success(it)
+                        result.onSuccess {
+                            it.value?.let { res ->
+                                prefs.accessToken = res.accessToken.toString()
+                                prefs.userId = res.user?.userId.toString()
+                                prefs.isVerified = res.user?.isVerified == true
+                                _signUpState.value = UiState.Success(res.user?.isVerified == true)
+                            }
                         }.onError {
                             _signUpState.value = UiState.Error(it.detail)
                         }

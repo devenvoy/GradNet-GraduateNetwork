@@ -24,12 +24,13 @@ import org.koin.compose.getKoin
 @Preview
 fun App() {
     AppTheme {
-        var authReady by remember{ mutableStateOf(false) }
-        LaunchedEffect(Unit){
-            ConnectivityManager.isConnected // just to call init
-            GoogleAuthProvider.create(credentials =
-            GoogleAuthCredentials("352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com"
-            ))
+        var authReady by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) {
+            ConnectivityManager.isConnected
+            GoogleAuthProvider.create(
+                credentials =
+                GoogleAuthCredentials("352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com")
+            )
             authReady = true
         }
 
@@ -40,9 +41,7 @@ fun App() {
         ) {
             val keyStore = getKoin().get<AppCacheSetting>()
             if (keyStore.isLoggedIn) {
-                Navigator(SplashScreen()) {
-                    SlideTransition(it)
-                }
+                Navigator(SplashScreen()) { SlideTransition(it) }
             } else {
                 if (authReady) {
                     Navigator(OnBoardingScreen())

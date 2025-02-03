@@ -54,6 +54,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScree
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionSetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -74,7 +75,10 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
             topBar = {
                 TopAppBar(
                     title = {
-                        Title(text = "${if (isEditProfile) "Edit " else "Set Up "}Profile")
+                        Title(
+                            text = "${if (isEditProfile) "Edit " else "Set Up "}Profile",
+                            size = 14.ssp
+                        )
                     },
                     navigationIcon = {
                         if (isEditProfile) {
@@ -142,7 +146,16 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                 .fillMaxWidth()
                                 .shadow(4.dp),
                             contentPadding = PaddingValues(vertical = 10.sdp),
-                            onClick = { }
+                            onClick = {
+                                if (isEditProfile) navigator.pop()
+                                else {
+                                    if (userProfile.isVerified) {
+                                        navigator.replace(HomeScreen())
+                                    } else {
+                                        setUpAccountViewModel.showErrorState("Please verify to proceed")
+                                    }
+                                }
+                            }
                         ) {
                             SText(
                                 text = "Save",

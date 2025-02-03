@@ -72,6 +72,7 @@ class SetUpAccountViewModel(
         _educationState.update { user.toEducationState() }
         _professionState.update { user.toProfessionState() }
         _userData.value = UiState.Success(user)
+        _isVerified.value = user.isVerified
     }
 
     fun onBasicAction(basicScreenAction: BasicScreenAction) {
@@ -291,20 +292,18 @@ class SetUpAccountViewModel(
     private fun verifyOtp() {
         screenModelScope.launch {
             _setUpOrEditState.update { UiState.Loading }
-            listOf(_basicState.value.verificationField, _basicState.value.otpField)
-                .any { it.isEmpty() }.also {
-                    if (it) {
-                        showErrorState("otp can not be verified"); return@launch
-                    }
-                }
             val result = userRepository.verifyOtp(
                 _basicState.value.verificationField,
-                _basicState.value.otpField
+                _basicState.value.otpField,
+                token = prefs.accessToken
             )
-            result.onSuccess {
-                // todo check response and how can update ui on success
-                // also update access token here
-                _isVerified.value = true
+            result.onSuccess { r ->
+                r.value?.let { user ->
+                    updateUserData(user.toUserProfile())
+                    prefs.accessToken = r.value.accessToken
+                    _setUpOrEditState.update { UiState.Success(r.detail) }
+                    onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
+                }
             }.onError {
                 showErrorState(it.detail)
             }
@@ -319,10 +318,12 @@ class SetUpAccountViewModel(
                 .apply {
                     onSuccess { r ->
                         _setUpOrEditState.update { UiState.Success(r.detail) }
+                        _basicState.update { it.copy(otpEmailField = r.value?.email ?: "") }
                         onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(true))
                     }
                     onError { e ->
-                        _setUpOrEditState.update { UiState.Error(e.detail) }
+                        showErrorState(e.detail)
+                        onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
                     }
                 }
         }

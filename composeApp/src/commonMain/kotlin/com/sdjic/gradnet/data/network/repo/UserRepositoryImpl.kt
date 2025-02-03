@@ -91,11 +91,13 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
 
     override suspend fun verifyOtp(
         verificationId: String,
-        otp: String
+        otp: String,
+        token:String
     ): Result<ServerResponse<UserProfileResponse>, ServerError> {
         return tryToExecute<ServerResponse<UserProfileResponse>> {
             post(BuildConfig.BASE_URL + "/verify-otp?verify_id=${verificationId}&otp=${otp}") {
                 contentType(ContentType.Application.Json)
+                header(HttpHeaders.Authorization, "Bearer $token")
             }
         }
     }

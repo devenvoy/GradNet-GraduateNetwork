@@ -44,7 +44,7 @@ fun UserProfileResponse.toUserProfile(): UserProfile {
         userName = this.name,
         email = this.email,
         userId = this.id,
-        verificationId = this.verifyId ?: "",
+        verificationId = (this.verifyId ?: "").toString(),
         userRole = UserRole.getUserRole(this.role),
         isVerified = this.verified,
         isPlusMember = this.plusMember,

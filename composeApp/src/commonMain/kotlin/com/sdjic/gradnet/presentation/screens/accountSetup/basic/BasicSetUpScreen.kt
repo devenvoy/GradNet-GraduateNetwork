@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,6 +52,7 @@ import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.text.font.FontWeight.Companion.W700
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import coil3.compose.LocalPlatformContext
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
@@ -127,16 +130,27 @@ fun BasicSetUpScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(8.sdp),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(8.sdp)
+            .padding(bottom = 60.sdp),
         verticalArrangement = Arrangement.spacedBy(8.sdp)
     ) {
-        ProfileBackgroundImages(onAction, basicState,true)
+        ProfileBackgroundImages(onAction, basicState, true)
 
-        Column {
-            Title(text = "${userRole.name.lowercase().capitalize()} Verification", size = 16.ssp)
-            SText(text = "only once", textColor = MaterialTheme.colorScheme.secondary)
+        if (!isVerified) {
+            Column {
+                Title(
+                    text = "${userRole.name.lowercase().capitalize()} Verification",
+                    size = 16.ssp
+                )
+                SText(text = "only once", textColor = MaterialTheme.colorScheme.secondary)
+            }
         }
+
         Spacer(Modifier.height(1.sdp))
+
         val fieldTitle by remember {
             mutableStateOf(
                 when (userRole) {
@@ -146,6 +160,7 @@ fun BasicSetUpScreen(
                 }
             )
         }
+
         CustomInputField(
             fieldTitle = fieldTitle,
             textFieldValue = basicState.verificationField,
@@ -153,11 +168,13 @@ fun BasicSetUpScreen(
                 onAction(BasicScreenAction.OnVerificationFieldValueChange(s))
             },
             placeholder = { SText("Enter your $fieldTitle") },
-            supportingText = { SText("Required", textColor = Color.Red) },
+            supportingText = if (isVerified) null else ({
+                SText("Required", textColor = Color.Red)
+            }),
             isEnable = !isVerified,
         )
 
-        AnimatedVisibility (!isVerified && basicState.verificationField.isNotEmpty()) {
+        AnimatedVisibility(!isVerified && basicState.verificationField.isNotEmpty()) {
             val keyboardManager = LocalSoftwareKeyboardController.current
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -166,12 +183,7 @@ fun BasicSetUpScreen(
                 PrimaryButton(
                     contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 8.sdp),
                     onClick = {
-                        onAction(
-                            BasicScreenAction.ResendOtp
-                        )
-                        onAction(
-                            BasicScreenAction.OnOtpBottomSheetStateChange(true)
-                        )
+                        onAction(BasicScreenAction.ResendOtp)
                         keyboardManager?.hide()
                     }) {
                     SText(
@@ -183,34 +195,42 @@ fun BasicSetUpScreen(
             }
         }
 
-        AnimatedVisibility(isVerified){
-            CustomInputField(
-                fieldTitle = "Name",
-                textFieldValue = basicState.nameField,
-                onValueChange = { s ->
-                    onAction(BasicScreenAction.OnNameFieldValueChange(s))
-                },
-                placeholder = { SText("Enter name") },
-                supportingText = { SText("Required", textColor = Color.Red) },
-            )
+        AnimatedVisibility(isVerified) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                CustomInputField(
+                    fieldTitle = "Name",
+                    textFieldValue = basicState.nameField,
+                    onValueChange = { s ->
+                        onAction(BasicScreenAction.OnNameFieldValueChange(s))
+                    },
+                    placeholder = { SText("Enter name") },
+                    supportingText = {
+                        if (basicState.nameField.isEmpty()) {
+                            SText("Required", textColor = Color.Red)
+                        }
+                    },
+                )
 
-            CustomInputArea(
-                fieldTitle = "About",
-                textFieldValue = basicState.aboutField ,
-                onValueChange = { s ->
-                    onAction(BasicScreenAction.OnAboutFieldValueChange(s))
-                },
-                placeholder = { SText("tell about yourself..") },
-            )
+                CustomInputArea(
+                    fieldTitle = "About",
+                    textFieldValue = basicState.aboutField,
+                    onValueChange = { s ->
+                        onAction(BasicScreenAction.OnAboutFieldValueChange(s))
+                    },
+                    placeholder = { SText("tell about yourself..") },
+                )
 
-            CustomInputArea(
-                fieldTitle = "Address",
-                textFieldValue = basicState.addressField ,
-                onValueChange = { s ->
-                    onAction(BasicScreenAction.OnAddressFieldValueChange(s))
-                },
-                placeholder = { SText("add address") },
-            )
+                CustomInputArea(
+                    fieldTitle = "Address",
+                    textFieldValue = basicState.addressField,
+                    onValueChange = { s ->
+                        onAction(BasicScreenAction.OnAddressFieldValueChange(s))
+                    },
+                    placeholder = { SText("add address") },
+                )
+            }
         }
     }
 }
@@ -219,7 +239,7 @@ fun BasicSetUpScreen(
 fun ProfileBackgroundImages(
     onAction: (BasicScreenAction) -> Unit,
     basicState: BasicState,
-    showEditButton : Boolean = false
+    showEditButton: Boolean = false
 ) {
     val platformContext = LocalPlatformContext.current
     Box {

@@ -12,7 +12,8 @@ interface UserRepository {
 
     suspend fun verifyOtp(
         verificationId: String,
-        otp: String
+        otp: String,
+        token:String
     ): Result<ServerResponse<UserProfileResponse>, ServerError>
 
     suspend fun fetchUser(token: String): Result<ServerResponse<UserProfileResponse>, ServerError>

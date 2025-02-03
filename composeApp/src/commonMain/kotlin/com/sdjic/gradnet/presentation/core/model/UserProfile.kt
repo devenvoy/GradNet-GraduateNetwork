@@ -48,7 +48,7 @@ fun UserProfile.toBasicState(): BasicState {
         backgroundImage = null, // Convert into ImageBitmap if needed
         profileImage = null,    // Convert into ImageBitmap if needed
         verificationField = this.verificationId, // Assuming email is used for verification
-        otpEmailField = this.email,
+        otpEmailField = "",
         otpField = "",
         showOtpBottomSheet = false,
         openBackGroundImagePicker = false,

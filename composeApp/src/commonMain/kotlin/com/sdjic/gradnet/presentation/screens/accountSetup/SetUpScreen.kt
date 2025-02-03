@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
@@ -130,29 +131,25 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                 pagerState = pagerState,
                                 userRole = userRole
                             )
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surface
-                                ),
-                                shape = RoundedCornerShape(16.sdp),
-                            ) {
-                                PrimaryButton(
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF43c71c)
-                                    ),
-                                    modifier = Modifier.padding(10.sdp, 20.sdp).fillMaxWidth(),
-                                    contentPadding = PaddingValues(20.sdp, 10.sdp),
-                                    onClick = { }
-                                ) {
-                                    SText(
-                                        text = "Save",
-                                        fontSize = 14.ssp,
-                                        fontWeight = W600,
-                                        textColor = MaterialTheme.colorScheme.surface,
-                                    )
-                                }
-                            }
+                        }
+                        PrimaryButton(
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF43c71c)
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(20.sdp)
+                                .fillMaxWidth()
+                                .shadow(4.dp),
+                            contentPadding = PaddingValues(vertical = 10.sdp),
+                            onClick = { }
+                        ) {
+                            SText(
+                                text = "Save",
+                                fontSize = 14.ssp,
+                                fontWeight = W600,
+                                textColor = MaterialTheme.colorScheme.surface,
+                            )
                         }
                     },
                     onErrorShowed = { }        // logout user
@@ -161,11 +158,11 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
 
                 UiStateHandler(
                     uiState = setUpAccountViewModel.setUpOrEditState.collectAsState().value,
-                    content={
+                    content = {
                         val toaster = rememberToasterState()
                         LaunchedEffect(Clock.System.now()) {
                             toaster.show(
-                                message =it,
+                                message = it,
                                 duration = ToasterDefaults.DurationLong,
                                 type = ToastType.Success
                             )

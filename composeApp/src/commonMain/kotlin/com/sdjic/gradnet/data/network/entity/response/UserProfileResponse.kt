@@ -33,6 +33,8 @@ data class UserProfileResponse(
     @SerialName("updated_at") var updatedAt: String = "",
     @SerialName("urls") var urls: List<URLDto> = listOf(),
     @SerialName("verified") var verified: Boolean = false,
-    @SerialName("verify_id") var verifyId: String? = null,
+    @SerialName("verify_id") var verifyId: Int? = null,
     @SerialName("website") var website: String? = null
-)
+) {
+    @SerialName("access_token")val accessToken: String = ""
+}

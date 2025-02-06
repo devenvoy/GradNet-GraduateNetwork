@@ -27,31 +27,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import coil3.compose.LocalPlatformContext
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.DummyDpImage
-import com.sdjic.gradnet.presentation.helper.CustomDrawerState
-import com.sdjic.gradnet.presentation.helper.opposite
+import com.sdjic.gradnet.presentation.helper.LocalDrawerController
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Menu
+import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 const val initialImageFloat = 120f
 const val name = "Devansh Amdavadwala"
 const val email = "devanshamdavadwala@gmail.com"
-const val twitterUrl = "https://www.twitter.com/_gurupreet"
-const val linkedInUrl = "https://www.linkedin.com/in/gurupreet-singh-491a7668/"
-const val githubUrl = "https://github.com"
-const val githubRepoUrl = "https://github.com/Gurupreet/ComposeCookBook"
 
 //NOTE: This stuff should usually be in a parent activity/Navigator
 // We can pass callback to profileScreen to get the click.
@@ -68,28 +63,20 @@ const val githubRepoUrl = "https://github.com/Gurupreet/ComposeCookBook"
 
 @Composable
 fun ProfileScreen(
-    modifier: Modifier,
-    drawerState: CustomDrawerState,
     onEditClick: () -> Unit = {},
-    onDrawerClick: (CustomDrawerState) -> Unit
 ) {
     val scrollState = rememberScrollState(0)
-
+    val scope = rememberCoroutineScope()
+    val drawerState = LocalDrawerController.current
     Scaffold(
-        modifier = modifier
-            .clickable(enabled = drawerState == CustomDrawerState.Opened) {
-                onDrawerClick(CustomDrawerState.Closed)
-            },
         topBar = {
             TopAppBarView(scrollState.value.toFloat()) {
-                onDrawerClick(drawerState.opposite())
+                scope.launch { drawerState.open() }
             }
         }
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .semantics { testTag = "Profile Screen" }
+            modifier = Modifier.fillMaxSize()
         ) {
             TopBackground()
             Column(
@@ -105,7 +92,6 @@ fun ProfileScreen(
                         .padding(8.sdp)
                 ) {
                     EditButtonRow(onEditClick = onEditClick, onShareClick = {})
-                    //        SocialRow()
                     AboutMeSection()
                     InterestsSection()
                     LanguagesSection()
@@ -113,11 +99,12 @@ fun ProfileScreen(
                 }
             }
 
-            if(scrollState.value < initialImageFloat + 240){
+            if (scrollState.value < initialImageFloat + 240) {
                 IconButton(
-                    modifier = Modifier.align(Alignment.TopEnd).padding(vertical = 28.sdp, horizontal = 4.sdp),
+                    modifier = Modifier.align(Alignment.TopEnd)
+                        .padding(vertical = 28.sdp, horizontal = 4.sdp),
                     onClick = {
-                        onDrawerClick(drawerState.opposite())
+                        scope.launch { drawerState.open() }
                     },
                     colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.background)
                 ) {

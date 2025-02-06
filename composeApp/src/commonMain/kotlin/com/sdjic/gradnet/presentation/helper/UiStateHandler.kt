@@ -3,6 +3,7 @@ package com.sdjic.gradnet.presentation.helper
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +33,7 @@ fun <T> UiStateHandler(
                 onErrorShowed()
             }
             Toaster(
+                modifier = Modifier.navigationBarsPadding(),
                 state = toaster,
                 richColors = true,
                 darkTheme = isSystemInDarkTheme(),
@@ -53,6 +55,7 @@ fun <T> UiStateHandler(
                 onErrorShowed()
             }
             Toaster(
+                modifier = Modifier.navigationBarsPadding(),
                 state = toaster,
                 richColors = true,
                 darkTheme = isSystemInDarkTheme(),

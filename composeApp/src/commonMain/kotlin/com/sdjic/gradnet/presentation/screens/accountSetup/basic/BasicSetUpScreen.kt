@@ -248,6 +248,7 @@ fun ProfileBackgroundImages(
         }
         BackgroundImage(
             imageBitmap = basicState.backgroundImage,
+            data = basicState.backGroundImageUrl,
             modifier = Modifier.clickable(onClick = backgroundEditClick),
             context = platformContext
         )
@@ -272,7 +273,7 @@ fun ProfileBackgroundImages(
             CircularProfileImage(
                 modifier = Modifier.clickable(onClick = onProfileClick),
                 context = platformContext,
-                data = null,
+                data = basicState.profileImageUrl,
                 imageBitmap = basicState.profileImage,
                 imageSize = 90.sdp
             )

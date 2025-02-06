@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import coil3.PlatformContext
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -17,23 +18,15 @@ import network.chaintech.sdpcomposemultiplatform.sdp
 @Composable
 fun RoundedCornerImage(
     modifier: Modifier = Modifier,
-    context:PlatformContext,
+    context: PlatformContext,
     data: Any?,
     imageSize: Dp = 70.sdp,
     shape: Shape = CardDefaults.shape
 ) {
     Card(
-        modifier = modifier
-            .size(imageSize),
+        modifier = modifier            .size(imageSize),
         shape = shape,
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.sdp,
-            pressedElevation = 10.sdp,
-            focusedElevation = 10.sdp,
-            hoveredElevation = 10.sdp,
-            draggedElevation = 10.sdp,
-            disabledElevation = 10.sdp
-        ),
+        elevation = CardDefaults.cardElevation(10.dp),
     ) {
         AsyncImage(
             model = ImageRequest.Builder(context)

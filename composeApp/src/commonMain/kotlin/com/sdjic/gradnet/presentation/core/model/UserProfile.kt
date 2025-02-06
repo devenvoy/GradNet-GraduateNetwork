@@ -36,7 +36,7 @@ data class UserProfile(
     val phoneNumber: String = "",
     val showPersonalDetails: Boolean = false,
     val address: String? = null,
-    val socialUrls: SocialUrls? = null,   // list needed
+    val socialUrls: SocialUrls? = null,
     val experiences: List<ExperienceModel>? = null,
 )
 
@@ -45,9 +45,9 @@ fun UserProfile.toBasicState(): BasicState {
         nameField = this.name,
         aboutField = this.about,
         addressField = this.address ?: "",
-        backgroundImage = null, // Convert into ImageBitmap if needed
-        profileImage = null,    // Convert into ImageBitmap if needed
-        verificationField = this.verificationId, // Assuming email is used for verification
+        profileImageUrl = this.profilePic,
+        backGroundImageUrl = this.backgroundPic,
+        verificationField = this.verificationId,
         otpEmailField = "",
         otpField = "",
         showOtpBottomSheet = false,
@@ -62,9 +62,9 @@ fun UserProfile.toEducationState(): EducationState {
         skills = this.skills ?: emptyList(),
         languages = this.languages ?: emptyList(),
         eductionList = this.educations ?: emptyList(),
-        showEducationBottomSheet = false, // Default value as it depends on UI actions
-        showLanguageDialog = false,      // Default value
-        showSkillDialog = false          // Default value
+        showEducationBottomSheet = false,
+        showLanguageDialog = false,
+        showSkillDialog = false
     )
 }
 

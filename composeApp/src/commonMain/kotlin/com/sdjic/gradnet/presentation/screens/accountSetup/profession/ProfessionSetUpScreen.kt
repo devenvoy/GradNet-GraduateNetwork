@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -43,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -59,10 +58,11 @@ import com.sdjic.gradnet.presentation.composables.textInput.CustomInputArea
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.core.model.ExperienceModel
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.theme.errorColor
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Globe
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.cross
+import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
 import gradnet_graduatenetwork.composeapp.generated.resources.github
 import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
 import gradnet_graduatenetwork.composeapp.generated.resources.twitter_bird
@@ -81,6 +81,7 @@ fun ProfessionSetUpScreen(
 
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+    val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
     if (professionState.showExperienceBottomSheet) {
         ModalBottomSheet(
@@ -93,6 +94,7 @@ fun ProfessionSetUpScreen(
                 onAction(
                     ProfessionScreenAction.OnExperienceBottomSheetStateChange(false)
                 )
+                softwareKeyboardController?.hide()
             },
         ) {
             AddExperienceModal(experienceModel = ExperienceModel(),
@@ -105,7 +107,6 @@ fun ProfessionSetUpScreen(
             )
         }
     }
-
 
     if (professionState.showAddOtherUrlDialog) {
         BasicAlertDialog(
@@ -134,11 +135,13 @@ fun ProfessionSetUpScreen(
                     )
                     Row(modifier = Modifier.padding(top = 10.sdp).align(Alignment.End)) {
                         TextButton(onClick = {
+                            softwareKeyboardController?.hide()
                             onAction(
                                 ProfessionScreenAction.OnAddOtherUrlDialogStateChange(false)
                             )
                         }) { SText("Cancel", fontSize = 12.ssp) }
                         TextButton(onClick = {
+                            softwareKeyboardController?.hide()
                             onAction(ProfessionScreenAction.OnAddOtherUrl(selectedText))
                             selectedText = ""
                             onAction(
@@ -177,6 +180,7 @@ fun ProfessionSetUpScreen(
             placeholder = { SText(text = "github profile url") },
             trailingIcon = {
                 Icon(
+                    modifier = Modifier.size(26.dp),
                     painter = painterResource(Res.drawable.github),
                     contentDescription = "github"
                 )
@@ -188,6 +192,7 @@ fun ProfessionSetUpScreen(
             placeholder = { SText(text = "linkedin profile url") },
             trailingIcon = {
                 Icon(
+                    modifier = Modifier.size(26.dp),
                     painter = painterResource(Res.drawable.linkedin),
                     contentDescription = "LinkedIn"
                 )
@@ -199,6 +204,7 @@ fun ProfessionSetUpScreen(
             placeholder = { SText(text = "twitter profile url") },
             trailingIcon = {
                 Icon(
+                    modifier = Modifier.size(26.dp),
                     painter = painterResource(Res.drawable.twitter_bird),
                     contentDescription = "Twitter"
                 )
@@ -215,24 +221,23 @@ fun ProfessionSetUpScreen(
             }
         }
 
-
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start,
         ) {
             professionState.otherUrls.fastForEachIndexed { index, item ->
                 Row(
-                    modifier = Modifier.padding(horizontal = 8.sdp, vertical = 4.sdp),
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier.padding(horizontal = 10.sdp, vertical = 2.sdp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     SText(item, fontSize = 12.ssp, modifier = Modifier.weight(1f))
                     Icon(
-                        modifier = Modifier.size(20.sdp).clickable(onClick = {
+                        modifier = Modifier.size(16.sdp).clickable(onClick = {
                             onAction(ProfessionScreenAction.OnRemoveOtherUrl(item))
                         }),
-                        painter = painterResource(Res.drawable.cross),
-                        tint = Color.Unspecified,
-                        contentDescription = "cross",
+                        painter = painterResource(Res.drawable.empty_trash),
+                        tint = errorColor,
+                        contentDescription = "remove",
                     )
                 }
             }
@@ -253,6 +258,7 @@ fun ProfessionSetUpScreen(
 
         if (professionState.experienceList.isNotEmpty()) {
             Card(
+                modifier = Modifier.padding(bottom = 80.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
@@ -264,18 +270,18 @@ fun ProfessionSetUpScreen(
                 ) {
                     professionState.experienceList.fastForEachIndexed { index, item ->
                         Box(
-                            modifier = Modifier.padding(horizontal = 8.sdp, vertical = 4.sdp),
+                            modifier = Modifier.padding(8.sdp),
                         ) {
 
                             ExperienceItem(experience = item)
 
                             Icon(
-                                modifier = Modifier.size(20.sdp).align(Alignment.TopEnd)
+                                modifier = Modifier.size(16.sdp).align(Alignment.TopEnd)
                                     .clickable(onClick = {
                                         onAction(ProfessionScreenAction.OnRemoveExperience(index))
                                     }),
-                                painter = painterResource(Res.drawable.cross),
-                                tint = Color.Unspecified,
+                                painter = painterResource(Res.drawable.empty_trash),
+                                tint = errorColor,
                                 contentDescription = "cross",
                             )
                         }
@@ -405,18 +411,9 @@ fun ExperienceItem(experience: ExperienceModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(8.dp),
         verticalAlignment = Alignment.Top
     ) {
-        // Placeholder for spacing if no Image is available
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-        ) // Can be replaced by content if needed
-
-        Spacer(modifier = Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
             // Job title
@@ -438,7 +435,7 @@ fun ExperienceItem(experience: ExperienceModel) {
 
             // Duration
             SText(
-                text = "${experience.startDate ?: "Start"} - ${experience.endDate ?: "Present"}",
+                text = "${experience.startDate ?: ""} - ${experience.endDate ?: "Present"}",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Light,
                 modifier = Modifier.padding(top = 4.dp),

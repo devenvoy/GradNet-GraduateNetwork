@@ -37,6 +37,7 @@ import com.sdjic.gradnet.presentation.composables.text.Label
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
+import com.sdjic.gradnet.presentation.theme.errorColor
 
 class EventDetailScreen(
     private val eventDto: EventDto
@@ -140,7 +141,7 @@ class EventDetailScreen(
                         Column {
                             Title(
                                 text = "Remarks: ",
-                                textColor = Color(0xFFD64933)
+                                textColor = errorColor
                             )
                             SText(
                                 text = eventDto.remarks,

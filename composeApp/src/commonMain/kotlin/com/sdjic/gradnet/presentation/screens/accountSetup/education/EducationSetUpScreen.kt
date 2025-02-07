@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -64,8 +62,9 @@ import com.sdjic.gradnet.presentation.core.LanguagesList
 import com.sdjic.gradnet.presentation.core.SkillList
 import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.theme.errorColor
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.cross
+import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -209,7 +208,6 @@ fun EducationSetUpScreen(
         }
     }
 
-
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(8.sdp),
         verticalArrangement = Arrangement.spacedBy(8.sdp)
@@ -303,13 +301,12 @@ fun EducationSetUpScreen(
                             EducationItem(education = item)
 
                             Icon(
-                                modifier = Modifier.padding(5.sdp).size(20.sdp)
-                                    .align(Alignment.TopEnd)
+                                modifier = Modifier.padding(8.sdp).size(16.sdp).align(Alignment.TopEnd)
                                     .clickable(onClick = {
                                         onAction(EducationScreenAction.OnRemoveEducation(index))
                                     }),
-                                painter = painterResource(Res.drawable.cross),
-                                tint = Color.Unspecified,
+                                painter = painterResource(Res.drawable.empty_trash),
+                                tint = errorColor,
                                 contentDescription = "cross",
                             )
                         }
@@ -461,18 +458,9 @@ fun EducationItem(education: EducationModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(8.dp),
         verticalAlignment = Alignment.Top
     ) {
-        // Placeholder for school logo or icon
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-        ) // Can be replaced by content if needed
-
-        Spacer(modifier = Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
             // School name
@@ -505,7 +493,7 @@ fun EducationItem(education: EducationModel) {
 
             // Duration
             SText(
-                text = "${education.startDate ?: "Start"} - ${education.endDate ?: "Present"}",
+                text = "${education.startDate ?: ""} - ${education.endDate ?: "Present"}",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Light,
                 modifier = Modifier.padding(top = 4.dp),

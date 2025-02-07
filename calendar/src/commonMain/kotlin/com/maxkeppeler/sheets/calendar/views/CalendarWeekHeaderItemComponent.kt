@@ -32,8 +32,8 @@ import com.maxkeppeker.sheets.core.utils.TestTags
 import com.maxkeppeker.sheets.core.utils.testTags
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
-import sheets_compose_dialogs.calendar.generated.resources.Res
-import sheets_compose_dialogs.calendar.generated.resources.scd_calendar_dialog_cw
+import gradnet_graduatenetwork.calendar.generated.resources.Res
+import gradnet_graduatenetwork.calendar.generated.resources.scd_calendar_dialog_cw
 
 /**
  * Composable function that represents a calendar week header item with the given [label].

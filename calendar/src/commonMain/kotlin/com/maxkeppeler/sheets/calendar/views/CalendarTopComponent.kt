@@ -67,11 +67,11 @@ import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.number
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
-import sheets_compose_dialogs.calendar.generated.resources.*
-import sheets_compose_dialogs.calendar.generated.resources.Res
-import sheets_compose_dialogs.calendar.generated.resources.scd_calendar_dialog_prev_month
-import sheets_compose_dialogs.calendar.generated.resources.scd_calendar_dialog_prev_week
-import sheets_compose_dialogs.calendar.generated.resources.scd_calendar_dialog_select_month
+import gradnet_graduatenetwork.calendar.generated.resources.*
+import gradnet_graduatenetwork.calendar.generated.resources.Res
+import gradnet_graduatenetwork.calendar.generated.resources.scd_calendar_dialog_prev_month
+import gradnet_graduatenetwork.calendar.generated.resources.scd_calendar_dialog_prev_week
+import gradnet_graduatenetwork.calendar.generated.resources.scd_calendar_dialog_select_month
 import kotlin.math.max
 import kotlin.math.min
 

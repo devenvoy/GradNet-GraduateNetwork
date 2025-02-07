@@ -20,10 +20,10 @@ import com.maxkeppeker.sheets.core.icons.LibIcons
 import com.maxkeppeker.sheets.core.models.base.ButtonStyle
 import com.maxkeppeker.sheets.core.models.base.LibOrientation
 import com.maxkeppeker.sheets.core.models.base.SelectionButton
+import gradnet_graduatenetwork.sheetcore.generated.resources.Res
+import gradnet_graduatenetwork.sheetcore.generated.resources.cancel
+import gradnet_graduatenetwork.sheetcore.generated.resources.ok
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import sheets_compose_dialogs.core.generated.resources.Res
-import sheets_compose_dialogs.core.generated.resources.cancel
-import sheets_compose_dialogs.core.generated.resources.ok
 
 /**
  * Defines module-wide constants.

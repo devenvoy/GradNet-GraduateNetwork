@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -42,12 +45,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.color.ColorDialog
+import com.maxkeppeler.sheets.color.models.ColorConfig
+import com.maxkeppeler.sheets.color.models.ColorSelection
+import com.maxkeppeler.sheets.color.models.ColorSelectionMode
+import com.maxkeppeler.sheets.color.models.MultipleColors
+import com.maxkeppeler.sheets.color.models.SingleColor
 import com.sdjic.gradnet.presentation.composables.DatePickerDialog
 import com.sdjic.gradnet.presentation.composables.button.PlusIconButton
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
@@ -301,7 +312,8 @@ fun EducationSetUpScreen(
                             EducationItem(education = item)
 
                             Icon(
-                                modifier = Modifier.padding(8.sdp).size(16.sdp).align(Alignment.TopEnd)
+                                modifier = Modifier.padding(8.sdp).size(16.sdp)
+                                    .align(Alignment.TopEnd)
                                     .clickable(onClick = {
                                         onAction(EducationScreenAction.OnRemoveEducation(index))
                                     }),
@@ -314,6 +326,45 @@ fun EducationSetUpScreen(
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(16.sdp))
+
+        var color by remember { mutableStateOf(Color.Red.toArgb()) }
+
+        val colorState =
+            rememberUseCaseState(
+                visible = false,
+                onDismissRequest = {  }
+            )
+
+        val templateColors = MultipleColors.ColorsInt(
+            Color.Red.copy(alpha = 0.1f).toArgb(),
+            Color.Red.copy(alpha = 0.3f).toArgb(),
+            Color.Red.copy(alpha = 0.5f).toArgb(),
+            Color.Red.toArgb(),
+            Color.Green.toArgb(),
+            Color.Yellow.toArgb(),
+        )
+
+            ColorDialog(
+                state = colorState,
+                selection = ColorSelection(
+                    selectedColor = SingleColor(color),
+                    onSelectColor = { color = it },
+                ),
+                config = ColorConfig(
+                    templateColors = templateColors,
+                    defaultDisplayMode = ColorSelectionMode.TEMPLATE,
+                    allowCustomColorAlphaValues = true
+                ),
+            )
+
+        Button(
+            onClick = { colorState.show() },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(color)
+            )
+        ) { Text("$color") }
     }
 
 }

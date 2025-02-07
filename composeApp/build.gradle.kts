@@ -17,7 +17,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -90,6 +90,7 @@ kotlin {
             implementation(libs.kmpauth.uihelper)
 
             implementation("com.github.skydoves:orbital:0.4.0")
+            implementation(project(":color"))
         }
 
         iosMain.dependencies {
@@ -121,8 +122,9 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
@@ -141,6 +143,10 @@ buildConfig {
 
 ksp {
     arg("room.schemaLocation", "${projectDir}/schemas")
+}
+
+dependencies {
+    coreLibraryDesugaring(libs.desugar)
 }
 
 dependencies {

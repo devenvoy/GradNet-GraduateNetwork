@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Wiel Monat auswielen</string>
+    <string name="scd_calendar_dialog_next_month" >Nächst Meecheden</string>
+    <string name="scd_calendar_dialog_prev_month" >Nächst Mount</string>
+    <string name="scd_calendar_dialog_next_week" >Nächste Woch</string>
+    <string name="scd_calendar_dialog_prev_week" >Lescht Woch</string>
+    <string name="scd_calendar_dialog_select_year" >Joer auswielen</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

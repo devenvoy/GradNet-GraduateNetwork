@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Vælg måned</string>
+    <string name="scd_calendar_dialog_next_month" >Næste måned</string>
+    <string name="scd_calendar_dialog_prev_month" >Næste måned</string>
+    <string name="scd_calendar_dialog_next_week" >Næste uge</string>
+    <string name="scd_calendar_dialog_prev_week" >Sidste uge</string>
+    <string name="scd_calendar_dialog_select_year" >Vælg år</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

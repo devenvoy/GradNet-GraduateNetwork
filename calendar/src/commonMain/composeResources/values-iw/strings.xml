@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >בחר חודש</string>
+    <string name="scd_calendar_dialog_next_month" >בחודש הבא</string>
+    <string name="scd_calendar_dialog_prev_month" >בחודש הבא</string>
+    <string name="scd_calendar_dialog_next_week" >שבוע הבא</string>
+    <string name="scd_calendar_dialog_prev_week" >השבוע קודם</string>
+    <string name="scd_calendar_dialog_select_year" >בחר שנה</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

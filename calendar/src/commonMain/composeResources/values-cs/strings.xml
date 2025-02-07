@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Vyberte měsíc</string>
+    <string name="scd_calendar_dialog_next_month" >Příští měsíc</string>
+    <string name="scd_calendar_dialog_prev_month" >Příští měsíc</string>
+    <string name="scd_calendar_dialog_next_week" >Příští týden</string>
+    <string name="scd_calendar_dialog_prev_week" >Předchozí týden</string>
+    <string name="scd_calendar_dialog_select_year" >Vyberte rok</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

@@ -35,3 +35,5 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":calendar")
+include(":sheetCore")

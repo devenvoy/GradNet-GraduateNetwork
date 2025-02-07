@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >ເລືອກເດືອນ</string>
+    <string name="scd_calendar_dialog_next_month" >ເດືອນຕໍ່ໄປ</string>
+    <string name="scd_calendar_dialog_prev_month" >ເດືອນຕໍ່ໄປ</string>
+    <string name="scd_calendar_dialog_next_week" >ອີກມື້ນີ້</string>
+    <string name="scd_calendar_dialog_prev_week" >ອີກດິນເດືອນ</string>
+    <string name="scd_calendar_dialog_select_year" >ເລືອກປີ</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

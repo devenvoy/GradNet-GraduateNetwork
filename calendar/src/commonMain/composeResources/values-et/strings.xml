@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Vali kuu</string>
+    <string name="scd_calendar_dialog_next_month" >Järgmine kuu</string>
+    <string name="scd_calendar_dialog_prev_month" >Järgmine kuu</string>
+    <string name="scd_calendar_dialog_next_week" >Järgmisel nädalal</string>
+    <string name="scd_calendar_dialog_prev_week" >Eelmine nädal</string>
+    <string name="scd_calendar_dialog_select_year" >Vali aasta</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

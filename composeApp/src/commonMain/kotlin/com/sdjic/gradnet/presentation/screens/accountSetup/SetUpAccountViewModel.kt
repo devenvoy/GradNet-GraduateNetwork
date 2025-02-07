@@ -154,6 +154,7 @@ class SetUpAccountViewModel(
                 }
 
                 is EducationScreenAction.OnRemoveEducation -> {
+                    if(_educationState.value.eductionList.isEmpty()) return@launch
                     val updatedEducationList =
                         _educationState.value.eductionList.toMutableList().apply {
                             removeAt(educationScreenAction.index)
@@ -233,6 +234,7 @@ class SetUpAccountViewModel(
                 }
 
                 is ProfessionScreenAction.OnRemoveExperience -> {
+                    if(_professionState.value.experienceList.isEmpty()) return@launch
                     val updatedExperiences =
                         _professionState.value.experienceList.toMutableList().apply {
                             removeAt(action.index)

@@ -267,10 +267,11 @@ fun ProfessionSetUpScreen(
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Start,
+                    verticalArrangement = Arrangement.spacedBy(8.sdp)
                 ) {
                     professionState.experienceList.fastForEachIndexed { index, item ->
                         Box(
-                            modifier = Modifier.padding(8.sdp),
+                            modifier = Modifier.padding(horizontal = 8.sdp),
                         ) {
 
                             ExperienceItem(experience = item)

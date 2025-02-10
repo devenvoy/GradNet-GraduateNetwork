@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,10 +34,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -346,7 +344,7 @@ class PostScreen : Screen {
         val pagerState = rememberPagerState(initialPage = 0, pageCount = { images.size })
         Box {
             HorizontalPager(
-                state = pagerState, modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp)
+                state = pagerState, modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp)
             ) { page ->
 
                 val painterReq = rememberAsyncImagePainter(
@@ -357,23 +355,12 @@ class PostScreen : Screen {
                 when (painterReq.state.collectAsState().value) {
                     is AsyncImagePainter.State.Success -> {
 
-                        val intrinsicHeight = painterReq.intrinsicSize.height
-                        val intrinsicWidth = painterReq.intrinsicSize.width
-                        val screenWidth = getScreenWidth()
-                        val aspectRatio = intrinsicWidth / intrinsicHeight
-                        val calculatedHeight by remember {
-                            derivedStateOf {
-                                (screenWidth / aspectRatio).coerceAtMost(300f).dp
-                            }
-                        }
-
                         Image(
                             contentScale = ContentScale.FillBounds,
                             painter = painterReq,
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(calculatedHeight)
+                            modifier = Modifier.fillMaxWidth()
+                                .aspectRatio(16 / 9f)
                                 .clip(RoundedCornerShape(4.dp))
                         )
                     }
@@ -401,7 +388,7 @@ class PostScreen : Screen {
             if (images.size > 1) {
                 Row(
                     modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
-                        .padding(bottom = 20.dp),
+                        .padding(bottom = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -412,7 +399,7 @@ class PostScreen : Screen {
                             unselectedColor = Color(0xFFD9D9D9),
                             size = if (index == pagerState.currentPage) 6 else 4,
                             spacer = 4,
-                            selectedLength = 12
+                            selectedLength = 6
                         )
                     }
                 }

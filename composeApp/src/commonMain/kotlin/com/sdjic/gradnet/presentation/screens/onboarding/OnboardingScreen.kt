@@ -121,17 +121,17 @@ val onboardingList = listOf(
     Onboard(
         title = "Connect and Grow",
         description = "Join a vibrant community of students, alumni, and faculty. 🌱",
-        lottieFile = "onboarding1.json"
+        lottieFile = "onboarding1.lottie"
     ),
     Onboard(
         title = "Find Opportunities",
         description = "Access jobs, internships, and exclusive university events. 🎓",
-        lottieFile = "onboarding2.json"
+        lottieFile = "onboarding2.lottie"
     ),
     Onboard(
         title = "Inspire Others",
         description = "Share achievements and inspire your university network. 💬",
-        lottieFile = "onboarding3.json"
+        lottieFile = "onboarding3.lottie"
     )
 )
 

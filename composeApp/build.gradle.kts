@@ -89,8 +89,8 @@ kotlin {
             implementation(libs.kmpauth.google)
             implementation(libs.kmpauth.uihelper)
 
-            implementation("com.github.skydoves:orbital:0.4.0")
             implementation(project(":color"))
+            implementation(project(":calendar"))
         }
 
         iosMain.dependencies {

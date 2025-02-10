@@ -9,20 +9,21 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -45,21 +45,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
+import com.maxkeppeker.sheets.core.models.base.Header
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
-import com.maxkeppeler.sheets.color.ColorDialog
-import com.maxkeppeler.sheets.color.models.ColorConfig
-import com.maxkeppeler.sheets.color.models.ColorSelection
-import com.maxkeppeler.sheets.color.models.ColorSelectionMode
-import com.maxkeppeler.sheets.color.models.MultipleColors
-import com.maxkeppeler.sheets.color.models.SingleColor
-import com.sdjic.gradnet.presentation.composables.DatePickerDialog
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.sdjic.gradnet.presentation.composables.button.PlusIconButton
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
@@ -93,7 +90,7 @@ fun EducationSetUpScreen(
 
     if (educationState.showEducationBottomSheet) {
         ModalBottomSheet(
-            modifier = Modifier.navigationBarsPadding(),
+            modifier = Modifier.windowInsetsPadding(insets = WindowInsets.systemBars),
             properties = ModalBottomSheetProperties(shouldDismissOnBackPress = false),
             sheetState = sheetState,
             dragHandle = null,
@@ -104,8 +101,7 @@ fun EducationSetUpScreen(
                 )
             },
         ) {
-            AddEducationModal(
-                educationModel = EducationModel(),
+            AddEditEducationModal(
                 onSave = { onAction(EducationScreenAction.OnAddEducation(it)) },
                 onCancel = { onAction(EducationScreenAction.OnEducationBottomSheetStateChange(false)) })
         }
@@ -326,78 +322,46 @@ fun EducationSetUpScreen(
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(16.sdp))
-
-        var color by remember { mutableStateOf(Color.Red.toArgb()) }
-
-        val colorState =
-            rememberUseCaseState(
-                visible = false,
-                onDismissRequest = {  }
-            )
-
-        val templateColors = MultipleColors.ColorsInt(
-            Color.Red.copy(alpha = 0.1f).toArgb(),
-            Color.Red.copy(alpha = 0.3f).toArgb(),
-            Color.Red.copy(alpha = 0.5f).toArgb(),
-            Color.Red.toArgb(),
-            Color.Green.toArgb(),
-            Color.Yellow.toArgb(),
-        )
-
-            ColorDialog(
-                state = colorState,
-                selection = ColorSelection(
-                    selectedColor = SingleColor(color),
-                    onSelectColor = { color = it },
-                ),
-                config = ColorConfig(
-                    templateColors = templateColors,
-                    defaultDisplayMode = ColorSelectionMode.TEMPLATE,
-                    allowCustomColorAlphaValues = true
-                ),
-            )
-
-        Button(
-            onClick = { colorState.show() },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(color)
-            )
-        ) { Text("$color") }
     }
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddEducationModal(
-    educationModel: EducationModel,
+fun AddEditEducationModal(
+    educationModel: EducationModel? = null,
     onSave: (EducationModel) -> Unit,
     onCancel: () -> Unit
 ) {
 
-    var eduModel by remember { mutableStateOf(educationModel) }
-    var showStartDatePicker by remember { mutableStateOf(false) }
-    var showEndDatePicker by remember { mutableStateOf(false) }
+    var eduModel by remember { mutableStateOf(educationModel ?: EducationModel()) }
+    val startDatePicker = rememberUseCaseState(visible = false)
+    val endDatePicker = rememberUseCaseState(visible = false)
 
-    DatePickerDialog(
-        title = "Select start date",
-        showDatePicker = showStartDatePicker,
-        onDismiss = { showStartDatePicker = false },
-        onDateSelected = { date ->
-            eduModel = eduModel.copy(startDate = date)
-            showStartDatePicker = false
-        }
+    CalendarDialog(
+        state = startDatePicker,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH
+        ),
+        selection = CalendarSelection.Date { newDate ->
+            eduModel = eduModel.copy(startDate = newDate.toString())
+        },
+        header = Header.Default("Select Start Date", null)
     )
 
-    DatePickerDialog(
-        title = "Select end date",
-        showDatePicker = showEndDatePicker,
-        onDismiss = { showEndDatePicker = false },
-        onDateSelected = { date ->
-            eduModel = eduModel.copy(endDate = date)
-            showEndDatePicker = false
-        }
+    CalendarDialog(
+        state = endDatePicker,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH
+        ),
+        selection = CalendarSelection.Date { newDate ->
+            eduModel = eduModel.copy(endDate = newDate.toString())
+        },
+        header = Header.Default("Select End Date", null)
     )
 
     Column(
@@ -415,7 +379,7 @@ fun AddEducationModal(
         )
 
         Title(
-            text = "Add Education",
+            text = "${if (educationModel != null) "Edit" else "Add"} Education Detail",
             size = 16.ssp,
             textColor = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(vertical = 8.sdp)
@@ -453,7 +417,7 @@ fun AddEducationModal(
 
         Box(
             modifier = Modifier.clickable(
-                onClick = { showStartDatePicker = true }
+                onClick = { startDatePicker.show() }
             )
         ) {
             CustomInputField(
@@ -469,7 +433,7 @@ fun AddEducationModal(
 
         Box(
             modifier = Modifier.clickable(
-                onClick = { showEndDatePicker = true }
+                onClick = { endDatePicker.show() }
             )
         ) {
             CustomInputField(
@@ -487,10 +451,11 @@ fun AddEducationModal(
             modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
             SecondaryOutlinedButton(
-                modifier = Modifier.padding(10.sdp).weight(1f), onClick = onCancel
+                modifier = Modifier.weight(1f), onClick = onCancel
             ) { Title(text = "Cancel", textColor = MaterialTheme.colorScheme.primary) }
+            Spacer(modifier = Modifier.width(20.dp))
             PrimaryButton(
-                modifier = Modifier.padding(10.sdp).weight(1f),
+                modifier = Modifier.weight(1f),
                 onClick = {
                     onSave(eduModel)
                     onCancel()
@@ -498,7 +463,12 @@ fun AddEducationModal(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                 )
-            ) { Title(text = "Add", textColor = MaterialTheme.colorScheme.background) }
+            ) {
+                Title(
+                    text = if (educationModel != null) "Update" else "Add",
+                    textColor = MaterialTheme.colorScheme.background
+                )
+            }
         }
     }
 }

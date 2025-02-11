@@ -2,11 +2,10 @@ package com.sdjic.gradnet.presentation.screens.posts
 
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -48,7 +46,6 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,9 +59,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cash.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
@@ -79,12 +76,12 @@ import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.DummyDpImage
-import com.sdjic.gradnet.presentation.core.LOREM
 import com.sdjic.gradnet.presentation.core.getEmptyUserDto
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
+import com.sdjic.gradnet.presentation.helper.PagingListUI
+import com.sdjic.gradnet.presentation.helper.isScrollingUp
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
-import com.sdjic.gradnet.presentation.helper.rememberTopBarVisibilityState
 import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
 import com.sdjic.gradnet.presentation.screens.onboarding.onboardingList
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
@@ -94,7 +91,6 @@ import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import network.chaintech.sdpcomposemultiplatform.getScreenWidth
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -117,19 +113,25 @@ class PostScreen : Screen {
         val scrollBehavior = LocalScrollBehavior.current
 
         var isRefreshing by remember { mutableStateOf(false) }
-        val (isTopBarVisible, topBarHeight) = rememberTopBarVisibilityState(listState)
 
         val postScreenModel = koinScreenModel<PostScreenModel>()
-
-        val padding by animateDpAsState(
-            targetValue = topBarHeight,
-            animationSpec = tween(durationMillis = 150)
-        )
+        val data = postScreenModel.posts.collectAsLazyPagingItems()
 
         Scaffold(
+            topBar = {
+                AnimatedVisibility(listState.isScrollingUp(),
+                    enter = fadeIn() + slideInVertically { -1 },
+                    exit = fadeOut() + slideOutVertically { -1 }
+                ) {
+                    TopBar(onClick = {
+                        postScreenModel.onAction(PostScreenAction.OnFilterSheetStateChange(true))
+                    }
+                    )
+                }
+            },
             floatingActionButton = {
                 AnimatedVisibility(
-                    visible = isTopBarVisible, enter = fadeIn(), exit = fadeOut()
+                    visible = listState.isScrollingUp(), enter = fadeIn(), exit = fadeOut()
                 ) {
                     FloatingActionButton(onClick = {}) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = null)
@@ -169,31 +171,27 @@ class PostScreen : Screen {
                     }
                 }
             ) {
-                LazyColumn(
+                PagingListUI(
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .padding(top = padding),
-                    state = listState,
-                ) {
-                    items(10) {
-
-                        PostItem(
-                            post = Post(
-                                postId = 1,
-                                user = getEmptyUserDto(),
-                                createdAt = "1h",
-                                content = LOREM,
-                                images = listOf(
-                                    DummyBgImage,
-                                    "https://farm4.staticflickr.com/3049/2327691528_f060ee2d1f.jpg",
-                                    "https://farm4.staticflickr.com/3224/3081748027_0ee3d59fea_z_d.jpg"
-                                ),
-                            )
+                        .padding(pVal),
+                    data = data,
+                    state = listState
+                ) { item ->
+                    PostItem(
+                        post = Post(
+                            postId = item.id?.toLong() ?: 0,
+                            user = getEmptyUserDto(),
+                            createdAt = "1h",
+                            content = "${item.title}\n\n${item.body}",
+                            likesCount = item.reactions?.likes ?: 0,
+                            images = listOf(
+                                DummyBgImage,
+                                "https://farm4.staticflickr.com/3049/2327691528_f060ee2d1f.jpg",
+                                "https://farm4.staticflickr.com/3224/3081748027_0ee3d59fea_z_d.jpg"
+                            ),
                         )
-                    }
+                    )
                 }
-                TopBar(topBarHeight = topBarHeight, onClick = {
-                    postScreenModel.onAction(PostScreenAction.OnFilterSheetStateChange(true))
-                })
             }
         }
     }
@@ -253,12 +251,10 @@ class PostScreen : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun TopBar(topBarHeight: Dp, onClick: () -> Unit) {
+    fun TopBar(onClick: () -> Unit) {
         TopAppBar(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(topBarHeight)
-                .animateContentSize(animationSpec = tween(durationMillis = 150)),
+                .fillMaxWidth(),
             title = {
                 Text(
                     text = stringResource(Res.string.app_name),
@@ -320,7 +316,8 @@ class PostScreen : Screen {
             }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.sdp)
+                horizontalArrangement = Arrangement.spacedBy(10.sdp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(if (isLiked) Res.drawable.heart else Res.drawable.heart_outlined),
@@ -329,6 +326,7 @@ class PostScreen : Screen {
                     tint = if (isLiked) Color.Red
                     else MaterialTheme.colorScheme.onSurface.copy(.4f)
                 )
+                SText(post.likesCount.toString())
                 Icon(
                     painter = painterResource(Res.drawable.ic_share),
                     contentDescription = null,

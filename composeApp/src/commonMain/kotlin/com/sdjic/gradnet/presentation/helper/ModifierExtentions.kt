@@ -1,17 +1,20 @@
 package com.sdjic.gradnet.presentation.helper
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
@@ -93,103 +96,79 @@ fun Modifier.gradientTint(
     }
 }
 
-//TODO fix drag obervers
-/*fun Modifier.swipeGesture(
-    swipeValue: AnimatedFloat,
-    swipeDirection: Direction = Direction.LEFT,
-    maxSwipe: Float,
-    onItemSwiped: () -> Unit
-): Modifier = composed {
-    (this then dragGestureFilter(
-        canDrag = { it == swipeDirection },
-        dragObserver = dragObserver(
-            swipeValue = swipeValue,
-            maxSwipe = maxSwipe,
-            onItemSwiped = onItemSwiped
-        )
-    )).then(object : LayoutModifier {
-        override fun MeasureScope.measure(
-            measurable: Measurable,
-            constraints: Constraints
-        ): MeasureResult {
-            val children = measurable.measure(constraints)
-            //  swipeValue.setBounds(-children.width.toFloat()-100f, children.width.toFloat()+100f)
-            return layout(children.width, children.height) {
-                children.place(swipeValue.value.toInt(), 0)
-            }
-        }
-    })
-}
+fun Modifier.shimmerLoadingAnimation(
+    isLoadingCompleted: Boolean = true, // <-- New parameter for start/stop.
+    isLightModeActive: Boolean = true, // <-- New parameter for display modes.
+    widthOfShadowBrush: Int = 500,
+    angleOfAxisY: Float = 270f,
+    durationMillis: Int = 1000,
+): Modifier {
+    if (isLoadingCompleted) { // <-- Step 1.
+        return this
+    }
+    else {
+        return composed {
 
-@Composable
-fun dragObserver(
-    swipeValue: AnimatedFloat,
-    maxSwipe: Float,
-    onItemSwiped: () -> Unit
-): DragObserver {
+            // Step 2.
+            val shimmerColors = ShimmerAnimationData(isLightMode = isLightModeActive).getColours()
 
-    return object : DragObserver {
-        override fun onStart(downPosition: Offset) {
-            //  swipeValue.setBounds(-maxSwipe, maxSwipe)
-        }
+            val transition = rememberInfiniteTransition(label = "")
 
-        private fun reset() {
-            swipeValue.animateTo(
-                0f,
-                anim = SpringSpec(
-                    dampingRatio = 0.8f, stiffness = 300f
-                )
+            val translateAnimation = transition.animateFloat(
+                initialValue = 0f,
+                targetValue = (durationMillis + widthOfShadowBrush).toFloat(),
+                animationSpec = infiniteRepeatable(
+                    animation = tween(
+                        durationMillis = durationMillis,
+                        easing = LinearEasing,
+                    ),
+                    repeatMode = RepeatMode.Restart,
+                ),
+                label = "Shimmer loading animation",
+            )
+
+            this.background(
+                brush = Brush.linearGradient(
+                    colors = shimmerColors,
+                    start = Offset(x = translateAnimation.value - widthOfShadowBrush, y = 0.0f),
+                    end = Offset(x = translateAnimation.value, y = angleOfAxisY),
+                ),
             )
         }
-
-        override fun onDrag(dragDistance: Offset): Offset {
-            swipeValue.snapTo(swipeValue.targetValue + dragDistance.x)
-            return dragDistance
-        }
-
-        override fun onStop(velocity: Offset) {
-            if (abs(swipeValue.targetValue) < 400f) {
-                reset()
-            } else {
-                val animateTo = if (swipeValue.value > 0) maxSwipe else -maxSwipe
-                swipeValue.animateTo(
-                    animateTo,
-                    anim = SpringSpec<Float>(
-                        dampingRatio = 0.8f, stiffness = 300f
-                    ),
-                    onEnd = { _, _ ->
-                        // On swiped do something
-                        // onItemSwiped.invoke()
-                    }
-                )
-                // actually it should be in animation end but it's bit slow animation I put it out.
-                onItemSwiped.invoke()
-            }
-        }
     }
-}*/
+}
 
+data class ShimmerAnimationData(
+    private val isLightMode: Boolean
+) {
+    fun getColours(): List<Color> {
+        return if (isLightMode) {
+            val color = Color.White
 
-@Composable
-fun LazyListState.isScrollingUp(): State<Boolean> {
-    return produceState(initialValue = true) {
-        var lastIndex = 0
-        var lastScroll = Int.MAX_VALUE
-        snapshotFlow {
-            firstVisibleItemIndex to firstVisibleItemScrollOffset
-        }.collect { (currentIndex, currentScroll) ->
-            if (currentIndex != lastIndex || currentScroll != lastScroll) {
-                value = currentIndex < lastIndex ||
-                        (currentIndex == lastIndex && currentScroll < lastScroll)
-                lastIndex = currentIndex
-                lastScroll = currentScroll
-            }
+            listOf(
+                color.copy(alpha = 0.3f),
+                color.copy(alpha = 0.5f),
+                color.copy(alpha = 1.0f),
+                color.copy(alpha = 0.5f),
+                color.copy(alpha = 0.3f),
+            )
+        } else {
+            val color = Color.Black
+
+            listOf(
+                color.copy(alpha = 0.0f),
+                color.copy(alpha = 0.3f),
+                color.copy(alpha = 0.5f),
+                color.copy(alpha = 0.3f),
+                color.copy(alpha = 0.0f),
+            )
         }
     }
 }
 
+// perfectly working
 @Composable
-private fun LazyGridState.isScrollingUp(): Boolean {
+fun LazyListState.isScrollingUp(): Boolean {
     var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
     var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
@@ -206,6 +185,7 @@ private fun LazyGridState.isScrollingUp(): Boolean {
     }.value
 }
 
+// working -> use if above isScrolling method didn't work
 @Composable
 fun rememberTopBarVisibilityState(listState: LazyListState, threshold: Int = 60): Pair<Boolean, Dp> {
     val topBarVisible = remember { mutableStateOf(true) }

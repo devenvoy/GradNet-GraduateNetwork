@@ -1,19 +1,23 @@
-package com.sdjic.gradnet.presentation.composables
+package com.sdjic.gradnet.presentation.helper
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,15 +28,29 @@ import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.compose.LazyPagingItems
+import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.DotLottie
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import network.chaintech.sdpcomposemultiplatform.sdp
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun <T : Any> PagingListUI(
     modifier: Modifier = Modifier,
     data: LazyPagingItems<T>,
+    state: LazyListState = rememberLazyListState(),
     content: @Composable (T) -> Unit
 ) {
+    val composition by rememberLottieComposition {
+        LottieCompositionSpec.DotLottie(Res.readBytes("files/loading.lottie"))
+    }
     LazyColumn(
         modifier = modifier,
+        state = state,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -64,8 +82,13 @@ fun <T : Any> PagingListUI(
                             modifier = Modifier.fillParentMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primary
+                            Image(
+                                modifier = Modifier.size(80.sdp),
+                                painter = rememberLottiePainter(
+                                    composition = composition,
+                                    iterations = Compottie.IterateForever
+                                ),
+                                contentDescription = "loader"
                             )
                         }
                     }

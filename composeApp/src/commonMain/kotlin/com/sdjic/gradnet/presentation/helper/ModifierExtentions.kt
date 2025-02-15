@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -96,21 +97,20 @@ fun Modifier.gradientTint(
     }
 }
 
+@Composable
 fun Modifier.shimmerLoadingAnimation(
-    isLoadingCompleted: Boolean = true, // <-- New parameter for start/stop.
-    isLightModeActive: Boolean = true, // <-- New parameter for display modes.
-    widthOfShadowBrush: Int = 500,
+    isLoadingCompleted: Boolean = false,
+    widthOfShadowBrush: Int = 400,
     angleOfAxisY: Float = 270f,
-    durationMillis: Int = 1000,
+    durationMillis: Int = 1500,
 ): Modifier {
-    if (isLoadingCompleted) { // <-- Step 1.
+    if (isLoadingCompleted) {
         return this
     }
     else {
         return composed {
 
-            // Step 2.
-            val shimmerColors = ShimmerAnimationData(isLightMode = isLightModeActive).getColours()
+            val shimmerColors = ShimmerAnimationData(isLightMode = isSystemInDarkTheme()).getColours()
 
             val transition = rememberInfiniteTransition(label = "")
 

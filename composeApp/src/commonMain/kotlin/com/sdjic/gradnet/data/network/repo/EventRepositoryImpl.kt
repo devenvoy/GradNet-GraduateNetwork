@@ -2,6 +2,7 @@ package com.sdjic.gradnet.data.network.repo
 
 import GradNet_GraduateNetwork.composeApp.BuildConfig
 import com.sdjic.gradnet.data.network.entity.response.EventResponse
+import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.utils.BaseGateway
 import com.sdjic.gradnet.data.network.utils.Result
@@ -21,7 +22,7 @@ class EventRepositoryImpl(
         venue: String?,
         startDate: String?,
         endDate: String?
-    ): ServerResponse<EventResponse>? {
+    ): Result<ServerResponse<EventResponse>,ServerError> {
         val response = tryToExecute<ServerResponse<EventResponse>> {
             post(BuildConfig.BASE_URL + "/events") {
                 headers {
@@ -41,10 +42,6 @@ class EventRepositoryImpl(
                 )
             }
         }
-        return when(response){
-            is Result.Error -> null
-            Result.Loading -> null
-            is Result.Success -> response.data
-        }
+        return response
     }
 }

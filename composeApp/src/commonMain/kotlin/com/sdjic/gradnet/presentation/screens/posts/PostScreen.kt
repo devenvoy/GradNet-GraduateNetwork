@@ -62,7 +62,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cash.paging.compose.collectAsLazyPagingItems
+import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.internal.BackHandler
 import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
@@ -103,7 +105,7 @@ class PostScreen : Screen {
         PostScreenContent()
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, InternalVoyagerApi::class)
     @Composable
     fun PostScreenContent() {
         val listState = rememberLazyListState()
@@ -117,13 +119,19 @@ class PostScreen : Screen {
         val postScreenModel = koinScreenModel<PostScreenModel>()
         val data = postScreenModel.posts.collectAsLazyPagingItems()
 
+        BackHandler(enabled = listState.firstVisibleItemIndex > 5) {
+            scope.launch {
+                listState.animateScrollToItem(0)
+            }
+        }
+
         Scaffold(
             topBar = {
                 AnimatedVisibility(listState.isScrollingUp(),
                     enter = fadeIn() + slideInVertically { -1 },
                     exit = fadeOut() + slideOutVertically { -1 }
                 ) {
-                    TopBar(onClick = {
+                    TopBar(onFilterIconClicked = {
                         postScreenModel.onAction(PostScreenAction.OnFilterSheetStateChange(true))
                     }
                     )
@@ -160,7 +168,7 @@ class PostScreen : Screen {
             }
 
             PullToRefreshBox(
-                modifier = Modifier.statusBarsPadding(),
+                modifier = Modifier.padding(pVal),
                 isRefreshing = isRefreshing,
                 state = pullToRefreshState,
                 onRefresh = {
@@ -172,10 +180,9 @@ class PostScreen : Screen {
                 }
             ) {
                 PagingListUI(
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .padding(pVal),
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     data = data,
-                    state = listState
+                    state = listState,
                 ) { item ->
                     PostItem(
                         post = Post(
@@ -251,10 +258,8 @@ class PostScreen : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun TopBar(onClick: () -> Unit) {
+    fun TopBar(onFilterIconClicked: () -> Unit) {
         TopAppBar(
-            modifier = Modifier
-                .fillMaxWidth(),
             title = {
                 Text(
                     text = stringResource(Res.string.app_name),
@@ -265,7 +270,7 @@ class PostScreen : Screen {
                 )
             },
             actions = {
-                IconButton(onClick = onClick) {
+                IconButton(onClick = onFilterIconClicked) {
                     Icon(
                         modifier = Modifier.size(24.dp),
                         imageVector = Icons.Default.FilterList,

@@ -14,7 +14,7 @@ data class EventResponse(
     @SerialName("offset")
     val offset: Int,
     @SerialName("records")
-    val eventDtos: List<EventDto?>,
+    val eventDtos: List<EventDto>,
     @SerialName("total_records")
     val totalRecords: Int
 )

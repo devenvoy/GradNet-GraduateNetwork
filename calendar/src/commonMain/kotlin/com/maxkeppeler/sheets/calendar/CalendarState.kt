@@ -30,8 +30,9 @@ import com.maxkeppeler.sheets.calendar.models.CalendarDisplayMode
 import com.maxkeppeler.sheets.calendar.models.CalendarMonthData
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
-import com.maxkeppeler.sheets.calendar.utils.*
 import com.maxkeppeler.sheets.calendar.utils.Constants
+import com.maxkeppeler.sheets.calendar.utils.DateTimeUtil.toEpochMillis
+import com.maxkeppeler.sheets.calendar.utils.DateTimeUtil.toLocalDate
 import com.maxkeppeler.sheets.calendar.utils.calcCalendarData
 import com.maxkeppeler.sheets.calendar.utils.calcMonthData
 import com.maxkeppeler.sheets.calendar.utils.dateValue
@@ -41,9 +42,15 @@ import com.maxkeppeler.sheets.calendar.utils.endOfWeek
 import com.maxkeppeler.sheets.calendar.utils.endValue
 import com.maxkeppeler.sheets.calendar.utils.getInitialCameraDate
 import com.maxkeppeler.sheets.calendar.utils.getInitialCustomCameraDate
+import com.maxkeppeler.sheets.calendar.utils.isAfter
+import com.maxkeppeler.sheets.calendar.utils.isBefore
+import com.maxkeppeler.sheets.calendar.utils.jumpNext
+import com.maxkeppeler.sheets.calendar.utils.jumpPrev
+import com.maxkeppeler.sheets.calendar.utils.now
 import com.maxkeppeler.sheets.calendar.utils.rangeValue
 import com.maxkeppeler.sheets.calendar.utils.startOfMonth
 import com.maxkeppeler.sheets.calendar.utils.startOfWeek
+import com.maxkeppeler.sheets.calendar.utils.startOfWeekOrMonth
 import com.maxkeppeler.sheets.calendar.utils.startValue
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -65,13 +72,19 @@ internal class CalendarState(
     val today by mutableStateOf(LocalDate.now())
     var mode by mutableStateOf(stateData?.mode ?: CalendarDisplayMode.CALENDAR)
     var cameraDate by mutableStateOf(
-        stateData?.cameraDate
+        stateData?.cameraDate?.toLocalDate()
             ?: getInitialCustomCameraDate(config.cameraDate, config.boundary)
             ?: getInitialCameraDate(selection, config.boundary)
     )
-    var date = mutableStateOf(stateData?.date ?: selection.dateValue)
-    var dates = mutableStateListOf(*(stateData?.dates ?: selection.datesValue))
-    var range = mutableStateListOf(*(stateData?.range ?: selection.rangeValue))
+    var date = mutableStateOf(stateData?.date?.toLocalDate() ?: selection.dateValue)
+    var dates = mutableStateListOf(
+        *(stateData?.dates?.map { it.toLocalDate() }?.toTypedArray()
+            ?: selection.datesValue)
+    )
+    var range = mutableStateListOf(
+        *(stateData?.range?.map { it.toLocalDate() }?.toTypedArray()
+            ?: selection.rangeValue)
+    )
     var isRangeSelectionStart by mutableStateOf(stateData?.rangeSelectionStart ?: true)
     var yearsRange by mutableStateOf(getInitYearsRange())
     var monthsData by mutableStateOf(getInitMonthsData())
@@ -130,17 +143,8 @@ internal class CalendarState(
         get() {
             val prevCameraDate = cameraDate.jumpPrev(config)
             return when (config.style) {
-                CalendarStyle.MONTH -> {
-                    val isPrevOutOfBoundary =
-                        prevCameraDate.isBefore(config.boundary.start.startOfMonth)
-                    isPrevOutOfBoundary
-                }
-
-                CalendarStyle.WEEK -> {
-                    val isPrevOutOfBoundary =
-                        prevCameraDate.isBefore(config.boundary.start.startOfWeek)
-                    isPrevOutOfBoundary
-                }
+                CalendarStyle.MONTH -> prevCameraDate.isBefore(config.boundary.start.startOfMonth)
+                CalendarStyle.WEEK -> prevCameraDate.isBefore(config.boundary.start.startOfWeek)
             }
         }
 
@@ -148,28 +152,16 @@ internal class CalendarState(
         get() {
             val nextCameraDate = cameraDate.jumpNext(config)
             return when (config.style) {
-                CalendarStyle.MONTH -> {
-                    val isNextOutOfBoundary =
-                        nextCameraDate.isAfter(config.boundary.endInclusive.endOfMonth)
-                    isNextOutOfBoundary
-                }
-
-                CalendarStyle.WEEK -> {
-                    val isNextOutOfBoundary =
-                        nextCameraDate.isAfter(config.boundary.endInclusive.endOfWeek)
-                    isNextOutOfBoundary
-                }
+                CalendarStyle.MONTH -> nextCameraDate.isAfter(config.boundary.endInclusive.endOfMonth)
+                CalendarStyle.WEEK -> nextCameraDate.isAfter(config.boundary.endInclusive.endOfWeek)
             }
         }
 
     val isMonthSelectionEnabled: Boolean
-        get() = monthsData.disabled.size < 11 // At least 2 months
+        get() = monthsData.disabled.size < 11
 
     val isYearSelectionEnabled: Boolean
-        get() {
-            val years = yearsRange.endInclusive.minus(yearsRange.start).plus(1)
-            return years > 1 // at least 2 years
-        }
+        get() = yearsRange.endInclusive - yearsRange.start + 1 > 1
 
     val cells: Int
         get() = when (mode) {
@@ -179,7 +171,7 @@ internal class CalendarState(
         }
 
     val yearIndex: Int
-        get() = cameraDate.year.minus(yearsRange.start)
+        get() = cameraDate.year - yearsRange.start
 
     fun onPrevious() {
         cameraDate = cameraDate.jumpPrev(config)
@@ -215,16 +207,9 @@ internal class CalendarState(
 
     fun onYearClick(year: Int) {
         var newDate = LocalDate(year, cameraDate.month, cameraDate.dayOfMonth)
-        // Check if current new date would be within the boundary otherwise reset to month within boundary
         newDate = when {
-            newDate.isBefore(config.boundary.start) -> {
-                LocalDate(newDate.year, config.boundary.start.month, config.boundary.start.dayOfMonth)
-            }
-
-            newDate.isAfter(config.boundary.endInclusive) -> {
-                LocalDate(newDate.year, config.boundary.endInclusive.month, config.boundary.endInclusive.dayOfMonth)
-            }
-
+            newDate.isBefore(config.boundary.start) -> config.boundary.start
+            newDate.isAfter(config.boundary.endInclusive) -> config.boundary.endInclusive
             else -> newDate
         }
         cameraDate = newDate.startOfWeek
@@ -309,15 +294,15 @@ internal class CalendarState(
             save = { state ->
                 CalendarStateData(
                     mode = state.mode,
-                    cameraDate = state.cameraDate,
-                    date = state.date.value,
-                    dates = state.dates.toTypedArray(),
-                    range = state.range.toTypedArray(),
+                    cameraDate = state.cameraDate.toEpochDays().toLong(),
+                    date = state.date.value?.toEpochDays()?.toLong(),
+                    dates = state.dates.map { it.toEpochMillis() }.toLongArray(),
+                    range = state.range.mapNotNull { it?.toEpochMillis() }.toLongArray(),
                     rangeSelectionStart = state.isRangeSelectionStart
                 )
             },
             restore = { data ->
-                CalendarState(selection, config, data)
+                CalendarState(selection, config, data.toCalendarStateData())
             }
         )
     }
@@ -330,17 +315,27 @@ internal class CalendarState(
     @Serializable
     data class CalendarStateData(
         val mode: CalendarDisplayMode,
-        val cameraDate: LocalDate,
-        val date: LocalDate?,
-        val dates: Array<LocalDate>,
-        val range: Array<LocalDate?>,
+        val cameraDate: Long,
+        val date: Long?,
+        val dates: LongArray,
+        val range: LongArray,
         val rangeSelectionStart: Boolean
     ) : JvmSerializable {
 
+        fun toCalendarStateData(): CalendarStateData {
+            return CalendarStateData(
+                mode = mode,
+                cameraDate = cameraDate,
+                date = date,
+                dates = dates,
+                range = range,
+                rangeSelectionStart = rangeSelectionStart
+            )
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other == null) return false
-            if (this::class != other::class) return false
+            if (other == null || this::class != other::class) return false
 
             other as CalendarStateData
 

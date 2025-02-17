@@ -32,7 +32,7 @@ internal object Constants {
 
     private val DEFAULT_RANGE_START_DATE = LocalDate(1980, 3, 15)
     private const val DEFAULT_RANGE_END_YEAR_OFFSET = 20
-    private val DEFAULT_RANGE_END_DATE = LocalDate.now().plusYears(DEFAULT_RANGE_END_YEAR_OFFSET)
+    private val DEFAULT_RANGE_END_DATE = DateTimeUtil.now().plusYears(DEFAULT_RANGE_END_YEAR_OFFSET)
         .withMonth(1)
         .withDayOfMonth(15)
 

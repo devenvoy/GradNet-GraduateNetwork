@@ -6,10 +6,6 @@ import kotlinx.datetime.*
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.byUnicodePattern
 
-internal fun LocalDate.Companion.now(): LocalDate {
-    return Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-}
-
 class LocalDateRange(
     override val start: LocalDate,
     override val endInclusive: LocalDate
@@ -34,17 +30,20 @@ internal fun LocalDate.withYear(value: Int): LocalDate = LocalDate(
     dayOfMonth = this.dayOfMonth
 )
 
-internal fun LocalDate.withMonth(value: Month): LocalDate = LocalDate(
-    year = this.year,
-    month = value,
-    dayOfMonth = this.dayOfMonth,
-)
+internal fun LocalDate.withMonth(value: Month): LocalDate {
+    val maxDays = value.length(this.isLeapYear)
+    val day = minOf(this.dayOfMonth, maxDays)
+    return LocalDate(
+        year = this.year,
+        month = value,
+        dayOfMonth = day,
+    )
+}
 
-internal fun LocalDate.withMonth(value: Int): LocalDate = LocalDate(
-    year = this.year,
-    monthNumber = value,
-    dayOfMonth = this.dayOfMonth,
-)
+internal fun LocalDate.withMonth(value: Int): LocalDate {
+    val month = Month.entries[value - 1]
+    return withMonth(month)
+}
 
 internal fun LocalDate.withDayOfMonth(value: Int): LocalDate = LocalDate(
     year = this.year,
@@ -235,7 +234,7 @@ internal fun getInitialCameraDate(
         is CalendarSelection.Dates -> selection.selectedDates?.firstOrNull()
         is CalendarSelection.Period -> selection.selectedRange?.start
     } ?: run {
-        val now = LocalDate.now()
+        val now = DateTimeUtil.now()
         if (now in boundary) now else boundary.start
     }
     return cameraDateBasedOnMode.startOfWeekOrMonth
@@ -291,22 +290,21 @@ internal fun LocalDate.isAfter(other: LocalDate): Boolean = this > other
 
 internal fun LocalDate.isBefore(other: LocalDate): Boolean = this < other
 
-/**
- * Calculate the month data based on the camera date and the restrictions.
- */
 internal fun calcMonthData(
     config: CalendarConfig,
     cameraDate: LocalDate,
-    today: LocalDate = LocalDate.now(),
+    today: LocalDate = DateTimeUtil.now(),
 ): CalendarMonthData {
     val months = Month.entries
 
     val boundaryFilteredMonths = months.filter { month ->
         val maxDaysOfMonth = month.length(cameraDate.isLeapYear)
+        val adjustedCameraDate = cameraDate.withMonth(month) // Adjusted month first
         val startDay = minOf(config.boundary.start.dayOfMonth, maxDaysOfMonth)
         val endDay = minOf(config.boundary.endInclusive.dayOfMonth, maxDaysOfMonth)
-        val cameraDateWithMonth = cameraDate.withMonth(month).withDayOfMonth(startDay)
-        cameraDateWithMonth in config.boundary || cameraDateWithMonth.withDayOfMonth(endDay) in config.boundary
+        val cameraDateWithStartDay = adjustedCameraDate.withDayOfMonth(startDay)
+        val cameraDateWithEndDay = adjustedCameraDate.withDayOfMonth(endDay)
+        cameraDateWithStartDay in config.boundary || cameraDateWithEndDay in config.boundary
     }
 
     return CalendarMonthData(
@@ -380,7 +378,7 @@ internal fun calcCalendarData(
     val isMonthStartOffset = weekCameraDate.dayOfMonth <= 7
     if (isMonthStartOffset) {
         repeat(offsetStart) {
-            rangedDays.add(0, Pair(CalendarViewType.DAY_START_OFFSET, LocalDate.now()))
+            rangedDays.add(0, Pair(CalendarViewType.DAY_START_OFFSET, DateTimeUtil.now()))
         }
     }
 

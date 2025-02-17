@@ -31,6 +31,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarMonthData
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.calendar.utils.Constants
+import com.maxkeppeler.sheets.calendar.utils.DateTimeUtil
 import com.maxkeppeler.sheets.calendar.utils.DateTimeUtil.toEpochMillis
 import com.maxkeppeler.sheets.calendar.utils.DateTimeUtil.toLocalDate
 import com.maxkeppeler.sheets.calendar.utils.calcCalendarData
@@ -46,7 +47,6 @@ import com.maxkeppeler.sheets.calendar.utils.isAfter
 import com.maxkeppeler.sheets.calendar.utils.isBefore
 import com.maxkeppeler.sheets.calendar.utils.jumpNext
 import com.maxkeppeler.sheets.calendar.utils.jumpPrev
-import com.maxkeppeler.sheets.calendar.utils.now
 import com.maxkeppeler.sheets.calendar.utils.rangeValue
 import com.maxkeppeler.sheets.calendar.utils.startOfMonth
 import com.maxkeppeler.sheets.calendar.utils.startOfWeek
@@ -69,7 +69,7 @@ internal class CalendarState(
     stateData: CalendarStateData? = null,
 ) : BaseTypeState(), JvmSerializable {
 
-    val today by mutableStateOf(LocalDate.now())
+    val today by mutableStateOf(DateTimeUtil.now())
     var mode by mutableStateOf(stateData?.mode ?: CalendarDisplayMode.CALENDAR)
     var cameraDate by mutableStateOf(
         stateData?.cameraDate?.toLocalDate()

@@ -73,6 +73,7 @@ import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
+import kotlinx.datetime.LocalDate
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -345,7 +346,9 @@ fun AddEditEducationModal(
             monthSelection = true,
             style = CalendarStyle.MONTH
         ),
-        selection = CalendarSelection.Date { newDate ->
+        selection = CalendarSelection.Date(
+            selectedDate = eduModel.startDate?.let { LocalDate.parse(it) }
+        ) { newDate ->
             eduModel = eduModel.copy(startDate = newDate.toString())
         },
         header = Header.Default("Select Start Date", null)
@@ -358,7 +361,9 @@ fun AddEditEducationModal(
             monthSelection = true,
             style = CalendarStyle.MONTH
         ),
-        selection = CalendarSelection.Date { newDate ->
+        selection = CalendarSelection.Date(
+            selectedDate = eduModel.endDate?.let { LocalDate.parse(it) }
+        ) { newDate ->
             eduModel = eduModel.copy(endDate = newDate.toString())
         },
         header = Header.Default("Select End Date", null)

@@ -41,13 +41,11 @@ import com.maxkeppeker.sheets.core.utils.testTags
 import com.maxkeppeler.sheets.calendar.models.CalendarDateData
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.utils.Constants
-import com.maxkeppeler.sheets.calendar.utils.now
+import com.maxkeppeler.sheets.calendar.utils.DateTimeUtil
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.byUnicodePattern
-import kotlinx.datetime.isoDayNumber
-
 /**
  * The date item component of the calendar view.
  * @param data The data for the date.
@@ -63,7 +61,7 @@ internal fun CalendarDateItemComponent(
     onDateClick: (LocalDate) -> Unit = {},
 ) {
 
-    val today = data.date == LocalDate.now()
+    val today = data.date == DateTimeUtil.now()
     val defaultShape = when (orientation) {
         LibOrientation.PORTRAIT -> MaterialTheme.shapes.medium
         LibOrientation.LANDSCAPE -> MaterialTheme.shapes.small

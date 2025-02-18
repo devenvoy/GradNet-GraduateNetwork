@@ -35,6 +35,7 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":shared")
 include(":calendar")
 include(":sheetCore")
 include(":color")

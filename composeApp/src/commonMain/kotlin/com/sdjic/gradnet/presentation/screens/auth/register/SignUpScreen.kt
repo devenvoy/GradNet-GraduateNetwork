@@ -67,8 +67,8 @@ import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.User
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.alternate_email
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.alternate_email
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource

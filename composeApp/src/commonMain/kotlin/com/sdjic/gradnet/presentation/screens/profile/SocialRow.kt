@@ -12,10 +12,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.github
-import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
-import gradnet_graduatenetwork.composeapp.generated.resources.twitter_bird
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.github
+import com.sdjic.shared.resources.linkedin
+import com.sdjic.shared.resources.twitter_bird
 import network.chaintech.sdpcomposemultiplatform.sdp
 import org.jetbrains.compose.resources.painterResource
 

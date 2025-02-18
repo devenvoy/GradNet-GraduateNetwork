@@ -4,9 +4,9 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.inter_24pt_regular
-import gradnet_graduatenetwork.composeapp.generated.resources.inter_tight_regular
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.inter_24pt_regular
+import com.sdjic.shared.resources.inter_tight_regular
 import org.jetbrains.compose.resources.Font
 
 @Composable

@@ -71,8 +71,8 @@ import com.sdjic.gradnet.presentation.core.SkillList
 import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.empty_trash
 import kotlinx.datetime.LocalDate
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp

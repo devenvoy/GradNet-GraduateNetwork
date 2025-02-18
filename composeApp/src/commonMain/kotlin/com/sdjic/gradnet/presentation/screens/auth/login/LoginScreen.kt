@@ -51,9 +51,9 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.alternate_email
-import gradnet_graduatenetwork.composeapp.generated.resources.create_account
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.alternate_email
+import com.sdjic.shared.resources.create_account
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.DotLottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec

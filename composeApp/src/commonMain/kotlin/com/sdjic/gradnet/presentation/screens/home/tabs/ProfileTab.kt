@@ -9,9 +9,9 @@ import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.person
-import gradnet_graduatenetwork.composeapp.generated.resources.person_outline
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.person
+import com.sdjic.shared.resources.person_outline
 import org.koin.compose.koinInject
 
 object ProfileTab : MyTab {

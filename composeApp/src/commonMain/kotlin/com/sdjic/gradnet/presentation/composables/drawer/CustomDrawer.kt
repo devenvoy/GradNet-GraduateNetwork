@@ -14,8 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.core.model.NavigationItem
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_alumni
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.ic_alumni
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

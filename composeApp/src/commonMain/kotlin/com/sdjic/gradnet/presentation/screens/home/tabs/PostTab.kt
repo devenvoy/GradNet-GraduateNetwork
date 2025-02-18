@@ -7,9 +7,9 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.posts.PostScreen
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.home
-import gradnet_graduatenetwork.composeapp.generated.resources.home_outline
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.home
+import com.sdjic.shared.resources.home_outline
 
 object PostTab : MyTab {
 

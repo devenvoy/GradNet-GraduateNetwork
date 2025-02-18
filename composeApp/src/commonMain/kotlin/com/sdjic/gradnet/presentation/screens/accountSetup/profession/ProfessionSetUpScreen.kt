@@ -69,11 +69,11 @@ import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Globe
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
-import gradnet_graduatenetwork.composeapp.generated.resources.github
-import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
-import gradnet_graduatenetwork.composeapp.generated.resources.twitter_bird
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.empty_trash
+import com.sdjic.shared.resources.github
+import com.sdjic.shared.resources.linkedin
+import com.sdjic.shared.resources.twitter_bird
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource

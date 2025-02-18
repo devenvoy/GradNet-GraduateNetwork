@@ -86,11 +86,11 @@ import com.sdjic.gradnet.presentation.helper.isScrollingUp
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
 import com.sdjic.gradnet.presentation.screens.onboarding.onboardingList
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.app_name
-import gradnet_graduatenetwork.composeapp.generated.resources.heart
-import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.app_name
+import com.sdjic.shared.resources.heart
+import com.sdjic.shared.resources.heart_outlined
+import com.sdjic.shared.resources.ic_share
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp

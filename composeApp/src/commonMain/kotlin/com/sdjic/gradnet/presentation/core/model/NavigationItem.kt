@@ -1,10 +1,10 @@
 package com.sdjic.gradnet.presentation.core.model
 
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.info_outline
-import gradnet_graduatenetwork.composeapp.generated.resources.logout
-import gradnet_graduatenetwork.composeapp.generated.resources.person
-import gradnet_graduatenetwork.composeapp.generated.resources.settings
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.info_outline
+import com.sdjic.shared.resources.logout
+import com.sdjic.shared.resources.person
+import com.sdjic.shared.resources.settings
 import org.jetbrains.compose.resources.DrawableResource
 
 enum class NavigationItem(

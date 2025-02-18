@@ -8,9 +8,9 @@ import cafe.adriel.voyager.transitions.ScaleTransition
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.event.EventScreen
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.event
-import gradnet_graduatenetwork.composeapp.generated.resources.event_note
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.event
+import com.sdjic.shared.resources.event_note
 
 object EventsTab : MyTab {
     override val options: TabOptions

@@ -7,9 +7,9 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.jobs.JobScreen
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.work
-import gradnet_graduatenetwork.composeapp.generated.resources.work_outline
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.work
+import com.sdjic.shared.resources.work_outline
 
 // to see latest job req post and search job based on requirements
 object JobsTab : MyTab {

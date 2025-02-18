@@ -1,9 +1,9 @@
 package com.sdjic.gradnet.presentation.screens.auth.register.model
 
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_alumni
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_faculty
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_organization
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.ic_alumni
+import com.sdjic.shared.resources.ic_faculty
+import com.sdjic.shared.resources.ic_organization
 import org.jetbrains.compose.resources.DrawableResource
 
 sealed class UserRole(

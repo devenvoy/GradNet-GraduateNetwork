@@ -7,8 +7,8 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.search.SearchScreen
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.search
+import com.sdjic.shared.resources.Res
+import com.sdjic.shared.resources.search
 
 object SearchTab : MyTab {
 

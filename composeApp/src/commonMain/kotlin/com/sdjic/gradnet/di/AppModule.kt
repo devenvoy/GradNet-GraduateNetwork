@@ -2,23 +2,27 @@ package com.sdjic.gradnet.di
 
 import com.sdjic.gradnet.data.local.preference.AppCacheSettingImpl
 import com.sdjic.gradnet.data.local.room.GradNetDB
-import com.sdjic.gradnet.data.network.source.CoinPagingSource
-import com.sdjic.gradnet.data.repo.AuthRepositoryImpl
-import com.sdjic.gradnet.data.repo.CryptoRepository
-import com.sdjic.gradnet.data.repo.TestRepositoryImpl
-import com.sdjic.gradnet.data.repo.UserRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.CryptoRepository
+import com.sdjic.gradnet.data.network.repo.DummyPostRepository
+import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.TestRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.UserRepositoryImpl
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
 import com.sdjic.gradnet.di.platform_di.platformModule
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
+import com.sdjic.gradnet.domain.repo.EventRepository
 import com.sdjic.gradnet.domain.repo.TestRepository
 import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
 import com.sdjic.gradnet.presentation.screens.demo.TestViewModel
+import com.sdjic.gradnet.presentation.screens.event.EventScreenModel
 import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
+import com.sdjic.gradnet.presentation.screens.posts.PostScreenModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.koin.dsl.module
@@ -29,20 +33,23 @@ val screenModelsModule = module {
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
     factory { SetUpAccountViewModel(get()) }
+    factory { PostScreenModel(get()) }
+    factory { EventScreenModel(get()) }
 }
 
 val userCases = module {
-    single { CoinPagingSource(get()) }
 }
 
 val repositoryModule = module {
 
-    single<AuthRepository>{  AuthRepositoryImpl(get())}
+    single<AuthRepository>{  AuthRepositoryImpl(get()) }
     single <UserRepository>{ UserRepositoryImpl(get()) }
+    single <EventRepository>{ EventRepositoryImpl(get()) }
 
     // trying only
     single<TestRepository> { TestRepositoryImpl(testDao = get()) }
     single<CryptoRepository> { CryptoRepository(httpClient = get()) }
+    single<DummyPostRepository> { DummyPostRepository(httpClient = get()) }
 }
 
 val dispatcherModule = module {

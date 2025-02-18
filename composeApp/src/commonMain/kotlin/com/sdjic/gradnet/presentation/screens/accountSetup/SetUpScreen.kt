@@ -1,5 +1,6 @@
 package com.sdjic.gradnet.presentation.screens.accountSetup
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,17 +28,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sdjic.gradnet.presentation.composables.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.SText
-import com.sdjic.gradnet.presentation.composables.Title
+import com.dokar.sonner.ToastType
+import com.dokar.sonner.Toaster
+import com.dokar.sonner.ToasterDefaults
+import com.dokar.sonner.rememberToasterState
+import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
+import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
@@ -46,7 +51,9 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScree
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionSetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
@@ -65,7 +72,10 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
             topBar = {
                 TopAppBar(
                     title = {
-                        Title(text = "${if (isEditProfile) "Edit " else "Set Up "}Profile")
+                        Title(
+                            text = "${if (isEditProfile) "Edit " else "Set Up "}Profile",
+                            size = 14.ssp
+                        )
                     },
                     navigationIcon = {
                         if (isEditProfile) {
@@ -83,7 +93,9 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
         { sPad ->
             val setUpAccountViewModel = koinScreenModel<SetUpAccountViewModel>()
             val scope = rememberCoroutineScope()
-            Box {
+            Box(
+                modifier = Modifier.padding(sPad)
+            ){
                 UiStateHandler(
                     uiState = setUpAccountViewModel.userData.collectAsState().value,
                     content = { userProfile ->
@@ -109,9 +121,7 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
 
                         val pagerState = rememberPagerState(pageCount = { setUpScreenTabs.size })
 
-                        Column(
-                            modifier = Modifier.padding(sPad)
-                        ) {
+                        Column {
                             Tabs(tabs = setUpScreenTabs,
                                 pagerState = pagerState,
                                 onClick = { scope.launch { pagerState.animateScrollToPage(it) } })
@@ -122,29 +132,60 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                 pagerState = pagerState,
                                 userRole = userRole
                             )
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(16.sdp),
-                            ) {
-                                PrimaryButton(
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF43c71c)
-                                    ),
-                                    modifier = Modifier.padding(10.sdp, 20.sdp).fillMaxWidth(),
-                                    contentPadding = PaddingValues(20.sdp, 10.sdp),
-                                    onClick = { }
-                                ) {
-                                    SText(
-                                        text = "Save",
-                                        fontSize = 14.ssp,
-                                        fontWeight = W600,
-                                        textColor = MaterialTheme.colorScheme.surface,
-                                    )
+                        }
+                        PrimaryButton(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(16.sdp)
+                                .fillMaxWidth()
+                                .shadow(4.dp,RoundedCornerShape(8.sdp),true,MaterialTheme.colorScheme.primary),
+                            contentPadding = PaddingValues(vertical = 10.sdp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                            onClick = {
+                                if (isEditProfile) navigator.pop()
+                                else {
+                                    if (userProfile.isVerified) {
+                                        navigator.replace(HomeScreen())
+                                    } else {
+                                        setUpAccountViewModel.showErrorState("Please verify to proceed")
+                                    }
                                 }
                             }
+                        ) {
+                            SText(
+                                text = "Save",
+                                fontSize = 14.ssp,
+                                fontWeight = W600,
+                                textColor = MaterialTheme.colorScheme.surface,
+                            )
                         }
                     },
                     onErrorShowed = { }        // logout user
+                )
+
+
+                UiStateHandler(
+                    uiState = setUpAccountViewModel.setUpOrEditState.collectAsState().value,
+                    content = {
+                        val toaster = rememberToasterState()
+                        LaunchedEffect(Clock.System.now()) {
+                            toaster.show(
+                                message = it,
+                                duration = ToasterDefaults.DurationLong,
+                                type = ToastType.Success
+                            )
+                        }
+                        Toaster(
+                            state = toaster,
+                            richColors = true,
+                            darkTheme = isSystemInDarkTheme(),
+                            showCloseButton = true,
+                            alignment = Alignment.BottomCenter,
+                        )
+                    },
+                    onErrorShowed = {}
                 )
             }
         }

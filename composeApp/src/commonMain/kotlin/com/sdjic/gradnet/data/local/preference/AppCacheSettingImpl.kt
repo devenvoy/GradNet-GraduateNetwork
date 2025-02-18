@@ -26,6 +26,12 @@ class AppCacheSettingImpl : AppCacheSetting {
             settings[SettingStorageKeys.USER_ID.key] = value
         }
 
+    override var isVerified: Boolean
+        get() = settings[SettingStorageKeys.IS_VERIFIED.key] ?: false
+        set(value) {
+            settings[SettingStorageKeys.IS_VERIFIED.key] = value
+        }
+
     override fun logout(callBack: () -> Unit) {
         settings.clear()
         callBack()

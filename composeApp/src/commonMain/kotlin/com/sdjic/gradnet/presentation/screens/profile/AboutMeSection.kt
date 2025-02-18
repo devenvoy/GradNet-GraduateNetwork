@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.sdjic.gradnet.presentation.composables.SText
+import com.sdjic.gradnet.presentation.composables.text.SText
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.about_me
 import network.chaintech.sdpcomposemultiplatform.sdp

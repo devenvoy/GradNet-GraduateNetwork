@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Hónap kiválasztása</string>
+    <string name="scd_calendar_dialog_next_month" >Jövő hónap</string>
+    <string name="scd_calendar_dialog_prev_month" >Jövő hónap</string>
+    <string name="scd_calendar_dialog_next_week" >Következő hét</string>
+    <string name="scd_calendar_dialog_prev_week" >Előző héten</string>
+    <string name="scd_calendar_dialog_select_year" >Év kiválasztása</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

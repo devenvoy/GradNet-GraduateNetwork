@@ -10,7 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.sdjic.gradnet.presentation.composables.SText
+import com.sdjic.gradnet.presentation.composables.text.SText
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 @Composable

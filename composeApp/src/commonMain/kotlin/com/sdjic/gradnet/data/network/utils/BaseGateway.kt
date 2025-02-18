@@ -1,12 +1,12 @@
 package com.sdjic.gradnet.data.network.utils
 
 import co.touchlab.kermit.Logger
-import com.sdjic.gradnet.data.network.entity.ServerError
+import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.domain.utils.InternetException
-import com.sdjic.gradnet.domain.utils.PaginationItems
 import com.sdjic.gradnet.domain.utils.UnknownErrorException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
@@ -45,25 +45,40 @@ abstract class BaseGateway(val client: HttpClient) {
             Result.Error(networkError)
         } catch (e: InternetException.NoInternetException) {
             Logger.e("Response Error: ${e.message}")
-            Result.Error(ServerError(
-                code = 400,
-                value = null,
-                detail = NetworkError.NO_INTERNET.name,
-            ))
+            Result.Error(
+                ServerError(
+                    code = 400,
+                    value = null,
+                    detail = NetworkError.NO_INTERNET.message,
+                )
+            )
+        } catch (e: SocketTimeoutException) {
+            Logger.e("Response Error: ${e.message}")
+            Result.Error(
+                ServerError(
+                    code = 400,
+                    value = null,
+                    detail = NetworkError.SERVER_TIMEOUT.message,
+                )
+            )
         } catch (e: SerializationException) {
             Logger.e("Response Error: ${e.message}")
-            Result.Error(ServerError(
-                code = 400,
-                value = null,
-                detail = NetworkError.SERIALIZATION.name,
-            ))
+            Result.Error(
+                ServerError(
+                    code = 400,
+                    value = null,
+                    detail = NetworkError.SERIALIZATION.message,
+                )
+            )
         } catch (e: Exception) {
             Logger.e("Response Error: ${e.message}")
-            Result.Error(ServerError(
-                code = 400,
-                value = null,
-                detail = "Unknown Error",
-            ))
+            Result.Error(
+                ServerError(
+                    code = 500,
+                    value = null,
+                    detail = "Unknown Error",
+                )
+            )
         }
     }
 
@@ -72,8 +87,4 @@ abstract class BaseGateway(val client: HttpClient) {
         keys.containsAll(errorCodes.toList())
 
     private fun Map<String, String>.getOrEmpty(key: String): String = get(key) ?: ""
-
-    fun <T> paginateData(result: List<T>, page: Int, total: Long): PaginationItems<T> {
-        return PaginationItems(total = total, page = page, items = result)
-    }
 }

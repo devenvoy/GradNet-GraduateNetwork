@@ -1,11 +1,10 @@
 package com.sdjic.gradnet.domain.repo
 
-import com.sdjic.gradnet.data.network.entity.LoginResponse
-import com.sdjic.gradnet.data.network.entity.ServerError
-import com.sdjic.gradnet.data.network.entity.ServerResponse
-import com.sdjic.gradnet.data.network.entity.SignUpRequest
-import com.sdjic.gradnet.data.network.entity.SignUpResponse
-import com.sdjic.gradnet.data.network.utils.NetworkError
+import com.sdjic.gradnet.data.network.entity.response.LoginResponse
+import com.sdjic.gradnet.data.network.entity.response.ServerError
+import com.sdjic.gradnet.data.network.entity.response.ServerResponse
+import com.sdjic.gradnet.data.network.entity.response.SignUpRequest
+import com.sdjic.gradnet.data.network.entity.response.SignUpResponse
 import com.sdjic.gradnet.data.network.utils.Result
 
 interface AuthRepository {

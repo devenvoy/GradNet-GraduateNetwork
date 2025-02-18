@@ -2,15 +2,13 @@ package com.sdjic.gradnet.presentation.screens.profile
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import com.sdjic.gradnet.presentation.composables.InterestTag
-import com.sdjic.gradnet.presentation.composables.SText
+import com.sdjic.gradnet.presentation.composables.filter.InterestTag
+import com.sdjic.gradnet.presentation.composables.text.SText
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 

@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Velja mánuð</string>
+    <string name="scd_calendar_dialog_next_month" >Næst komandi mánuði</string>
+    <string name="scd_calendar_dialog_prev_month" >Næsti mánuður</string>
+    <string name="scd_calendar_dialog_next_week" >Næstu viku</string>
+    <string name="scd_calendar_dialog_prev_week" >Síðasta viku</string>
+    <string name="scd_calendar_dialog_select_year" >Veldu árið</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

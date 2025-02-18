@@ -8,6 +8,8 @@ interface AppCacheSetting {
 
     var userId : String
 
+    var isVerified : Boolean
+
 //    val observableFromLanguage: Flow<Language>
 
     fun logout(callBack:()->Unit)

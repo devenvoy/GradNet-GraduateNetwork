@@ -1,14 +1,18 @@
 package com.sdjic.gradnet.presentation.screens.accountSetup
 
+import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.data.network.utils.toUserProfile
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.UserRepository
+import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.core.model.toBasicState
 import com.sdjic.gradnet.presentation.core.model.toEducationState
 import com.sdjic.gradnet.presentation.core.model.toProfessionState
+import com.sdjic.gradnet.presentation.helper.FetchUserUiState
 import com.sdjic.gradnet.presentation.helper.SetUpOrEditUiState
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
@@ -17,6 +21,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSc
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationState
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,8 +45,11 @@ class SetUpAccountViewModel(
     private val _isVerified = MutableStateFlow(false)
     val isVerified = _isVerified.asStateFlow()
 
-    private val _userData = MutableStateFlow<SetUpOrEditUiState>(UiState.Idle)
+    private val _userData = MutableStateFlow<FetchUserUiState>(UiState.Idle)
     val userData = _userData.asStateFlow()
+
+    private val _setUpOrEditState = MutableStateFlow<SetUpOrEditUiState>(UiState.Idle)
+    val setUpOrEditState = _setUpOrEditState.asStateFlow()
 
     private val prefs = getKoin().get<AppCacheSetting>()
 
@@ -54,21 +62,24 @@ class SetUpAccountViewModel(
             _userData.value = UiState.Loading
             val result = userRepository.fetchUser(prefs.accessToken)
             result.onSuccess { user ->
-                _basicState.update { user.toBasicState() }
-                _educationState.update { user.toEducationState() }
-                _professionState.update { user.toProfessionState() }
-                _userData.value = UiState.Success(user)
-            }.onError {
-                _userData.value = UiState.Error(it.detail)
-            }
+                user.value?.let { updateUserData(user.value.toUserProfile()) }
+            }.onError { _userData.value = UiState.Error(it.detail) }
         }
     }
 
+    private fun updateUserData(user: UserProfile) {
+        _basicState.update { user.toBasicState() }
+        _educationState.update { user.toEducationState() }
+        _professionState.update { user.toProfessionState() }
+        _userData.value = UiState.Success(user)
+        _isVerified.value = user.isVerified
+    }
 
     fun onBasicAction(basicScreenAction: BasicScreenAction) {
         when (basicScreenAction) {
-            BasicScreenAction.ResendOtp -> verifyOtp()
-            BasicScreenAction.VerifyOtp -> resendOtp()
+
+            BasicScreenAction.ResendOtp -> resendOtp()
+            BasicScreenAction.VerifyOtp -> verifyOtp()
 
             is BasicScreenAction.OnVerificationFieldValueChange -> {
                 _basicState.value =
@@ -91,6 +102,7 @@ class SetUpAccountViewModel(
             }
 
             is BasicScreenAction.OnBackgroundImageChange -> {
+                uploadImage(basicScreenAction.value, "BACKGROUND")
                 _basicState.value =
                     _basicState.value.copy(backgroundImage = basicScreenAction.value)
             }
@@ -101,6 +113,7 @@ class SetUpAccountViewModel(
             }
 
             is BasicScreenAction.OnProfileImageChange -> {
+                uploadImage(basicScreenAction.value, "PROFILE")
                 _basicState.value =
                     _basicState.value.copy(profileImage = basicScreenAction.value)
             }
@@ -141,6 +154,7 @@ class SetUpAccountViewModel(
                 }
 
                 is EducationScreenAction.OnRemoveEducation -> {
+                    if(_educationState.value.eductionList.isEmpty()) return@launch
                     val updatedEducationList =
                         _educationState.value.eductionList.toMutableList().apply {
                             removeAt(educationScreenAction.index)
@@ -206,27 +220,36 @@ class SetUpAccountViewModel(
         screenModelScope.launch {
             _professionState.value = when (action) {
                 is ProfessionScreenAction.OnAddExperience -> {
-                    val updatedExperiences = _professionState.value.experienceList + action.experience
+                    val updatedExperiences =
+                        _professionState.value.experienceList + action.experience
                     _professionState.value.copy(experienceList = updatedExperiences)
                 }
+
                 is ProfessionScreenAction.OnUpdateExperience -> {
-                    val updatedExperiences = _professionState.value.experienceList.toMutableList().apply {
-                        this[action.index] = action.experience
-                    }
+                    val updatedExperiences =
+                        _professionState.value.experienceList.toMutableList().apply {
+                            this[action.index] = action.experience
+                        }
                     _professionState.value.copy(experienceList = updatedExperiences)
                 }
+
                 is ProfessionScreenAction.OnRemoveExperience -> {
-                    val updatedExperiences = _professionState.value.experienceList.toMutableList().apply {
-                        removeAt(action.index)
-                    }
+                    if(_professionState.value.experienceList.isEmpty()) return@launch
+                    val updatedExperiences =
+                        _professionState.value.experienceList.toMutableList().apply {
+                            removeAt(action.index)
+                        }
                     _professionState.value.copy(experienceList = updatedExperiences)
                 }
+
                 is ProfessionScreenAction.OnUpdateLinkedinUrl -> {
                     _professionState.value.copy(linkedinUrl = action.url)
                 }
+
                 is ProfessionScreenAction.OnUpdateGithubUrl -> {
                     _professionState.value.copy(githubUrl = action.url)
                 }
+
                 is ProfessionScreenAction.OnUpdateTwitterUrl -> {
                     _professionState.value.copy(twitterUrl = action.url)
                 }
@@ -238,6 +261,7 @@ class SetUpAccountViewModel(
                         _professionState.value
                     }
                 }
+
                 is ProfessionScreenAction.OnRemoveOtherUrl -> {
                     _professionState.value.copy(
                         otherUrls = _professionState.value.otherUrls.toMutableList().apply {
@@ -257,9 +281,74 @@ class SetUpAccountViewModel(
         }
     }
 
+    fun showErrorState(message: String) {
+        screenModelScope.launch {
+            if (_setUpOrEditState.value != UiState.Loading) {
+                _setUpOrEditState.value = UiState.Loading
+                delay(1000L)
+            }
+            _setUpOrEditState.value = UiState.Error(message)
+        }
+    }
 
-    private fun verifyOtp() {}
+    private fun verifyOtp() {
+        screenModelScope.launch {
+            _setUpOrEditState.update { UiState.Loading }
+            val result = userRepository.verifyOtp(
+                _basicState.value.verificationField,
+                _basicState.value.otpField,
+                token = prefs.accessToken
+            )
+            result.onSuccess { r ->
+                r.value?.let { user ->
+                    updateUserData(user.toUserProfile())
+                    prefs.accessToken = r.value.accessToken
+                    prefs.isVerified = r.value.verified
+                    _setUpOrEditState.update { UiState.Success(r.detail) }
+                    onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
+                }
+            }.onError {
+                showErrorState(it.detail)
+                onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
+            }
+        }
+    }
 
-    private fun resendOtp() {}
+    private fun resendOtp() {
+        screenModelScope.launch {
+            _setUpOrEditState.update { UiState.Loading }
+            onBasicAction(BasicScreenAction.OnOtpFieldValueChange(""))
+            userRepository.sendOtp(_basicState.value.verificationField)
+                .apply {
+                    onSuccess { r ->
+                        _setUpOrEditState.update { UiState.Success(r.detail) }
+                        _basicState.update { it.copy(otpEmailField = r.value?.email ?: "") }
+                        onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(true))
+                    }
+                    onError { e ->
+                        showErrorState(e.detail)
+                        onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
+                    }
+                }
+        }
+    }
 
+    private fun uploadImage(image: ImageBitmap, type: String) = screenModelScope.launch {
+        _setUpOrEditState.update { UiState.Loading }
+        userRepository.updateUserImages(
+            token = prefs.accessToken,
+            imageBitmap = image,
+            type = type
+        ).apply {
+            onSuccess { r ->
+                r.value?.let { user ->
+                    updateUserData(user.toUserProfile())
+                    _setUpOrEditState.update { UiState.Success(r.detail) }
+                }
+            }
+            onError { e ->
+                _setUpOrEditState.update { UiState.Error(e.detail) }
+            }
+        }
+    }
 }

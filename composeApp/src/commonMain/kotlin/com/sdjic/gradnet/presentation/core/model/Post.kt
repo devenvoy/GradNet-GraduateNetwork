@@ -1,0 +1,12 @@
+package com.sdjic.gradnet.presentation.core.model
+
+import com.sdjic.gradnet.data.network.entity.dto.UserDto
+
+data class Post(
+    val postId: Long,
+    val user: UserDto,
+    val content: String,
+    val likesCount:Int,
+    val images: List<String>,
+    val createdAt: String
+)

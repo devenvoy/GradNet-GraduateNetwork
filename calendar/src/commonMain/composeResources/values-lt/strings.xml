@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Pasirinkite mėnesį.</string>
+    <string name="scd_calendar_dialog_next_month" >Kitą mėnesį</string>
+    <string name="scd_calendar_dialog_prev_month" >Kitą mėnesį</string>
+    <string name="scd_calendar_dialog_next_week" >Kitą savaitę</string>
+    <string name="scd_calendar_dialog_prev_week" >Praeita savaitė</string>
+    <string name="scd_calendar_dialog_select_year" >Pasirinkite metus.</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

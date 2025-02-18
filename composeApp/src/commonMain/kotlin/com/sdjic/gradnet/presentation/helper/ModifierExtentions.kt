@@ -1,5 +1,17 @@
 package com.sdjic.gradnet.presentation.helper
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,6 +25,9 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.sdjic.gradnet.presentation.core.TOP_BAR_HEIGHT
 
 fun Modifier.horizontalGradientBackground(
     colors: List<Color>
@@ -82,78 +97,117 @@ fun Modifier.gradientTint(
     }
 }
 
-//TODO fix drag obervers
-//fun Modifier.swipeGesture(
-//    swipeValue: AnimatedFloat,
-//    swipeDirection: Direction = Direction.LEFT,
-//    maxSwipe: Float,
-//    onItemSwiped: () -> Unit
-//): Modifier = composed {
-//    (this then dragGestureFilter(
-//        canDrag = { it == swipeDirection },
-//        dragObserver = dragObserver(
-//            swipeValue = swipeValue,
-//            maxSwipe = maxSwipe,
-//            onItemSwiped = onItemSwiped
-//        )
-//    )).then(object : LayoutModifier {
-//        override fun MeasureScope.measure(
-//            measurable: Measurable,
-//            constraints: Constraints
-//        ): MeasureResult {
-//            val children = measurable.measure(constraints)
-//            //  swipeValue.setBounds(-children.width.toFloat()-100f, children.width.toFloat()+100f)
-//            return layout(children.width, children.height) {
-//                children.place(swipeValue.value.toInt(), 0)
-//            }
-//        }
-//    })
-//}
-//
-//@Composable
-//fun dragObserver(
-//    swipeValue: AnimatedFloat,
-//    maxSwipe: Float,
-//    onItemSwiped: () -> Unit
-//): DragObserver {
-//
-//    return object : DragObserver {
-//        override fun onStart(downPosition: Offset) {
-//            //  swipeValue.setBounds(-maxSwipe, maxSwipe)
-//        }
-//
-//        private fun reset() {
-//            swipeValue.animateTo(
-//                0f,
-//                anim = SpringSpec(
-//                    dampingRatio = 0.8f, stiffness = 300f
-//                )
-//            )
-//        }
-//
-//        override fun onDrag(dragDistance: Offset): Offset {
-//            swipeValue.snapTo(swipeValue.targetValue + dragDistance.x)
-//            return dragDistance
-//        }
-//
-//        override fun onStop(velocity: Offset) {
-//            if (abs(swipeValue.targetValue) < 400f) {
-//                reset()
-//            } else {
-//                val animateTo = if (swipeValue.value > 0) maxSwipe else -maxSwipe
-//                swipeValue.animateTo(
-//                    animateTo,
-//                    anim = SpringSpec<Float>(
-//                        dampingRatio = 0.8f, stiffness = 300f
-//                    ),
-//                    onEnd = { _, _ ->
-//                        // On swiped do something
-//                        // onItemSwiped.invoke()
-//                    }
-//                )
-//                // actually it should be in animation end but it's bit slow animation I put it out.
-//                onItemSwiped.invoke()
-//            }
-//        }
-//    }
-//}
+@Composable
+fun Modifier.shimmerLoadingAnimation(
+    isLoadingCompleted: Boolean = false,
+    widthOfShadowBrush: Int = 400,
+    angleOfAxisY: Float = 270f,
+    durationMillis: Int = 1500,
+): Modifier {
+    if (isLoadingCompleted) {
+        return this
+    }
+    else {
+        return composed {
+
+            val shimmerColors = ShimmerAnimationData(isLightMode = isSystemInDarkTheme()).getColours()
+
+            val transition = rememberInfiniteTransition(label = "")
+
+            val translateAnimation = transition.animateFloat(
+                initialValue = 0f,
+                targetValue = (durationMillis + widthOfShadowBrush).toFloat(),
+                animationSpec = infiniteRepeatable(
+                    animation = tween(
+                        durationMillis = durationMillis,
+                        easing = LinearEasing,
+                    ),
+                    repeatMode = RepeatMode.Restart,
+                ),
+                label = "Shimmer loading animation",
+            )
+
+            this.background(
+                brush = Brush.linearGradient(
+                    colors = shimmerColors,
+                    start = Offset(x = translateAnimation.value - widthOfShadowBrush, y = 0.0f),
+                    end = Offset(x = translateAnimation.value, y = angleOfAxisY),
+                ),
+            )
+        }
+    }
+}
+
+data class ShimmerAnimationData(
+    private val isLightMode: Boolean
+) {
+    fun getColours(): List<Color> {
+        return if (isLightMode) {
+            val color = Color.White
+
+            listOf(
+                color.copy(alpha = 0.3f),
+                color.copy(alpha = 0.5f),
+                color.copy(alpha = 1.0f),
+                color.copy(alpha = 0.5f),
+                color.copy(alpha = 0.3f),
+            )
+        } else {
+            val color = Color.Black
+
+            listOf(
+                color.copy(alpha = 0.0f),
+                color.copy(alpha = 0.3f),
+                color.copy(alpha = 0.5f),
+                color.copy(alpha = 0.3f),
+                color.copy(alpha = 0.0f),
+            )
+        }
+    }
+}
+
+// perfectly working
+@Composable
+fun LazyListState.isScrollingUp(): Boolean {
+    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
+}
+
+// working -> use if above isScrolling method didn't work
+@Composable
+fun rememberTopBarVisibilityState(listState: LazyListState, threshold: Int = 60): Pair<Boolean, Dp> {
+    val topBarVisible = remember { mutableStateOf(true) }
+    val topBarHeight = remember { mutableStateOf(TOP_BAR_HEIGHT) }
+    var lastScrollOffset by remember { mutableStateOf(0) }
+
+    LaunchedEffect(listState.firstVisibleItemScrollOffset) {
+        val currentOffset = listState.firstVisibleItemScrollOffset
+
+        if (currentOffset > lastScrollOffset) {
+            if (currentOffset > threshold) {
+                topBarVisible.value = false
+                topBarHeight.value = 0.dp
+            }
+        }
+        else if (currentOffset < lastScrollOffset) {
+            topBarVisible.value = true
+            topBarHeight.value = TOP_BAR_HEIGHT
+        }
+
+        lastScrollOffset = currentOffset
+    }
+
+    return Pair(topBarVisible.value, topBarHeight.value)
+}

@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.mmk.kmpauth.google.GoogleUser
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting
@@ -31,16 +32,17 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
             val validationResult = validateInputs()
             if (validationResult != null) {
                 _loginState.value = UiState.ValidationError(validationResult)
-                delay(200)
-                _loginState.value = UiState.Idle
                 return@launch
             }
             if(ConnectivityManager.isConnected){
                 val result = authRepository.login(email.value.text, password.value.text)
                 result.onSuccess {
-                    prefs.accessToken = it.value?.accessToken.toString()
-                    prefs.userId  =it.value?.userDto?.id.toString()
-                    _loginState.value = UiState.Success(it)
+                    it.value?.let { res ->
+                        prefs.accessToken = res.accessToken.toString()
+                        prefs.userId = res.userDto?.userId.toString()
+                        prefs.isVerified = res.userDto?.isVerified == true
+                        _loginState.value = UiState.Success(res.userDto?.isVerified == true)
+                    }
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
                 }
@@ -50,19 +52,51 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
         }
     }
 
-    private fun validateInputs(): Map<String, List<String>>? {
-        val errors = mutableMapOf<String, MutableList<String>>()
+    fun  loginWithGoogle(googleUser: GoogleUser) {
+        screenModelScope.launch {
+            _loginState.value = UiState.Loading
+            // Send this idToken to your backend to verify
+            val idToken = googleUser.idToken
+            if(ConnectivityManager.isConnected){
+                val result = authRepository.login(googleUser.email!!,googleUser.email!!.reversed())
+                result.onSuccess {
+                    it.value?.let { res ->
+                        prefs.accessToken = res.accessToken.toString()
+                        prefs.userId = res.userDto?.userId.toString()
+                        prefs.isVerified = res.userDto?.isVerified == true
+                        _loginState.value = UiState.Success(res.userDto?.isVerified == true)
+                    }
+                }.onError {
+                    _loginState.value = UiState.Error(it.detail)
+                }
+            }else{
+                _loginState.value = UiState.Error("Not Connected to Internet")
+            }
+        }
+    }
+
+    fun showErrorState(message: String){
+        screenModelScope.launch {
+            if(_loginState.value != UiState.Loading){
+                _loginState.value = UiState.Loading
+                delay(1000L)
+            }
+            _loginState.value = UiState.Error(message)
+        }
+    }
+
+    private fun validateInputs(): List<String>? {
+        val errors = mutableListOf<String>()
         if (email.value.text.isBlank()) {
-            errors.getOrPut("email") { mutableListOf() }.add("Email cannot be empty.")
+            errors.add("Email cannot be empty.")
         } else if (!isValidEmail(email.value.text)) {
-            errors.getOrPut("email") { mutableListOf() }.add("Invalid email format.")
+            errors.add("Invalid email format.")
         }
 
         if (password.value.text.isBlank()) {
-            errors.getOrPut("password") { mutableListOf() }.add("Password cannot be empty.")
+            errors.add("Password cannot be empty.")
         } else if (password.value.text.length < 6) {
-            errors.getOrPut("password") { mutableListOf() }
-                .add("Password must be at least 6 characters long.")
+            errors.add("Password must be at least 6 characters long.")
         }
 
         return if (errors.isEmpty()) null else errors

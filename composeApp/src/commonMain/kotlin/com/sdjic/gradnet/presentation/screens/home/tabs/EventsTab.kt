@@ -5,12 +5,10 @@ import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.ScaleTransition
-import com.sdjic.gradnet.presentation.helper.MyTab
-import com.sdjic.gradnet.presentation.helper.MyTabOptions
+import com.sdjic.commons.helper.MyTab
+import com.sdjic.commons.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.event.EventScreen
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.event
-import com.sdjic.shared.resources.event_note
+import com.sdjic.shared.Resource as Res
 
 object EventsTab : MyTab {
     override val options: TabOptions
@@ -25,7 +23,7 @@ object EventsTab : MyTab {
             MyTabOptions(
                 index = 3u,
                 title = "Events",
-                selectedIcon = Res.drawable.event_note,
+                selectedIcon = Res.drawable.eventNote,
                 unselectedIcon = Res.drawable.event
             )
         }

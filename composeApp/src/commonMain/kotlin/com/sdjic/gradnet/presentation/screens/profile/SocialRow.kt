@@ -12,10 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.github
-import com.sdjic.shared.resources.linkedin
-import com.sdjic.shared.resources.twitter_bird
+import com.sdjic.shared.Resource as Res
 import network.chaintech.sdpcomposemultiplatform.sdp
 import org.jetbrains.compose.resources.painterResource
 
@@ -44,7 +41,7 @@ fun SocialRow() {
             }
             IconButton(onClick = { /*launchSocialActivity(context, "twitter")*/ }) {
                 Icon(
-                    painter = painterResource(Res.drawable.twitter_bird),
+                    painter = painterResource(Res.drawable.twitterBird),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )

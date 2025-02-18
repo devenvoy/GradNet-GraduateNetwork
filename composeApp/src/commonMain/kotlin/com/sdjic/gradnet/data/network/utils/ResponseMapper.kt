@@ -1,5 +1,6 @@
 package com.sdjic.gradnet.data.network.utils
 
+import com.sdjic.commons.model.UserRole
 import com.sdjic.gradnet.data.network.entity.dto.EducationDto
 import com.sdjic.gradnet.data.network.entity.dto.ExperienceDto
 import com.sdjic.gradnet.data.network.entity.dto.URLDto
@@ -8,7 +9,6 @@ import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.core.model.ExperienceModel
 import com.sdjic.gradnet.presentation.core.model.SocialUrls
 import com.sdjic.gradnet.presentation.core.model.UserProfile
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 
 
 fun EducationDto.toEducationModel(): EducationModel {

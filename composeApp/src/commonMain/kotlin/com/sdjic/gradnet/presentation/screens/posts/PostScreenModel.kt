@@ -4,10 +4,10 @@ import androidx.paging.PagingData
 import app.cash.paging.cachedIn
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.commons.model.UserRole
 import com.sdjic.gradnet.data.network.entity.response.Post
 import com.sdjic.gradnet.data.network.repo.DummyPostRepository
 import com.sdjic.gradnet.presentation.core.model.Filter
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow

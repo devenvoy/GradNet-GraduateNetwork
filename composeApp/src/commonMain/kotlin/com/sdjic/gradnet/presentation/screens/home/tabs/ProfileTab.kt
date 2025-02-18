@@ -3,15 +3,13 @@ package com.sdjic.gradnet.presentation.screens.home.tabs
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.sdjic.commons.helper.LocalRootNavigator
+import com.sdjic.commons.helper.MyTab
+import com.sdjic.commons.helper.MyTabOptions
 import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
-import com.sdjic.gradnet.presentation.helper.MyTab
-import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.person
-import com.sdjic.shared.resources.person_outline
+import com.sdjic.shared.Resource as Res
 import org.koin.compose.koinInject
 
 object ProfileTab : MyTab {
@@ -25,7 +23,7 @@ object ProfileTab : MyTab {
                 index = 4u,
                 title = "Me",
                 selectedIcon = Res.drawable.person,
-                unselectedIcon = Res.drawable.person_outline
+                unselectedIcon = Res.drawable.personOutline
             )
         }
 

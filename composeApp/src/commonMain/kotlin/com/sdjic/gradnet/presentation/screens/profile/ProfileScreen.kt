@@ -34,11 +34,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil3.compose.LocalPlatformContext
-import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
-import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
+import com.sdjic.commons.composables.images.BackgroundImage
+import com.sdjic.commons.composables.images.CircularProfileImage
+import com.sdjic.commons.helper.LocalDrawerController
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.DummyDpImage
-import com.sdjic.gradnet.presentation.helper.LocalDrawerController
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Menu
 import kotlinx.coroutines.launch

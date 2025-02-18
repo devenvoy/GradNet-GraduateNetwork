@@ -4,11 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import com.sdjic.gradnet.presentation.helper.MyTab
-import com.sdjic.gradnet.presentation.helper.MyTabOptions
+import com.sdjic.commons.helper.MyTab
+import com.sdjic.commons.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.search.SearchScreen
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.search
+import com.sdjic.shared.Resource as Res
 
 object SearchTab : MyTab {
 

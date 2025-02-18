@@ -57,22 +57,21 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
-import com.sdjic.gradnet.presentation.composables.button.PlusIconButton
-import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
-import com.sdjic.gradnet.presentation.composables.filter.CustomImageChip
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputArea
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
-import com.sdjic.gradnet.presentation.composables.textInput.DropDownTextField
+import com.sdjic.commons.composables.button.PlusIconButton
+import com.sdjic.commons.composables.button.PrimaryButton
+import com.sdjic.commons.composables.button.SecondaryOutlinedButton
+import com.sdjic.commons.composables.filter.CustomImageChip
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.composables.textInput.CustomInputArea
+import com.sdjic.commons.composables.textInput.CustomInputField
+import com.sdjic.commons.composables.textInput.DropDownTextField
+import com.sdjic.commons.model.UserRole
 import com.sdjic.gradnet.presentation.core.LanguagesList
 import com.sdjic.gradnet.presentation.core.SkillList
 import com.sdjic.gradnet.presentation.core.model.EducationModel
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.empty_trash
+import com.sdjic.shared.Resource as Res
 import kotlinx.datetime.LocalDate
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
@@ -314,7 +313,7 @@ fun EducationSetUpScreen(
                                     .clickable(onClick = {
                                         onAction(EducationScreenAction.OnRemoveEducation(index))
                                     }),
-                                painter = painterResource(Res.drawable.empty_trash),
+                                painter = painterResource(Res.drawable.emptyTrash),
                                 tint = errorColor,
                                 contentDescription = "cross",
                             )

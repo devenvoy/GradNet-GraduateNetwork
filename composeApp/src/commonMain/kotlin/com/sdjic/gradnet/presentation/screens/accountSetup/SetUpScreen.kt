@@ -41,21 +41,26 @@ import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.rememberToasterState
-import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.helper.UiStateHandler
-import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.commons.composables.button.PrimaryButton
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.helper.UiState
+import com.sdjic.commons.helper.UiStateHandler
+import com.sdjic.commons.helper.koinScreenModel
+import com.sdjic.commons.model.UserRole
+import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionSetUpScreen
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
+
+typealias SetUpOrEditUiState = UiState<String>
+typealias FetchUserUiState = UiState<UserProfile>
 
 class SetUpScreen(private val isEditProfile: Boolean) : Screen {
 

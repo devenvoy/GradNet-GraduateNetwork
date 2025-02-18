@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -50,28 +51,31 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import com.mmk.kmpauth.google.GoogleButtonUiContainer
 import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
-import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
-import com.sdjic.gradnet.presentation.composables.filter.RoleSelectionItem
-import com.sdjic.gradnet.presentation.composables.images.BackButton
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputPasswordField
-import com.sdjic.gradnet.presentation.helper.UiStateHandler
-import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.commons.composables.button.BackButton
+import com.sdjic.commons.composables.button.PrimaryButton
+import com.sdjic.commons.composables.button.SecondaryOutlinedButton
+import com.sdjic.commons.composables.filter.RoleSelectionItem
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.composables.textInput.CustomInputField
+import com.sdjic.commons.composables.textInput.CustomInputPasswordField
+import com.sdjic.commons.helper.UiState
+import com.sdjic.commons.helper.UiStateHandler
+import com.sdjic.commons.helper.koinScreenModel
+import com.sdjic.commons.model.UserRole
+import com.sdjic.commons.theme.displayFontFamily
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
-import com.sdjic.gradnet.presentation.theme.displayFontFamily
+import com.sdjic.shared.Resource as Res
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.User
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.alternate_email
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
+
+
+typealias SignUpUiState = UiState<Boolean>
 
 class SignUpScreen(
     private val showNavigatorIcon: Boolean = false
@@ -215,8 +219,9 @@ class SignUpScreen(
                     placeholder = { Text("Enter email") },
                     trailingIcon = {
                         Icon(
-                            modifier = Modifier.padding(end = 6.sdp),
-                            painter = painterResource(Res.drawable.alternate_email),
+                            modifier = Modifier.size(20.sdp),
+                            painter = painterResource(Res.drawable.alternateEmail),
+                            tint = MaterialTheme.colorScheme.onBackground,
                             contentDescription = "Email icon",
                         )
                     },

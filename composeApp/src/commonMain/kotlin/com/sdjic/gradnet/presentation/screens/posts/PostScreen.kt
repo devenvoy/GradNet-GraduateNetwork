@@ -71,26 +71,22 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.alorma.compose.settings.ui.SettingsCheckbox
-import com.sdjic.gradnet.presentation.composables.LoadingAnimation
-import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
-import com.sdjic.gradnet.presentation.composables.text.ExpandableText
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.composables.text.Title
+import com.sdjic.commons.composables.LoadingAnimation
+import com.sdjic.commons.composables.images.CircularProfileImage
+import com.sdjic.commons.composables.text.ExpandableText
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.helper.LocalScrollBehavior
+import com.sdjic.commons.helper.PagingListUI
+import com.sdjic.commons.helper.isScrollingUp
+import com.sdjic.commons.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.DummyDpImage
 import com.sdjic.gradnet.presentation.core.getEmptyUserDto
 import com.sdjic.gradnet.presentation.core.model.Post
-import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
-import com.sdjic.gradnet.presentation.helper.PagingListUI
-import com.sdjic.gradnet.presentation.helper.isScrollingUp
-import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
 import com.sdjic.gradnet.presentation.screens.onboarding.onboardingList
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.app_name
-import com.sdjic.shared.resources.heart
-import com.sdjic.shared.resources.heart_outlined
-import com.sdjic.shared.resources.ic_share
+import com.sdjic.shared.Resource as Res
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -240,7 +236,8 @@ class PostScreen : Screen {
                         modifier = Modifier.padding(start = 10.dp)
                             .offset(y = (-20 * (ixd + 1)).dp),
                         state = filter.value,
-                        title = { Text(text = filter.key.lowercase().capitalize()) },
+                        title = { Text(text = filter.key.lowercase()
+                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }) },
                         enabled = true,
                         onCheckedChange = {
                             postScreenModel.onAction(
@@ -325,7 +322,7 @@ class PostScreen : Screen {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(if (isLiked) Res.drawable.heart else Res.drawable.heart_outlined),
+                    painter = painterResource(if (isLiked) Res.drawable.heart else Res.drawable.heartOutlined),
                     contentDescription = null,
                     modifier = Modifier.size(28.dp).clickable(onClick = { isLiked = !isLiked }),
                     tint = if (isLiked) Color.Red
@@ -333,7 +330,7 @@ class PostScreen : Screen {
                 )
                 SText(post.likesCount.toString())
                 Icon(
-                    painter = painterResource(Res.drawable.ic_share),
+                    painter = painterResource(Res.drawable.icShare),
                     contentDescription = null,
                     modifier = Modifier.clickable(onClick = {}).size(28.dp),
                     tint = MaterialTheme.colorScheme.onSurface.copy(.4f)

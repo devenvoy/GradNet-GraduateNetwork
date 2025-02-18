@@ -1,9 +1,9 @@
 package com.sdjic.gradnet.presentation.core.model
 
+import com.sdjic.commons.model.UserRole
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicState
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationState
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionState
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 
 data class UserProfile(
 

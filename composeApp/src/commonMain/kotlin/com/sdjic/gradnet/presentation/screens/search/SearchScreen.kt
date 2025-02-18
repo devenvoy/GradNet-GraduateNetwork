@@ -2,7 +2,7 @@ package com.sdjic.gradnet.presentation.screens.search
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
-import com.sdjic.gradnet.presentation.composables.EmptyScreen
+import com.sdjic.commons.composables.EmptyScreen
 
 class SearchScreen : Screen {
     @Composable

@@ -3,6 +3,7 @@ package com.sdjic.gradnet.presentation.screens.accountSetup
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.commons.helper.UiState
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.data.network.utils.toUserProfile
@@ -12,9 +13,6 @@ import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.core.model.toBasicState
 import com.sdjic.gradnet.presentation.core.model.toEducationState
 import com.sdjic.gradnet.presentation.core.model.toProfessionState
-import com.sdjic.gradnet.presentation.helper.FetchUserUiState
-import com.sdjic.gradnet.presentation.helper.SetUpOrEditUiState
-import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicState
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationScreenAction

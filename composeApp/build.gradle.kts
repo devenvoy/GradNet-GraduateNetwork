@@ -92,6 +92,10 @@ kotlin {
             implementation(project(":color"))
             implementation(project(":calendar"))
             implementation(project(":shared"))
+            implementation(project(":commons"))
+        //            {
+//                exclude(group = "com.sdjic.shared", module = "resources")
+//            }
         }
 
         iosMain.dependencies {

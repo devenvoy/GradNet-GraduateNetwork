@@ -45,7 +45,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
 import androidx.compose.ui.text.font.FontWeight.Companion.W500
@@ -54,15 +53,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil3.compose.LocalPlatformContext
-import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
-import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputArea
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
-import com.sdjic.gradnet.presentation.composables.textInput.OtpTextField
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.commons.composables.button.PrimaryButton
+import com.sdjic.commons.composables.images.BackgroundImage
+import com.sdjic.commons.composables.images.CircularProfileImage
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.composables.textInput.CustomInputArea
+import com.sdjic.commons.composables.textInput.CustomInputField
+import com.sdjic.commons.composables.textInput.OtpTextField
+import com.sdjic.commons.model.UserRole
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Plus
 import network.chaintech.cmpimagepickncrop.CMPImagePickNCropDialog
@@ -142,7 +141,8 @@ fun BasicSetUpScreen(
         if (!isVerified) {
             Column {
                 Title(
-                    text = "${userRole.name.lowercase().capitalize()} Verification",
+                    text = "${userRole.name.lowercase()
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }} Verification",
                     size = 16.ssp
                 )
                 SText(text = "only once", textColor = MaterialTheme.colorScheme.secondary)

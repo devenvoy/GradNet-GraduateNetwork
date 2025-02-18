@@ -17,13 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.github
-import com.sdjic.shared.resources.linkedin
-import com.sdjic.shared.resources.mail_outline
-import com.sdjic.shared.resources.phone
-import com.sdjic.shared.resources.twitter_bird
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.shared.Resource as Res
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -65,7 +60,7 @@ fun MoreInfoSection() {
     ContactInfoItem(
         leadingContent = {
             Icon(
-                painter = painterResource(Res.drawable.mail_outline),
+                painter = painterResource(Res.drawable.mailOutline),
                 contentDescription = null,
                 modifier = Modifier.padding(6.sdp).size(22.sdp)
             )
@@ -138,7 +133,7 @@ fun MoreInfoSection() {
     ContactInfoItem(
         leadingContent = {
             Icon(
-                painter = painterResource(Res.drawable.twitter_bird),
+                painter = painterResource(Res.drawable.twitterBird),
                 modifier = Modifier.padding(6.sdp).size(22.sdp),
                 tint = Color(0xFF0A66C2),
                 contentDescription = null

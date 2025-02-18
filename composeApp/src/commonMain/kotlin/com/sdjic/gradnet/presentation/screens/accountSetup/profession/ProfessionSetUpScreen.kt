@@ -57,23 +57,19 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
-import com.sdjic.gradnet.presentation.composables.button.PlusIconButton
-import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputArea
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
+import com.sdjic.commons.composables.button.PlusIconButton
+import com.sdjic.commons.composables.button.PrimaryButton
+import com.sdjic.commons.composables.button.SecondaryOutlinedButton
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.composables.textInput.CustomInputArea
+import com.sdjic.commons.composables.textInput.CustomInputField
+import com.sdjic.commons.model.UserRole
 import com.sdjic.gradnet.presentation.core.model.ExperienceModel
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Globe
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.empty_trash
-import com.sdjic.shared.resources.github
-import com.sdjic.shared.resources.linkedin
-import com.sdjic.shared.resources.twitter_bird
+import com.sdjic.shared.Resource as Res
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -213,7 +209,7 @@ fun ProfessionSetUpScreen(
             trailingIcon = {
                 Icon(
                     modifier = Modifier.size(26.dp),
-                    painter = painterResource(Res.drawable.twitter_bird),
+                    painter = painterResource(Res.drawable.twitterBird),
                     contentDescription = "Twitter"
                 )
             })
@@ -243,7 +239,7 @@ fun ProfessionSetUpScreen(
                         modifier = Modifier.size(16.sdp).clickable(onClick = {
                             onAction(ProfessionScreenAction.OnRemoveOtherUrl(item))
                         }),
-                        painter = painterResource(Res.drawable.empty_trash),
+                        painter = painterResource(Res.drawable.emptyTrash),
                         tint = errorColor,
                         contentDescription = "remove",
                     )
@@ -289,7 +285,7 @@ fun ProfessionSetUpScreen(
                                     .clickable(onClick = {
                                         onAction(ProfessionScreenAction.OnRemoveExperience(index))
                                     }),
-                                painter = painterResource(Res.drawable.empty_trash),
+                                painter = painterResource(Res.drawable.emptyTrash),
                                 tint = errorColor,
                                 contentDescription = "cross",
                             )

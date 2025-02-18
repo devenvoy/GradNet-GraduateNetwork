@@ -7,8 +7,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import com.sdjic.gradnet.presentation.composables.filter.InterestTag
-import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.commons.composables.filter.InterestTag
+import com.sdjic.commons.composables.text.SText
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 

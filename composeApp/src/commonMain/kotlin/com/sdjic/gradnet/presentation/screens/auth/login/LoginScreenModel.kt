@@ -5,13 +5,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.mmk.kmpauth.google.GoogleUser
+import com.sdjic.commons.helper.ConnectivityManager
+import com.sdjic.commons.helper.UiState
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
-import com.sdjic.gradnet.presentation.helper.ConnectivityManager
-import com.sdjic.gradnet.presentation.helper.LoginUiState
-import com.sdjic.gradnet.presentation.helper.UiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

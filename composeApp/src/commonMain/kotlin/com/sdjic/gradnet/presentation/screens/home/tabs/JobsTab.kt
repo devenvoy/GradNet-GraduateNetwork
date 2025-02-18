@@ -4,12 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import com.sdjic.gradnet.presentation.helper.MyTab
-import com.sdjic.gradnet.presentation.helper.MyTabOptions
+import com.sdjic.commons.helper.MyTab
+import com.sdjic.commons.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.jobs.JobScreen
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.work
-import com.sdjic.shared.resources.work_outline
+import com.sdjic.shared.Resource as Res
 
 // to see latest job req post and search job based on requirements
 object JobsTab : MyTab {
@@ -28,7 +26,7 @@ object JobsTab : MyTab {
                 index = 1u,
                 title = "Jobs",
                 selectedIcon = Res.drawable.work,
-                unselectedIcon = Res.drawable.work_outline
+                unselectedIcon = Res.drawable.workOutline
             )
         }
 

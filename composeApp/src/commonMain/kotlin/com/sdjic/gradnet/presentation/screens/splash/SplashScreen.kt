@@ -12,7 +12,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.LocalPlatformContext
 import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.presentation.composables.images.RoundedCornerImage
+import com.sdjic.commons.composables.images.RoundedCornerImage
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import kotlinx.coroutines.delay

@@ -16,12 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.ic_alumni
-import com.sdjic.shared.resources.ic_degree
-import com.sdjic.shared.resources.ic_faculty
-import com.sdjic.shared.resources.ic_organization
 import org.jetbrains.compose.resources.painterResource
+import com.sdjic.shared.Resource as Res
 
 @Composable
 fun MyPhotosSection() {
@@ -44,19 +40,19 @@ fun MyPhotosSection() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            painter = painterResource(Res.drawable.ic_alumni),
+            painter = painterResource(Res.drawable.icAlumni),
             contentDescription = null,
             modifier = imageModifier,
             contentScale = ContentScale.Crop
         )
         Image(
-            painter = painterResource(Res.drawable.ic_organization),
+            painter = painterResource(Res.drawable.icOrganization),
             modifier = imageModifier,
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
         Image(
-            painter = painterResource(Res.drawable.ic_organization),
+            painter = painterResource(Res.drawable.icOrganization),
             modifier = imageModifier,
             contentDescription = null,
             contentScale = ContentScale.Crop
@@ -69,19 +65,19 @@ fun MyPhotosSection() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            painter = painterResource(Res.drawable.ic_faculty),
+            painter = painterResource(Res.drawable.icFaculty),
             modifier = imageModifier,
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
         Image(
-            painter = painterResource(Res.drawable.ic_degree),
+            painter = painterResource(Res.drawable.icDegree),
             modifier = imageModifier,
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
         Image(
-            painter = painterResource(Res.drawable.ic_organization),
+            painter = painterResource(Res.drawable.icOrganization),
             modifier = imageModifier,
             contentDescription = null,
             contentScale = ContentScale.Crop

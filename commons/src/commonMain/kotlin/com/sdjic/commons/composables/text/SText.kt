@@ -1,0 +1,36 @@
+package com.sdjic.commons.composables.text
+
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
+import com.sdjic.commons.theme.displayFontFamily
+import network.chaintech.sdpcomposemultiplatform.ssp
+
+@Composable
+fun SText(
+    text: String,
+    modifier: Modifier = Modifier,
+    textColor: Color = MaterialTheme.colorScheme.onBackground,
+    fontSize: TextUnit = 10.ssp,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = displayFontFamily(),
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        fontFamily = fontFamily,
+        style = TextStyle(
+            fontWeight = fontWeight,
+            color = textColor,
+            fontSize = fontSize,
+            lineHeight = lineHeight
+        ),
+    )
+}

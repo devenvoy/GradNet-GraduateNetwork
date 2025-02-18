@@ -7,10 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.cash.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
-import com.sdjic.gradnet.presentation.helper.PagingListUI
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.helper.PagingListUI
+import com.sdjic.commons.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
 import network.chaintech.sdpcomposemultiplatform.sdp
 

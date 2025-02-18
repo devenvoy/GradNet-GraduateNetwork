@@ -21,13 +21,14 @@ import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.helper.AutoSwipePagerEffect
+import com.sdjic.commons.composables.button.PrimaryButton
+import com.sdjic.commons.composables.button.SecondaryOutlinedButton
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.helper.AutoSwipePagerEffect
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import network.chaintech.sdpcomposemultiplatform.sdp
+import com.sdjic.shared.Resource as Res
 
 
 class OnBoardingScreen : Screen {
@@ -115,23 +116,30 @@ fun OnBoardingScreenContent(
     }
 }
 
-data class Onboard(val title: String, val description: String, val lottieFile: String)
+data class Onboard(val title: String, val description: String, val lottieFile: Int)
 
 val onboardingList = listOf(
     Onboard(
         title = "Connect and Grow",
         description = "Join a vibrant community of students, alumni, and faculty. 🌱",
-        lottieFile = "onboarding1.lottie"
+        lottieFile = 1
     ),
     Onboard(
         title = "Find Opportunities",
         description = "Access jobs, internships, and exclusive university events. 🎓",
-        lottieFile = "onboarding2.lottie"
+        lottieFile = 2
     ),
     Onboard(
         title = "Inspire Others",
         description = "Share achievements and inspire your university network. 💬",
-        lottieFile = "onboarding3.lottie"
+        lottieFile = 3
     )
 )
 
+suspend fun getOnboardingLottie(id: Int): ByteArray {
+   return when(id){
+       2 -> Res.files.getOnboarding2Lottie()
+       3 -> Res.files.getOnboarding3Lottie()
+       else -> Res.files.getOnboarding1Lottie()
+   }
+}

@@ -1,0 +1,76 @@
+package com.sdjic.commons.composables.textInput
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.theme.displayFontFamily
+import network.chaintech.sdpcomposemultiplatform.sdp
+import network.chaintech.sdpcomposemultiplatform.ssp
+
+@Composable
+fun CustomInputArea(
+    fieldTitle: String,
+    textFieldValue: String,
+    onValueChange: (String) -> Unit,
+    singleLine: Boolean = false,
+    placeholder: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    suffix: @Composable (() -> Unit)? = null,
+    prefix: @Composable (() -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
+    isEnable: Boolean = true,
+    keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+    height: Dp = 80.sdp
+) {
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Title(
+            text = fieldTitle,
+            modifier = Modifier.padding(start = 2.sdp),
+            textColor = MaterialTheme.colorScheme.onBackground,
+        )
+        OutlinedTextField(
+            value = textFieldValue,
+            onValueChange = onValueChange,
+            shape = RoundedCornerShape(8.sdp),
+            trailingIcon = trailingIcon,
+            enabled = isEnable,
+            modifier = Modifier.fillMaxWidth().height(height),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(.1f),
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
+            ),
+            suffix = suffix,
+            prefix = prefix,
+            singleLine = singleLine,
+            keyboardOptions = keyboardOption.copy(
+                imeAction = ImeAction.Next
+            ),
+            supportingText = supportingText,
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 12.ssp,
+                fontFamily = displayFontFamily()
+            ),
+            placeholder = placeholder,
+        )
+    }
+}

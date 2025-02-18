@@ -10,9 +10,9 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
+import com.sdjic.commons.helper.ConnectivityManager
 import com.sdjic.gradnet.di.appModules
 import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.presentation.helper.ConnectivityManager
 import com.sdjic.gradnet.presentation.screens.onboarding.OnBoardingScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme

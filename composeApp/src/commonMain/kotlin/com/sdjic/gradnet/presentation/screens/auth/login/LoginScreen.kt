@@ -40,20 +40,19 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mmk.kmpauth.google.GoogleButtonUiContainer
 import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
-import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
-import com.sdjic.gradnet.presentation.composables.textInput.CustomInputPasswordField
-import com.sdjic.gradnet.presentation.helper.UiStateHandler
-import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.commons.composables.button.PrimaryButton
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.composables.text.Title
+import com.sdjic.commons.composables.textInput.CustomInputField
+import com.sdjic.commons.composables.textInput.CustomInputPasswordField
+import com.sdjic.commons.helper.UiState
+import com.sdjic.commons.helper.UiStateHandler
+import com.sdjic.commons.helper.koinScreenModel
+import com.sdjic.commons.theme.displayFontFamily
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
-import com.sdjic.gradnet.presentation.theme.displayFontFamily
-import com.sdjic.shared.resources.Res
-import com.sdjic.shared.resources.alternate_email
-import com.sdjic.shared.resources.create_account
+import com.sdjic.shared.Resource as Res
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.DotLottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
@@ -65,6 +64,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+typealias LoginUiState = UiState<Boolean>
 class LoginScreen : Screen {
     @Composable
     override fun Content() {
@@ -97,7 +97,7 @@ class LoginScreen : Screen {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             val composition by rememberLottieComposition {
-                LottieCompositionSpec.DotLottie(Res.readBytes("files/working.lottie"))
+                LottieCompositionSpec.DotLottie(Res.files.getWorkingLottie())
             }
             Image(
                 modifier = Modifier.fillMaxWidth().height(185.sdp),
@@ -147,7 +147,7 @@ class LoginScreen : Screen {
                 trailingIcon = {
                     Icon(
                         modifier = Modifier.size(20.sdp),
-                        painter = painterResource(Res.drawable.alternate_email),
+                        painter = painterResource(Res.drawable.alternateEmail),
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "Email icon",
                     )

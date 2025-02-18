@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -47,13 +46,13 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.sdjic.gradnet.presentation.composables.drawer.CustomDrawer
-import com.sdjic.gradnet.presentation.composables.text.SText
-import com.sdjic.gradnet.presentation.core.model.NavigationItem
-import com.sdjic.gradnet.presentation.helper.LocalDrawerController
-import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
-import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
-import com.sdjic.gradnet.presentation.helper.MyTab
+import com.sdjic.commons.composables.drawer.CustomDrawer
+import com.sdjic.commons.composables.drawer.NavigationItem
+import com.sdjic.commons.composables.text.SText
+import com.sdjic.commons.helper.LocalDrawerController
+import com.sdjic.commons.helper.LocalRootNavigator
+import com.sdjic.commons.helper.LocalScrollBehavior
+import com.sdjic.commons.helper.MyTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.EventsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.PostTab
@@ -82,7 +81,7 @@ class HomeScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val scope = rememberCoroutineScope()
 
-        val bottomTabList = listOf(
+        val bottomTabList:List<MyTab> = listOf(
             PostTab,
             JobsTab,
             SearchTab,

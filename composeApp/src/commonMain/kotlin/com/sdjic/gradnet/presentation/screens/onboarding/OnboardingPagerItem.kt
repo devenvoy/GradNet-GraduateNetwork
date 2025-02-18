@@ -12,23 +12,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.sdjic.gradnet.presentation.theme.displayFontFamily
-import com.sdjic.shared.resources.Res
+import com.sdjic.commons.theme.displayFontFamily
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.DotLottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import network.chaintech.sdpcomposemultiplatform.sdp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun OnboardingPagerItem(item: Onboard) {
     Column(modifier = Modifier.padding(start = 12.sdp, end = 12.sdp)) {
 
         val composition by rememberLottieComposition {
-            LottieCompositionSpec.DotLottie(Res.readBytes("files/${item.lottieFile}"))
+            LottieCompositionSpec.DotLottie(getOnboardingLottie(item.lottieFile))
         }
 
         Image(

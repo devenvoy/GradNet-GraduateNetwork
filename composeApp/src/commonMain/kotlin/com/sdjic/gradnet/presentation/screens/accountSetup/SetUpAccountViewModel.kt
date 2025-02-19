@@ -4,15 +4,16 @@ import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.commons.helper.UiState
-import com.sdjic.gradnet.data.network.utils.onError
-import com.sdjic.gradnet.data.network.utils.onSuccess
-import com.sdjic.gradnet.data.network.utils.toUserProfile
-import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.domain.repo.UserRepository
+import com.sdjic.commons.utils.onError
+import com.sdjic.commons.utils.onSuccess
+import com.sdjic.domain.AppCacheSetting
+import com.sdjic.domain.repo.UserRepository
+import com.sdjic.gradnet.di.platform_di.toByteArray
 import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.core.model.toBasicState
 import com.sdjic.gradnet.presentation.core.model.toEducationState
 import com.sdjic.gradnet.presentation.core.model.toProfessionState
+import com.sdjic.gradnet.presentation.core.toUserProfile
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicState
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationScreenAction
@@ -60,7 +61,7 @@ class SetUpAccountViewModel(
             _userData.value = UiState.Loading
             val result = userRepository.fetchUser(prefs.accessToken)
             result.onSuccess { user ->
-                user.value?.let { updateUserData(user.value.toUserProfile()) }
+                user.value?.let { updateUserData(user.value!!.toUserProfile()) }
             }.onError { _userData.value = UiState.Error(it.detail) }
         }
     }
@@ -152,7 +153,7 @@ class SetUpAccountViewModel(
                 }
 
                 is EducationScreenAction.OnRemoveEducation -> {
-                    if(_educationState.value.eductionList.isEmpty()) return@launch
+                    if (_educationState.value.eductionList.isEmpty()) return@launch
                     val updatedEducationList =
                         _educationState.value.eductionList.toMutableList().apply {
                             removeAt(educationScreenAction.index)
@@ -232,7 +233,7 @@ class SetUpAccountViewModel(
                 }
 
                 is ProfessionScreenAction.OnRemoveExperience -> {
-                    if(_professionState.value.experienceList.isEmpty()) return@launch
+                    if (_professionState.value.experienceList.isEmpty()) return@launch
                     val updatedExperiences =
                         _professionState.value.experienceList.toMutableList().apply {
                             removeAt(action.index)
@@ -300,8 +301,8 @@ class SetUpAccountViewModel(
             result.onSuccess { r ->
                 r.value?.let { user ->
                     updateUserData(user.toUserProfile())
-                    prefs.accessToken = r.value.accessToken
-                    prefs.isVerified = r.value.verified
+                    prefs.accessToken = r.value!!.accessToken
+                    prefs.isVerified = r.value!!.verified
                     _setUpOrEditState.update { UiState.Success(r.detail) }
                     onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
                 }
@@ -333,9 +334,10 @@ class SetUpAccountViewModel(
 
     private fun uploadImage(image: ImageBitmap, type: String) = screenModelScope.launch {
         _setUpOrEditState.update { UiState.Loading }
+        val byteArray = image.toByteArray()
         userRepository.updateUserImages(
             token = prefs.accessToken,
-            imageBitmap = image,
+            byteArray = byteArray,
             type = type
         ).apply {
             onSuccess { r ->

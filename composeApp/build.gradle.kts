@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -15,7 +14,6 @@ plugins {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -89,13 +87,12 @@ kotlin {
             implementation(libs.kmpauth.google)
             implementation(libs.kmpauth.uihelper)
 
-            implementation(project(":color"))
-            implementation(project(":calendar"))
-            implementation(project(":shared"))
-            implementation(project(":commons"))
-        //            {
-//                exclude(group = "com.sdjic.shared", module = "resources")
-//            }
+            implementation(projects.color)
+            implementation(projects.calendar)
+            implementation(projects.shared)
+            implementation(projects.commons)
+            implementation(projects.data)
+            implementation(projects.domain)
         }
 
         iosMain.dependencies {

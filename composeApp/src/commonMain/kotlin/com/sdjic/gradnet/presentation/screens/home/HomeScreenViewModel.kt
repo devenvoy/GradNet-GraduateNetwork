@@ -4,8 +4,8 @@ import app.cash.paging.PagingData
 import app.cash.paging.cachedIn
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.sdjic.gradnet.data.network.entity.response.CryptoResponse
-import com.sdjic.gradnet.data.network.repo.CryptoRepository
+import com.sdjic.data.network.CryptoRepository
+import com.sdjic.domain.model.response.CryptoResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn

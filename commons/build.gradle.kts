@@ -36,6 +36,7 @@ kotlin {
 
             implementation(libs.bundles.koin)
             implementation(libs.sonner)
+            implementation(libs.kermit)
             implementation(libs.bundles.coil)
             implementation(libs.bundles.paging)
             implementation(libs.bundles.voyager)
@@ -62,13 +63,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
-
-compose.resources {
-    publicResClass = true
-    packageOfResClass = "com.sdjic.shared.resources"
-    generateResClass = auto
-}
-
 
 dependencies {
     implementation(libs.androidx.material3.android)

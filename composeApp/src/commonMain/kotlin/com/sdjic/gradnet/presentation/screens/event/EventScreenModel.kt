@@ -3,10 +3,10 @@ package com.sdjic.gradnet.presentation.screens.event
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.sdjic.gradnet.data.network.entity.dto.EventDto
-import com.sdjic.gradnet.data.network.utils.onError
-import com.sdjic.gradnet.data.network.utils.onSuccess
-import com.sdjic.gradnet.domain.repo.EventRepository
+import com.sdjic.commons.utils.onError
+import com.sdjic.commons.utils.onSuccess
+import com.sdjic.domain.model.response.EventDto
+import com.sdjic.domain.repo.EventRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

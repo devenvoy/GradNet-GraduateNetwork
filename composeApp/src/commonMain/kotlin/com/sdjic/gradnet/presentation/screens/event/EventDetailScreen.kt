@@ -34,7 +34,7 @@ import com.sdjic.commons.composables.images.BannerWidget
 import com.sdjic.commons.composables.text.Label
 import com.sdjic.commons.composables.text.SText
 import com.sdjic.commons.composables.text.Title
-import com.sdjic.gradnet.data.network.entity.dto.EventDto
+import com.sdjic.domain.model.response.EventDto
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.theme.errorColor
 
@@ -77,11 +77,11 @@ class EventDetailScreen(
                     .verticalScroll(rememberScrollState())
             ) {
 //                eventDto.eventPic?.let {
-                    BannerWidget(
-                        modifier = Modifier.height(250.dp),
-                        imageUrl = eventDto.eventPic ?: DummyBgImage,
-                        contentDescription = null
-                    )
+                BannerWidget(
+                    modifier = Modifier.height(250.dp),
+                    imageUrl = eventDto.eventPic ?: DummyBgImage,
+                    contentDescription = null
+                )
 //                }
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(12.dp),
@@ -91,25 +91,25 @@ class EventDetailScreen(
                     eventDto.venue?.let {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Title(text = "Venue: ")
-                            SText(text = eventDto.venue)
+                            SText(text = eventDto.venue!!)
                         }
                     }
                     eventDto.date?.let {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Title(text = "Date: ")
-                            SText(text = eventDto.date)
+                            SText(text = eventDto.date!!)
                         }
                     }
                     eventDto.time?.let {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Title(text = "Time: ")
-                            SText(text = eventDto.time)
+                            SText(text = eventDto.time!!)
                         }
                     }
                     eventDto.guestNames?.let {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Title(text = "Guest: ")
-                            SText(text = eventDto.guestNames)
+                            SText(text = eventDto.guestNames!!)
                         }
                     }
                     SText(
@@ -143,7 +143,7 @@ class EventDetailScreen(
                                 textColor = errorColor
                             )
                             SText(
-                                text = eventDto.remarks,
+                                text = eventDto.remarks!!,
                                 textColor = MaterialTheme.colorScheme.onBackground.copy(.7f)
                             )
                         }

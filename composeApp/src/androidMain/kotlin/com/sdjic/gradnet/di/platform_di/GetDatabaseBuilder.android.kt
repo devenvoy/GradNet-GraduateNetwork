@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.sdjic.data.local.room.GradNetDB
 import com.sdjic.gradnet.GradNetApp
-import com.sdjic.gradnet.data.local.room.GradNetDB
 
 actual fun getDatabaseBuilder(): PlatformDatabaseBuilder = AndroidDatabaseBuilder(GradNetApp.AppContext)
 

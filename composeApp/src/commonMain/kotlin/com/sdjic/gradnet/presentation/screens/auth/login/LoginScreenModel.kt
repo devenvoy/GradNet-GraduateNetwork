@@ -7,10 +7,10 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.mmk.kmpauth.google.GoogleUser
 import com.sdjic.commons.helper.ConnectivityManager
 import com.sdjic.commons.helper.UiState
-import com.sdjic.gradnet.data.network.utils.onError
-import com.sdjic.gradnet.data.network.utils.onSuccess
-import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.domain.repo.AuthRepository
+import com.sdjic.commons.utils.onError
+import com.sdjic.commons.utils.onSuccess
+import com.sdjic.domain.AppCacheSetting
+import com.sdjic.domain.repo.AuthRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
                 _loginState.value = UiState.ValidationError(validationResult)
                 return@launch
             }
-            if(ConnectivityManager.isConnected){
+            if (ConnectivityManager.isConnected) {
                 val result = authRepository.login(email.value.text, password.value.text)
                 result.onSuccess {
                     it.value?.let { res ->
@@ -45,19 +45,19 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
                 }
-            }else{
+            } else {
                 _loginState.value = UiState.Error("Not Connected to Internet")
             }
         }
     }
 
-    fun  loginWithGoogle(googleUser: GoogleUser) {
+    fun loginWithGoogle(googleUser: GoogleUser) {
         screenModelScope.launch {
             _loginState.value = UiState.Loading
             // Send this idToken to your backend to verify
             val idToken = googleUser.idToken
-            if(ConnectivityManager.isConnected){
-                val result = authRepository.login(googleUser.email!!,googleUser.email!!.reversed())
+            if (ConnectivityManager.isConnected) {
+                val result = authRepository.login(googleUser.email!!, googleUser.email!!.reversed())
                 result.onSuccess {
                     it.value?.let { res ->
                         prefs.accessToken = res.accessToken.toString()
@@ -68,15 +68,15 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
                 }
-            }else{
+            } else {
                 _loginState.value = UiState.Error("Not Connected to Internet")
             }
         }
     }
 
-    fun showErrorState(message: String){
+    fun showErrorState(message: String) {
         screenModelScope.launch {
-            if(_loginState.value != UiState.Loading){
+            if (_loginState.value != UiState.Loading) {
                 _loginState.value = UiState.Loading
                 delay(1000L)
             }

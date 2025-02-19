@@ -4,11 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.sdjic.gradnet.data.local.entity.Test
-import com.sdjic.gradnet.domain.repo.TestRepository
+import com.sdjic.data.local.entity.Test
+import com.sdjic.data.local.TestRepositoryImpl
 import kotlinx.coroutines.launch
 
-class TestViewModel(private val testRepository: TestRepository) : ScreenModel {
+class TestViewModel(private val testRepository: TestRepositoryImpl) : ScreenModel {
 
     private val _testLists = mutableStateOf(emptyList<Test>())
     val testLists: State<List<Test>> = _testLists

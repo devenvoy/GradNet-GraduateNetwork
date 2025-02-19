@@ -15,17 +15,14 @@ import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.rememberToasterState
-import com.sdjic.shared.Resource
-import com.sdjic.shared.resources.Res
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.DotLottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import network.chaintech.sdpcomposemultiplatform.sdp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import com.sdjic.shared.Resource as Res
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun <T> UiStateHandler(
     uiState: UiState<T>,
@@ -35,7 +32,7 @@ fun <T> UiStateHandler(
 
     val toaster = rememberToasterState()
     val composition by rememberLottieComposition {
-        LottieCompositionSpec.DotLottie(Resource.files.getLoadingLottie())
+        LottieCompositionSpec.DotLottie(Res.files.getLoadingLottie())
     }
     when (uiState) {
         is UiState.Error -> {

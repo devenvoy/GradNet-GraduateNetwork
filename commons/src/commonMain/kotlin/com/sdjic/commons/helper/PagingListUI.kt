@@ -29,17 +29,14 @@ import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.compose.LazyPagingItems
-import com.sdjic.shared.Resource
-import com.sdjic.shared.resources.Res
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.DotLottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import network.chaintech.sdpcomposemultiplatform.sdp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import com.sdjic.shared.Resource as Res
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun <T : Any> PagingListUI(
     modifier: Modifier = Modifier,
@@ -49,7 +46,7 @@ fun <T : Any> PagingListUI(
     content: @Composable (T) -> Unit
 ) {
     val composition by rememberLottieComposition {
-        LottieCompositionSpec.DotLottie(Resource.files.getLoadingLottie())
+        LottieCompositionSpec.DotLottie(Res.files.getLoadingLottie())
     }
     LazyColumn(
         modifier = modifier,

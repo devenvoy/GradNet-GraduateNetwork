@@ -1,21 +1,9 @@
 package com.sdjic.gradnet.di
 
-import com.sdjic.gradnet.data.local.preference.AppCacheSettingImpl
-import com.sdjic.gradnet.data.local.room.GradNetDB
-import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
-import com.sdjic.gradnet.data.network.repo.CryptoRepository
-import com.sdjic.gradnet.data.network.repo.DummyPostRepository
-import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
-import com.sdjic.gradnet.data.network.repo.TestRepositoryImpl
-import com.sdjic.gradnet.data.network.repo.UserRepositoryImpl
+import com.sdjic.data.di.repositoryModule
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
 import com.sdjic.gradnet.di.platform_di.platformModule
-import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.domain.repo.AuthRepository
-import com.sdjic.gradnet.domain.repo.EventRepository
-import com.sdjic.gradnet.domain.repo.TestRepository
-import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
@@ -40,17 +28,6 @@ val screenModelsModule = module {
 val userCases = module {
 }
 
-val repositoryModule = module {
-
-    single<AuthRepository>{  AuthRepositoryImpl(get()) }
-    single <UserRepository>{ UserRepositoryImpl(get()) }
-    single <EventRepository>{ EventRepositoryImpl(get()) }
-
-    // trying only
-    single<TestRepository> { TestRepositoryImpl(testDao = get()) }
-    single<CryptoRepository> { CryptoRepository(httpClient = get()) }
-    single<DummyPostRepository> { DummyPostRepository(httpClient = get()) }
-}
 
 val dispatcherModule = module {
     single { Dispatchers.IO }
@@ -64,8 +41,6 @@ val dataModule = module {
     single {
         getDatabaseBuilder().build().setQueryCoroutineContext(Dispatchers.IO).build()
     }
-    single { get<GradNetDB>().testDao }
-    single<AppCacheSetting>{ AppCacheSettingImpl()  }
 }
 
 val appModules = listOf(

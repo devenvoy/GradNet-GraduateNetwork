@@ -1,6 +1,6 @@
 package com.sdjic.gradnet.presentation.core.model
 
-import com.sdjic.gradnet.data.network.entity.dto.UserDto
+import com.sdjic.domain.model.response.UserDto
 
 data class Post(
     val postId: Long,

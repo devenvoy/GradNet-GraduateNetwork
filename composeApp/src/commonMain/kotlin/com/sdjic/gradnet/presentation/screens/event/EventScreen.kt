@@ -37,13 +37,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sdjic.gradnet.data.network.entity.dto.EventDto
 import com.sdjic.commons.composables.images.BannerWidget
 import com.sdjic.commons.composables.text.SText
 import com.sdjic.commons.composables.text.Title
 import com.sdjic.commons.helper.AutoSwipePagerEffect
 import com.sdjic.commons.helper.koinScreenModel
 import com.sdjic.commons.helper.shimmerLoadingAnimation
+import com.sdjic.domain.model.response.EventDto
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 
 class EventScreen : Screen {

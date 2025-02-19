@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -86,13 +85,13 @@ import com.sdjic.gradnet.presentation.core.getEmptyUserDto
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
 import com.sdjic.gradnet.presentation.screens.onboarding.onboardingList
-import com.sdjic.shared.Resource as Res
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import com.sdjic.shared.Resource as Res
 
 
 class PostScreen : Screen {
@@ -236,8 +235,10 @@ class PostScreen : Screen {
                         modifier = Modifier.padding(start = 10.dp)
                             .offset(y = (-20 * (ixd + 1)).dp),
                         state = filter.value,
-                        title = { Text(text = filter.key.lowercase()
-                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }) },
+                        title = {
+                            Text(text = filter.key.lowercase()
+                                .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() })
+                        },
                         enabled = true,
                         onCheckedChange = {
                             postScreenModel.onAction(
@@ -295,7 +296,7 @@ class PostScreen : Screen {
                 Column(modifier = Modifier.padding(horizontal = 6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SText(
-                            text = post.user.username ?: "",
+                            text = post.user.username,
                             fontSize = 16.sp,
                             fontWeight = FontWeight(800)
                         )

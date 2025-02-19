@@ -9,11 +9,11 @@ import com.sdjic.commons.helper.ConnectivityManager
 import com.sdjic.commons.helper.UiState
 import com.sdjic.commons.model.UserRole
 import com.sdjic.commons.model.getUserRoles
-import com.sdjic.gradnet.data.network.entity.response.SignUpRequest
-import com.sdjic.gradnet.data.network.utils.onError
-import com.sdjic.gradnet.data.network.utils.onSuccess
-import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.domain.repo.AuthRepository
+import com.sdjic.commons.utils.onError
+import com.sdjic.commons.utils.onSuccess
+import com.sdjic.domain.AppCacheSetting
+import com.sdjic.domain.model.SignUpRequest
+import com.sdjic.domain.repo.AuthRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -86,9 +86,9 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                 result.onSuccess {
                     it.value?.let { res ->
                         prefs.accessToken = res.accessToken.toString()
-                        prefs.userId = res.user?.userId.toString()
-                        prefs.isVerified = res.user?.isVerified == true
-                        _signUpState.value = UiState.Success(res.user?.isVerified == true)
+                        prefs.userId = res.userDto?.userId.toString()
+                        prefs.isVerified = res.userDto?.isVerified == true
+                        _signUpState.value = UiState.Success(res.userDto?.isVerified == true)
                     }
                 }.onError {
                     _signUpState.value = UiState.Error(it.detail)
@@ -116,9 +116,10 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                         result.onSuccess {
                             it.value?.let { res ->
                                 prefs.accessToken = res.accessToken.toString()
-                                prefs.userId = res.user?.userId.toString()
-                                prefs.isVerified = res.user?.isVerified == true
-                                _signUpState.value = UiState.Success(res.user?.isVerified == true)
+                                prefs.userId = res.userDto?.userId.toString()
+                                prefs.isVerified = res.userDto?.isVerified == true
+                                _signUpState.value =
+                                    UiState.Success(res.userDto?.isVerified == true)
                             }
                         }.onError {
                             _signUpState.value = UiState.Error(it.detail)

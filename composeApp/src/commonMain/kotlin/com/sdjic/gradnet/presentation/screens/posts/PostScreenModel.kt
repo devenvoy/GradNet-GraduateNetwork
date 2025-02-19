@@ -1,15 +1,23 @@
 package com.sdjic.gradnet.presentation.screens.posts
 
+import androidx.paging.PagingData
+import app.cash.paging.cachedIn
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.data.network.entity.response.Post
+import com.sdjic.gradnet.data.network.repo.DummyPostRepository
 import com.sdjic.gradnet.presentation.core.model.Filter
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PostScreenModel : ScreenModel {
+class PostScreenModel(
+    private val dummyPostRepository: DummyPostRepository
+) : ScreenModel {
 
     val userTypeFilters = MutableStateFlow(
         listOf(
@@ -25,8 +33,22 @@ class PostScreenModel : ScreenModel {
     private val _showFilterSheet = MutableStateFlow(false)
     val showFilterSheet = _showFilterSheet.asStateFlow()
 
+    private val _posts = MutableStateFlow<PagingData<Post>>(PagingData.empty())
+    val posts = _posts.stateIn(
+        scope = screenModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = PagingData.empty()
+    )
+
     init {
         toggleSelectAll()
+        screenModelScope.launch {
+            dummyPostRepository.getPosts()
+                .cachedIn(screenModelScope)
+                .collect { pagingData ->
+                    _posts.value = pagingData
+                }
+        }
     }
 
     fun onAction(action: PostScreenAction) = screenModelScope.launch {

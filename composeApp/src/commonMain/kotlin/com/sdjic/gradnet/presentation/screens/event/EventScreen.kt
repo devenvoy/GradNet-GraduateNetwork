@@ -1,12 +1,5 @@
 package com.sdjic.gradnet.presentation.screens.event
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,21 +14,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +44,7 @@ import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.helper.AutoSwipePagerEffect
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.helper.shimmerLoadingAnimation
 
 class EventScreen : Screen {
     @Composable
@@ -59,7 +52,6 @@ class EventScreen : Screen {
         EventScreenContent()
     }
 
-    private
     @Composable
     fun EventScreenContent() {
         val eventScreenModel = koinScreenModel<EventScreenModel>()
@@ -70,45 +62,76 @@ class EventScreen : Screen {
             Column(
                 modifier = Modifier.padding(pVal).fillMaxSize(),
             ) {
-                Row(
-                    modifier = Modifier.padding(12.dp).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Title("Trending Events")
-                    TextButton(onClick = {}) {
-                        SText("View more")
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
+
+                if (eventScreenModel.isEventLoading.value) {
+                    EventLoadingShimmer(eventScreenModel)
+                } else {
+                    if (list.isNotEmpty())
+                        Row(
+                            modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Title("Trending Events")
+                            TextButton(onClick = {}) {
+                                SText("View more")
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    BannerCarouselWidget(list) {
+                        navigator.push(EventDetailScreen(it))
                     }
-
-                }
-
-                BannerCarouselWidget(list){
-                    navigator.push(EventDetailScreen(it))
                 }
             }
         }
     }
 
     @Composable
+    private fun EventLoadingShimmer(eventScreenModel: EventScreenModel) {
+        Row(
+            modifier = Modifier.padding(12.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(30.dp).width(150.dp)
+                    .background(CardDefaults.cardColors().containerColor)
+                    .shimmerLoadingAnimation()
+            )
+            TextButton(
+                onClick = {},
+                modifier = Modifier.width(100.dp)
+                    .background(CardDefaults.cardColors().containerColor)
+                    .shimmerLoadingAnimation()
+            ) { }
+        }
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .fillMaxWidth()
+                .height(220.dp)
+                .clip(CardDefaults.shape)
+                .background(CardDefaults.cardColors().containerColor)
+                .shimmerLoadingAnimation()
+        ) {}
+    }
+
+    @Composable
     fun BannerCarouselWidget(
-        banners: List<EventDto?>,
+        banners: List<EventDto>,
         modifier: Modifier = Modifier,
         onBannerClick: (EventDto) -> Unit = {}
     ) {
         val pagerState = rememberPagerState(pageCount = { banners.size })
         if (banners.isNotEmpty()) {
-            AutoSwipePagerEffect(pagerState, 2000L)
+            AutoSwipePagerEffect(pagerState, 4000L)
         }
-
-        Box(
-            contentAlignment = Alignment.BottomCenter,
-            modifier = modifier
-        ) {
+        Column(modifier) {
             HorizontalPager(
                 state = pagerState,
                 contentPadding = PaddingValues(horizontal = 32.dp),
@@ -123,20 +146,22 @@ class EventScreen : Screen {
                         contentAlignment = Alignment.BottomStart
                     ) {
                         BannerWidget(
-                            imageUrl = banners[page]?.eventPic ?: DummyBgImage,
-                            contentDescription = banners[page]?.eventTitle,
+                            imageUrl = banners[page].eventPic ?: DummyBgImage,
+                            contentDescription = banners[page].eventTitle,
                             modifier = Modifier.fillMaxHeight()
-                                .clickable { banners[page]?.let { onBannerClick(it) } }
+                                .clickable(enabled = page == pagerState.currentPage) {
+                                    onBannerClick(banners[page])
+                                }
                         )
                         Column(
                             modifier = Modifier.padding(20.dp).fillMaxWidth(),
                         ) {
                             Title(
-                                text = banners[page]?.eventTitle ?: "",
+                                text = banners[page].eventTitle ?: "",
                                 textColor = MaterialTheme.colorScheme.background
                             )
                             SText(
-                                text = banners[page]?.description ?: "",
+                                text = banners[page].description ?: "",
                                 textColor = MaterialTheme.colorScheme.background.copy(.7f)
                             )
                         }

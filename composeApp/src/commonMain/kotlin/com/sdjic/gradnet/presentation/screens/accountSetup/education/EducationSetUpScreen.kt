@@ -8,13 +8,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,7 +51,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
-import com.sdjic.gradnet.presentation.composables.DatePickerDialog
+import com.maxkeppeker.sheets.core.models.base.Header
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.sdjic.gradnet.presentation.composables.button.PlusIconButton
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
@@ -65,6 +73,7 @@ import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
+import kotlinx.datetime.LocalDate
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -82,7 +91,7 @@ fun EducationSetUpScreen(
 
     if (educationState.showEducationBottomSheet) {
         ModalBottomSheet(
-            modifier = Modifier.navigationBarsPadding(),
+            modifier = Modifier.windowInsetsPadding(insets = WindowInsets.systemBars),
             properties = ModalBottomSheetProperties(shouldDismissOnBackPress = false),
             sheetState = sheetState,
             dragHandle = null,
@@ -93,8 +102,7 @@ fun EducationSetUpScreen(
                 )
             },
         ) {
-            AddEducationModal(
-                educationModel = EducationModel(),
+            AddEditEducationModal(
                 onSave = { onAction(EducationScreenAction.OnAddEducation(it)) },
                 onCancel = { onAction(EducationScreenAction.OnEducationBottomSheetStateChange(false)) })
         }
@@ -301,7 +309,8 @@ fun EducationSetUpScreen(
                             EducationItem(education = item)
 
                             Icon(
-                                modifier = Modifier.padding(8.sdp).size(16.sdp).align(Alignment.TopEnd)
+                                modifier = Modifier.padding(8.sdp).size(16.sdp)
+                                    .align(Alignment.TopEnd)
                                     .clickable(onClick = {
                                         onAction(EducationScreenAction.OnRemoveEducation(index))
                                     }),
@@ -318,35 +327,46 @@ fun EducationSetUpScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddEducationModal(
-    educationModel: EducationModel,
+fun AddEditEducationModal(
+    educationModel: EducationModel? = null,
     onSave: (EducationModel) -> Unit,
     onCancel: () -> Unit
 ) {
 
-    var eduModel by remember { mutableStateOf(educationModel) }
-    var showStartDatePicker by remember { mutableStateOf(false) }
-    var showEndDatePicker by remember { mutableStateOf(false) }
+    var eduModel by remember { mutableStateOf(educationModel ?: EducationModel()) }
+    val startDatePicker = rememberUseCaseState(visible = false)
+    val endDatePicker = rememberUseCaseState(visible = false)
 
-    DatePickerDialog(
-        title = "Select start date",
-        showDatePicker = showStartDatePicker,
-        onDismiss = { showStartDatePicker = false },
-        onDateSelected = { date ->
-            eduModel = eduModel.copy(startDate = date)
-            showStartDatePicker = false
-        }
+    CalendarDialog(
+        state = startDatePicker,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH
+        ),
+        selection = CalendarSelection.Date(
+            selectedDate = eduModel.startDate?.let { LocalDate.parse(it) }
+        ) { newDate ->
+            eduModel = eduModel.copy(startDate = newDate.toString())
+        },
+        header = Header.Default("Select Start Date", null)
     )
 
-    DatePickerDialog(
-        title = "Select end date",
-        showDatePicker = showEndDatePicker,
-        onDismiss = { showEndDatePicker = false },
-        onDateSelected = { date ->
-            eduModel = eduModel.copy(endDate = date)
-            showEndDatePicker = false
-        }
+    CalendarDialog(
+        state = endDatePicker,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH
+        ),
+        selection = CalendarSelection.Date(
+            selectedDate = eduModel.endDate?.let { LocalDate.parse(it) }
+        ) { newDate ->
+            eduModel = eduModel.copy(endDate = newDate.toString())
+        },
+        header = Header.Default("Select End Date", null)
     )
 
     Column(
@@ -364,7 +384,7 @@ fun AddEducationModal(
         )
 
         Title(
-            text = "Add Education",
+            text = "${if (educationModel != null) "Edit" else "Add"} Education Detail",
             size = 16.ssp,
             textColor = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(vertical = 8.sdp)
@@ -402,7 +422,7 @@ fun AddEducationModal(
 
         Box(
             modifier = Modifier.clickable(
-                onClick = { showStartDatePicker = true }
+                onClick = { startDatePicker.show() }
             )
         ) {
             CustomInputField(
@@ -418,7 +438,7 @@ fun AddEducationModal(
 
         Box(
             modifier = Modifier.clickable(
-                onClick = { showEndDatePicker = true }
+                onClick = { endDatePicker.show() }
             )
         ) {
             CustomInputField(
@@ -436,10 +456,11 @@ fun AddEducationModal(
             modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
             SecondaryOutlinedButton(
-                modifier = Modifier.padding(10.sdp).weight(1f), onClick = onCancel
+                modifier = Modifier.weight(1f), onClick = onCancel
             ) { Title(text = "Cancel", textColor = MaterialTheme.colorScheme.primary) }
+            Spacer(modifier = Modifier.width(20.dp))
             PrimaryButton(
-                modifier = Modifier.padding(10.sdp).weight(1f),
+                modifier = Modifier.weight(1f),
                 onClick = {
                     onSave(eduModel)
                     onCancel()
@@ -447,7 +468,12 @@ fun AddEducationModal(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                 )
-            ) { Title(text = "Add", textColor = MaterialTheme.colorScheme.background) }
+            ) {
+                Title(
+                    text = if (educationModel != null) "Update" else "Add",
+                    textColor = MaterialTheme.colorScheme.background
+                )
+            }
         }
     }
 }

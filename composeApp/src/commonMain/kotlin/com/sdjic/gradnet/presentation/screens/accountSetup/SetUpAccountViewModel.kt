@@ -303,6 +303,7 @@ class SetUpAccountViewModel(
                 r.value?.let { user ->
                     updateUserData(user.toUserProfile())
                     prefs.accessToken = r.value.accessToken
+                    prefs.isVerified = r.value.verified
                     _setUpOrEditState.update { UiState.Success(r.detail) }
                     onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
                 }

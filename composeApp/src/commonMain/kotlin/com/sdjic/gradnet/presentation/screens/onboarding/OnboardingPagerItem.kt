@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.DotLottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
@@ -27,9 +28,7 @@ fun OnboardingPagerItem(item: Onboard) {
     Column(modifier = Modifier.padding(start = 12.sdp, end = 12.sdp)) {
 
         val composition by rememberLottieComposition {
-            LottieCompositionSpec.JsonString(
-                Res.readBytes("files/${item.lottieFile}").decodeToString()
-            )
+            LottieCompositionSpec.DotLottie(Res.readBytes("files/${item.lottieFile}"))
         }
 
         Image(

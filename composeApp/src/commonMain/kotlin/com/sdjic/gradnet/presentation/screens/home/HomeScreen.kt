@@ -3,6 +3,7 @@ package com.sdjic.gradnet.presentation.screens.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
@@ -116,6 +117,7 @@ class HomeScreen : Screen {
                 LocalLayoutDirection provides LayoutDirection.Rtl
             ) {
                 ModalNavigationDrawer(
+                    gesturesEnabled = it.current == ProfileTab,
                     drawerContent = {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                             DrawerContent(navigator, drawerState)
@@ -150,9 +152,10 @@ class HomeScreen : Screen {
 
     @Composable
     private fun DrawerContent(navigator: Navigator, drawerState: DrawerState) {
-        var selectedNavigationItem by remember { mutableStateOf(NavigationItem.Profile) }
+        val selectedNavigationItem by remember { mutableStateOf(NavigationItem.Profile) }
         val scope = rememberCoroutineScope()
         ModalDrawerSheet(
+            modifier = Modifier.fillMaxWidth(.8f),
             drawerShape = MaterialTheme.shapes.large
         ) {
             CustomDrawer(

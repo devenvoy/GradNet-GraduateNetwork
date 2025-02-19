@@ -4,6 +4,7 @@ import com.sdjic.gradnet.data.local.preference.AppCacheSettingImpl
 import com.sdjic.gradnet.data.local.room.GradNetDB
 import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.CryptoRepository
+import com.sdjic.gradnet.data.network.repo.DummyPostRepository
 import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.TestRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.UserRepositoryImpl
@@ -32,7 +33,7 @@ val screenModelsModule = module {
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
     factory { SetUpAccountViewModel(get()) }
-    factory { PostScreenModel() }
+    factory { PostScreenModel(get()) }
     factory { EventScreenModel(get()) }
 }
 
@@ -48,6 +49,7 @@ val repositoryModule = module {
     // trying only
     single<TestRepository> { TestRepositoryImpl(testDao = get()) }
     single<CryptoRepository> { CryptoRepository(httpClient = get()) }
+    single<DummyPostRepository> { DummyPostRepository(httpClient = get()) }
 }
 
 val dispatcherModule = module {

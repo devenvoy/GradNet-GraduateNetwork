@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >انتخاب ماه</string>
+    <string name="scd_calendar_dialog_next_month" >ماه آینده</string>
+    <string name="scd_calendar_dialog_prev_month" >ماه آینده</string>
+    <string name="scd_calendar_dialog_next_week" >هفته آینده</string>
+    <string name="scd_calendar_dialog_prev_week" >هفته گذشته</string>
+    <string name="scd_calendar_dialog_select_year" >سال را انتخاب کنید</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

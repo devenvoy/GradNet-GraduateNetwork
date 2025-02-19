@@ -55,6 +55,7 @@ import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.alternate_email
 import gradnet_graduatenetwork.composeapp.generated.resources.create_account
 import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.DotLottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
@@ -96,9 +97,7 @@ class LoginScreen : Screen {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             val composition by rememberLottieComposition {
-                LottieCompositionSpec.JsonString(
-                    Res.readBytes("files/working.json").decodeToString()
-                )
+                LottieCompositionSpec.DotLottie(Res.readBytes("files/working.lottie"))
             }
             Image(
                 modifier = Modifier.fillMaxWidth().height(185.sdp),

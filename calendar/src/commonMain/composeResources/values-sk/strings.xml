@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Vybrať mesiac</string>
+    <string name="scd_calendar_dialog_next_month" >Budúci mesiac</string>
+    <string name="scd_calendar_dialog_prev_month" >Budúci mesiac</string>
+    <string name="scd_calendar_dialog_next_week" >Budúci týždeň</string>
+    <string name="scd_calendar_dialog_prev_week" >Prešlý týždeň</string>
+    <string name="scd_calendar_dialog_select_year" >Vyberte rok</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

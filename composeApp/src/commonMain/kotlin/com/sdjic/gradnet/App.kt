@@ -13,14 +13,11 @@ import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
 import com.sdjic.commons.helper.ConnectivityManager
 import com.sdjic.data.network.Config
-import com.sdjic.domain.AppCacheSetting
 import com.sdjic.gradnet.di.appModules
-import com.sdjic.gradnet.presentation.screens.onboarding.OnBoardingScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
-import org.koin.compose.getKoin
 
 @Composable
 @Preview
@@ -38,18 +35,12 @@ fun App() {
         }
 
         KoinApplication(
-            application = {
-                modules(appModules)
-            }
+            application = { modules(appModules) }
         ) {
-            val keyStore = getKoin().get<AppCacheSetting>()
-            if (keyStore.isLoggedIn) {
+            if (authReady) {
                 Navigator(SplashScreen()) { SlideTransition(it) }
-            } else {
-                if (authReady) {
-                    Navigator(OnBoardingScreen())
-                }
             }
         }
     }
 }
+

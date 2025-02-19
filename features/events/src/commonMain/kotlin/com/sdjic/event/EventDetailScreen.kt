@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.event
+package com.sdjic.event
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,8 +35,6 @@ import com.sdjic.commons.composables.text.Label
 import com.sdjic.commons.composables.text.SText
 import com.sdjic.commons.composables.text.Title
 import com.sdjic.domain.model.response.EventDto
-import com.sdjic.gradnet.presentation.core.DummyBgImage
-import com.sdjic.gradnet.presentation.theme.errorColor
 
 class EventDetailScreen(
     private val eventDto: EventDto

@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.search
+package com.sdjic.search
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen

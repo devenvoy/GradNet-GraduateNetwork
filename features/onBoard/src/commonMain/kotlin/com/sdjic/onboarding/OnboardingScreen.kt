@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.onboarding
+package com.sdjic.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,32 +14,29 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.commons.composables.DotIndicatorItem
 import com.sdjic.commons.composables.button.PrimaryButton
 import com.sdjic.commons.composables.button.SecondaryOutlinedButton
 import com.sdjic.commons.composables.text.SText
 import com.sdjic.commons.helper.AutoSwipePagerEffect
-import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
-import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import network.chaintech.sdpcomposemultiplatform.sdp
-import com.sdjic.shared.Resource as Res
 
 
-class OnBoardingScreen : Screen {
+class OnBoardingScreen(private val authNavigator: AuthNavigatorAction) : Screen {
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
         OnBoardingScreenContent(
-            onLogin = { navigator.replace(LoginScreen()) },
-            onRegistration = { navigator.replace(SignUpScreen()) }
+            onLogin = { authNavigator.navigateToLogin() },
+            onRegistration = { authNavigator.navigateToSignUp() }
         )
     }
 }
@@ -50,6 +47,8 @@ fun OnBoardingScreenContent(
     onLogin: () -> Unit,
     onRegistration: () -> Unit,
 ) {
+
+    val onboardingList by remember { mutableStateOf(getOnBoardingList()) }
 
     val pagerState: PagerState = rememberPagerState(
         pageCount = { onboardingList.size }
@@ -117,30 +116,3 @@ fun OnBoardingScreenContent(
     }
 }
 
-data class Onboard(val title: String, val description: String, val lottieFile: Int)
-
-val onboardingList = listOf(
-    Onboard(
-        title = "Connect and Grow",
-        description = "Join a vibrant community of students, alumni, and faculty. 🌱",
-        lottieFile = 1
-    ),
-    Onboard(
-        title = "Find Opportunities",
-        description = "Access jobs, internships, and exclusive university events. 🎓",
-        lottieFile = 2
-    ),
-    Onboard(
-        title = "Inspire Others",
-        description = "Share achievements and inspire your university network. 💬",
-        lottieFile = 3
-    )
-)
-
-suspend fun getOnboardingLottie(id: Int): ByteArray {
-   return when(id){
-       2 -> Res.files.getOnboarding2Lottie()
-       3 -> Res.files.getOnboarding3Lottie()
-       else -> Res.files.getOnboarding1Lottie()
-   }
-}

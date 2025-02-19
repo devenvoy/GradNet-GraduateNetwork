@@ -36,6 +36,10 @@ dependencyResolutionManagement {
 
 include(":features:posts")
 include(":features:profile")
+include(":features:events")
+include(":features:jobs")
+include(":features:search")
+include(":features:onBoard")
 include(":composeApp")
 include(":shared")
 include(":calendar")

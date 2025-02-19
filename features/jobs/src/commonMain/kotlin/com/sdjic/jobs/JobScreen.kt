@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.jobs
+package com.sdjic.jobs
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ListItem
@@ -11,7 +11,6 @@ import com.sdjic.commons.composables.text.SText
 import com.sdjic.commons.composables.text.Title
 import com.sdjic.commons.helper.PagingListUI
 import com.sdjic.commons.helper.koinScreenModel
-import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 class JobScreen : Screen {
@@ -27,7 +26,7 @@ class JobScreen : Screen {
 
     @Composable
     fun CryptoListContent() {
-        val viewModel = koinScreenModel<HomeScreenViewModel>()
+        val viewModel = koinScreenModel<JobScreenModel>()
         val data = viewModel.coinList.collectAsLazyPagingItems()
         Scaffold {
             PagingListUI(

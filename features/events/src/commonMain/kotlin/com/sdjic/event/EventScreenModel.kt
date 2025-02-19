@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.event
+package com.sdjic.event
 
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel

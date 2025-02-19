@@ -7,7 +7,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.ScaleTransition
 import com.sdjic.commons.helper.MyTab
 import com.sdjic.commons.helper.MyTabOptions
-import com.sdjic.gradnet.presentation.screens.event.EventScreen
+import com.sdjic.event.EventScreen
 import com.sdjic.shared.Resource as Res
 
 object EventsTab : MyTab {

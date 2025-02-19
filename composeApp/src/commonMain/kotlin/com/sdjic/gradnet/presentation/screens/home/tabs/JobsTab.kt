@@ -6,7 +6,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.commons.helper.MyTab
 import com.sdjic.commons.helper.MyTabOptions
-import com.sdjic.gradnet.presentation.screens.jobs.JobScreen
+import com.sdjic.jobs.JobScreen
 import com.sdjic.shared.Resource as Res
 
 // to see latest job req post and search job based on requirements

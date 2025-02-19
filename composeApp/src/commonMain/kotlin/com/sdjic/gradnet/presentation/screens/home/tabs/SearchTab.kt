@@ -6,7 +6,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.commons.helper.MyTab
 import com.sdjic.commons.helper.MyTabOptions
-import com.sdjic.gradnet.presentation.screens.search.SearchScreen
+import com.sdjic.search.SearchScreen
 import com.sdjic.shared.Resource as Res
 
 object SearchTab : MyTab {

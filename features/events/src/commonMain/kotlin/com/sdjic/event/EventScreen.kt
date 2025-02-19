@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.event
+package com.sdjic.event
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,7 +44,6 @@ import com.sdjic.commons.helper.AutoSwipePagerEffect
 import com.sdjic.commons.helper.koinScreenModel
 import com.sdjic.commons.helper.shimmerLoadingAnimation
 import com.sdjic.domain.model.response.EventDto
-import com.sdjic.gradnet.presentation.core.DummyBgImage
 
 class EventScreen : Screen {
     @Composable

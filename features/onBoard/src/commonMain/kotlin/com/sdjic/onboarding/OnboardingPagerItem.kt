@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.onboarding
+package com.sdjic.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

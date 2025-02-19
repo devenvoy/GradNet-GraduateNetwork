@@ -9,7 +9,6 @@ plugins {
 
 kotlin {
     androidTarget()
-    jvm()
 
     listOf(
         iosX64(),
@@ -17,7 +16,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "posts"
             isStatic = true
         }
     }
@@ -33,12 +32,27 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+            implementation(libs.sonner)
+            implementation(libs.bundles.coil)
+            implementation(libs.bundles.koin)
+            implementation(libs.bundles.paging)
+            implementation(libs.bundles.voyager)
+            implementation(compose.materialIconsExtended)
+            implementation(libs.bundles.compose.settings)
+            implementation(libs.sdp.ssp.compose.multiplatform)
+
+            implementation(projects.shared)
+            implementation(projects.commons)
+            implementation(projects.data)
+            implementation(projects.domain)
+
+
         }
     }
 }
 
 android {
-    namespace = "com.sdjic.shared"
+    namespace = "com.sdjic.posts"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -49,13 +63,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
-
-compose.resources {
-    publicResClass = true
-    packageOfResClass = "com.sdjic.shared.resources"
-    generateResClass = auto
-}
-
 
 dependencies {
     implementation(libs.androidx.material3.android)

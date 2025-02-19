@@ -1,6 +1,6 @@
-package com.sdjic.gradnet.presentation.screens.posts
+package com.sdjic.posts
 
-import com.sdjic.gradnet.presentation.core.model.Filter
+import com.sdjic.posts.model.Filter
 
 sealed interface PostScreenAction {
     data class OnFilterSheetStateChange(val show: Boolean) : PostScreenAction

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.sdjic.commons.composables.DotIndicatorItem
 import com.sdjic.commons.composables.button.PrimaryButton
 import com.sdjic.commons.composables.button.SecondaryOutlinedButton
 import com.sdjic.commons.composables.text.SText
@@ -78,7 +79,7 @@ fun OnBoardingScreenContent(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     onboardingList.forEachIndexed { index, _ ->
-                        OnboardingPagerSlide(
+                        DotIndicatorItem(
                             isSelected = index == pagerState.currentPage,
                             selectedColor = MaterialTheme.colorScheme.primary,
                             unselectedColor = Color.Gray,

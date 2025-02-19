@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.posts
+package com.sdjic.posts
 
 
 import androidx.compose.animation.AnimatedVisibility
@@ -70,6 +70,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.alorma.compose.settings.ui.SettingsCheckbox
+import com.sdjic.commons.composables.DotIndicatorItem
 import com.sdjic.commons.composables.LoadingAnimation
 import com.sdjic.commons.composables.images.CircularProfileImage
 import com.sdjic.commons.composables.text.ExpandableText
@@ -79,12 +80,7 @@ import com.sdjic.commons.helper.LocalScrollBehavior
 import com.sdjic.commons.helper.PagingListUI
 import com.sdjic.commons.helper.isScrollingUp
 import com.sdjic.commons.helper.koinScreenModel
-import com.sdjic.gradnet.presentation.core.DummyBgImage
-import com.sdjic.gradnet.presentation.core.DummyDpImage
-import com.sdjic.gradnet.presentation.core.getEmptyUserDto
-import com.sdjic.gradnet.presentation.core.model.Post
-import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
-import com.sdjic.gradnet.presentation.screens.onboarding.onboardingList
+import com.sdjic.posts.model.Post
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -393,8 +389,8 @@ class PostScreen : Screen {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    onboardingList.forEachIndexed { index, _ ->
-                        OnboardingPagerSlide(
+                    images.forEachIndexed { index, _ ->
+                        DotIndicatorItem(
                             isSelected = index == pagerState.currentPage,
                             selectedColor = MaterialTheme.colorScheme.primary,
                             unselectedColor = Color(0xFFD9D9D9),

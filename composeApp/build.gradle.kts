@@ -93,6 +93,9 @@ kotlin {
             implementation(projects.commons)
             implementation(projects.data)
             implementation(projects.domain)
+
+            // features
+            implementation(projects.features.posts)
         }
 
         iosMain.dependencies {

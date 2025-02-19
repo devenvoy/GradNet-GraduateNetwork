@@ -6,7 +6,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.commons.helper.MyTab
 import com.sdjic.commons.helper.MyTabOptions
-import com.sdjic.gradnet.presentation.screens.posts.PostScreen
+import com.sdjic.posts.PostScreen
 import com.sdjic.shared.Resource as Res
 
 object PostTab : MyTab {

@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.posts
+package com.sdjic.posts
 
 import androidx.paging.PagingData
 import app.cash.paging.cachedIn
@@ -7,7 +7,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.commons.model.UserRole
 import com.sdjic.data.network.DummyPostRepository
 import com.sdjic.domain.model.response.Post
-import com.sdjic.gradnet.presentation.core.model.Filter
+import com.sdjic.posts.model.Filter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow

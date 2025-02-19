@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.onboarding
+package com.sdjic.commons.composables
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.Dp
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 @Composable
-fun OnboardingPagerSlide(
+fun DotIndicatorItem(
         isSelected: Boolean,
         spacer: Int,
         size: Int,

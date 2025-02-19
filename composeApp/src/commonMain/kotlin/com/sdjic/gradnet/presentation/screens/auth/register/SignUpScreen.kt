@@ -65,8 +65,9 @@ import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.User
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.User
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.alternate_email
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -202,7 +203,7 @@ class SignUpScreen(
                     placeholder = { Text("Enter Name") },
                     trailingIcon = {
                         Icon(
-                            imageVector = FeatherIcons.User,
+                            imageVector = FontAwesomeIcons.Solid.User,
                             contentDescription = "Name icon",
                         )
                     },

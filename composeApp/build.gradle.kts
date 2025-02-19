@@ -78,7 +78,7 @@ kotlin {
             implementation(libs.bundles.multiplatform.settings)
 
             implementation(libs.sonner)
-            implementation(libs.composeIcons.featherIcons)
+            implementation(libs.composeIcons.fontAwesome)
 
             implementation(libs.kermit)
             implementation(libs.kstore)
@@ -88,6 +88,7 @@ kotlin {
 
             implementation(libs.kmpauth.google)
             implementation(libs.kmpauth.uihelper)
+            implementation(libs.richeditor.compose)
 
             implementation(project(":color"))
             implementation(project(":calendar"))

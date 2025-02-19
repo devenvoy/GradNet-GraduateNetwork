@@ -31,9 +31,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Eye
-import compose.icons.feathericons.EyeOff
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Eye
+import compose.icons.fontawesomeicons.solid.EyeSlash
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
@@ -68,7 +69,7 @@ fun CustomInputPasswordField(
             trailingIcon = {
                 if (isPasswordField) {
                     val visibilityIcon =
-                        if (passwordVisible) FeatherIcons.Eye else FeatherIcons.EyeOff
+                        if (passwordVisible) FontAwesomeIcons.Solid.Eye else FontAwesomeIcons.Solid.EyeSlash
 
                     IconButton(
                         onClick = { passwordVisible = !passwordVisible }

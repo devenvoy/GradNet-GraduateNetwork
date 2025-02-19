@@ -63,8 +63,9 @@ import com.sdjic.gradnet.presentation.composables.textInput.CustomInputArea
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.composables.textInput.OtpTextField
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Plus
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Plus
 import network.chaintech.cmpimagepickncrop.CMPImagePickNCropDialog
 import network.chaintech.cmpimagepickncrop.imagecropper.ImageAspectRatio
 import network.chaintech.cmpimagepickncrop.imagecropper.rememberImageCropper
@@ -287,7 +288,7 @@ fun ProfileBackgroundImages(
                         contentColor = Color.White
                     )
                 ) {
-                    Icon(imageVector = FeatherIcons.Plus, contentDescription = null)
+                    Icon(imageVector = FontAwesomeIcons.Solid.Plus, contentDescription = null)
                 }
             }
         }

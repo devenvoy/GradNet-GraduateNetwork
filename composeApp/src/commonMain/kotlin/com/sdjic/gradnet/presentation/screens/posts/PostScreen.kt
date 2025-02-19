@@ -80,6 +80,7 @@ import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.DummyDpImage
 import com.sdjic.gradnet.presentation.core.getEmptyUserDto
 import com.sdjic.gradnet.presentation.core.model.Post
+import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.isScrollingUp
@@ -113,6 +114,7 @@ class PostScreen : Screen {
         val pullToRefreshState = rememberPullToRefreshState()
         val modalSheetState = rememberModalBottomSheetState()
         val scrollBehavior = LocalScrollBehavior.current
+        val rootNavigator = LocalRootNavigator.current
 
         var isRefreshing by remember { mutableStateOf(false) }
 
@@ -141,7 +143,9 @@ class PostScreen : Screen {
                 AnimatedVisibility(
                     visible = listState.isScrollingUp(), enter = fadeIn(), exit = fadeOut()
                 ) {
-                    FloatingActionButton(onClick = {}) {
+                    FloatingActionButton(onClick = {
+                        rootNavigator.push(AddPost())
+                    }) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                     }
                 }

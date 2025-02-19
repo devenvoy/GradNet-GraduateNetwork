@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -39,8 +40,6 @@ import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.DummyDpImage
 import com.sdjic.gradnet.presentation.helper.LocalDrawerController
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Menu
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 
@@ -108,7 +107,9 @@ fun ProfileScreen(
                     },
                     colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.background)
                 ) {
-                    Icon(imageVector = FeatherIcons.Menu, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = null)
                 }
             }
         }

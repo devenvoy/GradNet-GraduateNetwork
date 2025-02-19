@@ -42,6 +42,7 @@ desugar = "2.0.4"
 voyager = "1.1.0-beta02"
 compose-settings="2.10.0"
 
+richeditorCompose = "1.0.0-rc10"
 kmpDateTimePicker = "1.0.5"
 kotlin = "2.1.0"
 kotlinx-coroutines = "1.10.1"
@@ -144,6 +145,7 @@ kmpauth-uihelper = { module = "io.github.mirzemehdi:kmpauth-uihelper", version.r
 kmpauth-google = { module = "io.github.mirzemehdi:kmpauth-google", version.ref = "kmpauthGoogle" }
 kmp-date-time-picker = { module = "network.chaintech:kmp-date-time-picker", version.ref = "kmpDateTimePicker" }
 
+richeditor-compose = { module = "com.mohamedrejeb.richeditor:richeditor-compose", version.ref = "richeditorCompose" }
 
 cmptoast = { module = "network.chaintech:cmptoast", version.ref = "cmptoast" }
 sonner = { module = "io.github.dokar3:sonner", version = "0.3.8" }
@@ -188,6 +190,7 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 
+composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

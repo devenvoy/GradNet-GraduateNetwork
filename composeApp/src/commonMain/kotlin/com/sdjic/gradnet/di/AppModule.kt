@@ -22,6 +22,7 @@ import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
 import com.sdjic.gradnet.presentation.screens.demo.TestViewModel
 import com.sdjic.gradnet.presentation.screens.event.EventScreenModel
 import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
+import com.sdjic.gradnet.presentation.screens.posts.AddPostScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.PostScreenModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -35,6 +36,7 @@ val screenModelsModule = module {
     factory { SetUpAccountViewModel(get()) }
     factory { PostScreenModel(get()) }
     factory { EventScreenModel(get()) }
+    factory { AddPostScreenModel() }
 }
 
 val userCases = module {

@@ -67,8 +67,9 @@ import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.core.model.ExperienceModel
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Globe
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Globe
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
 import gradnet_graduatenetwork.composeapp.generated.resources.github
@@ -136,7 +137,7 @@ fun ProfessionSetUpScreen(
                         placeholder = { SText(text = "enter url") },
                         trailingIcon = {
                             Icon(
-                                imageVector = FeatherIcons.Globe,
+                                imageVector = FontAwesomeIcons.Solid.Globe,
                                 contentDescription = "web"
                             )
                         }

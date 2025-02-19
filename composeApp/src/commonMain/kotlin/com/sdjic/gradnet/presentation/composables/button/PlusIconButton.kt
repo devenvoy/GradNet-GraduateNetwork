@@ -5,8 +5,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Plus
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Plus
 
 @Composable
 fun PlusIconButton(onClick: () -> Unit) {
@@ -17,7 +18,7 @@ fun PlusIconButton(onClick: () -> Unit) {
         onClick = onClick
     ) {
         Icon(
-            imageVector = FeatherIcons.Plus,
+            imageVector = FontAwesomeIcons.Solid.Plus,
             contentDescription = "Done icon",
         )
     }

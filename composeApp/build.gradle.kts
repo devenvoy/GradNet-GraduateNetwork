@@ -96,6 +96,7 @@ kotlin {
 
             // features
             implementation(projects.features.posts)
+            implementation(projects.features.profile)
         }
 
         iosMain.dependencies {

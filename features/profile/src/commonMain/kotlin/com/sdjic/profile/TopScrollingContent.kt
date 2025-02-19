@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.profile
+package com.sdjic.profile
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.Dp
 import coil3.compose.LocalPlatformContext
 import com.sdjic.commons.composables.images.CircularProfileImage
 import com.sdjic.commons.composables.text.SText
-import com.sdjic.gradnet.presentation.core.DummyDpImage
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 

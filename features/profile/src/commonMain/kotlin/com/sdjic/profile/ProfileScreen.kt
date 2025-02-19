@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.profile
+package com.sdjic.profile
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -37,8 +37,6 @@ import coil3.compose.LocalPlatformContext
 import com.sdjic.commons.composables.images.BackgroundImage
 import com.sdjic.commons.composables.images.CircularProfileImage
 import com.sdjic.commons.helper.LocalDrawerController
-import com.sdjic.gradnet.presentation.core.DummyBgImage
-import com.sdjic.gradnet.presentation.core.DummyDpImage
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Menu
 import kotlinx.coroutines.launch

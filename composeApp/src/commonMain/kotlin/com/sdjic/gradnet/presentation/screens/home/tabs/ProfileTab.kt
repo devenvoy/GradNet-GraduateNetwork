@@ -8,7 +8,7 @@ import com.sdjic.commons.helper.MyTab
 import com.sdjic.commons.helper.MyTabOptions
 import com.sdjic.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
-import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
+import com.sdjic.profile.ProfileScreen
 import org.koin.compose.koinInject
 import com.sdjic.shared.Resource as Res
 

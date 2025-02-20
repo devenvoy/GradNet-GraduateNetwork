@@ -73,6 +73,7 @@ import coil3.request.crossfade
 import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.sdjic.gradnet.presentation.composables.LoadingAnimation
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
+import com.sdjic.gradnet.presentation.composables.text.ExpandableRichText
 import com.sdjic.gradnet.presentation.composables.text.ExpandableText
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
@@ -302,7 +303,7 @@ class PostScreen : Screen {
                 Column(modifier = Modifier.padding(horizontal = 6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SText(
-                            text = post.user.username ?: "",
+                            text = post.user.username,
                             fontSize = 16.sp,
                             fontWeight = FontWeight(800)
                         )
@@ -313,10 +314,9 @@ class PostScreen : Screen {
                             textColor = Color.Gray
                         )
                     }
-                    ExpandableText(
+                    ExpandableRichText(
                         modifier = Modifier.padding(vertical = 4.dp),
-                        text = post.content,
-                        fontSize = 14.sp,
+                        text = post.content
                     )
                 }
             }

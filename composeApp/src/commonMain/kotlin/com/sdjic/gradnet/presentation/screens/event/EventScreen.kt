@@ -64,7 +64,7 @@ class EventScreen : Screen {
             ) {
 
                 if (eventScreenModel.isEventLoading.value) {
-                    EventLoadingShimmer(eventScreenModel)
+                    EventLoadingShimmer()
                 } else {
                     if (list.isNotEmpty())
                         Row(
@@ -91,7 +91,7 @@ class EventScreen : Screen {
     }
 
     @Composable
-    private fun EventLoadingShimmer(eventScreenModel: EventScreenModel) {
+    private fun EventLoadingShimmer() {
         Row(
             modifier = Modifier.padding(12.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -103,12 +103,11 @@ class EventScreen : Screen {
                     .background(CardDefaults.cardColors().containerColor)
                     .shimmerLoadingAnimation()
             )
-            TextButton(
-                onClick = {},
-                modifier = Modifier.width(100.dp)
+            Box(
+                modifier = Modifier.width(100.dp).height(40.dp)
                     .background(CardDefaults.cardColors().containerColor)
                     .shimmerLoadingAnimation()
-            ) { }
+            )
         }
         Box(
             modifier = Modifier

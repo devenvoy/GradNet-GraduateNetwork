@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -121,6 +122,7 @@ class SignUpScreen(
 
         val selectedUserRole by viewModel.selectedUserRole.collectAsState()
 
+        // user selection dialog
         if (dialogState) {
             BasicAlertDialog(properties = DialogProperties(
                 usePlatformDefaultWidth = false, dismissOnClickOutside = false
@@ -203,6 +205,7 @@ class SignUpScreen(
                     placeholder = { Text("Enter Name") },
                     trailingIcon = {
                         Icon(
+                            modifier = Modifier.size(20.sdp),
                             imageVector = FontAwesomeIcons.Solid.User,
                             contentDescription = "Name icon",
                         )
@@ -216,7 +219,7 @@ class SignUpScreen(
                     placeholder = { Text("Enter email") },
                     trailingIcon = {
                         Icon(
-                            modifier = Modifier.padding(end = 6.sdp),
+                            modifier = Modifier.size(20.sdp),
                             painter = painterResource(Res.drawable.alternate_email),
                             contentDescription = "Email icon",
                         )

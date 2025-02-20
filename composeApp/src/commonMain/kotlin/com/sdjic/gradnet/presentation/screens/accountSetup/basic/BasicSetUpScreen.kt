@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -255,7 +256,7 @@ fun ProfileBackgroundImages(
         )
         if (showEditButton) {
             IconButton(
-                modifier = Modifier.padding(10.sdp).size(24.sdp).align(Alignment.TopEnd),
+                modifier = Modifier.padding(10.sdp).size(22.sdp).align(Alignment.TopEnd),
                 onClick = backgroundEditClick,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -288,7 +289,7 @@ fun ProfileBackgroundImages(
                         contentColor = Color.White
                     )
                 ) {
-                    Icon(imageVector = FontAwesomeIcons.Solid.Plus, contentDescription = null)
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                 }
             }
         }

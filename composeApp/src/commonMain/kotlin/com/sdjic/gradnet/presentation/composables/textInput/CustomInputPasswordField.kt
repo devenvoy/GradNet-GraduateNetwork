@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -31,10 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Solid
-import compose.icons.fontawesomeicons.solid.Eye
-import compose.icons.fontawesomeicons.solid.EyeSlash
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
@@ -69,12 +69,13 @@ fun CustomInputPasswordField(
             trailingIcon = {
                 if (isPasswordField) {
                     val visibilityIcon =
-                        if (passwordVisible) FontAwesomeIcons.Solid.Eye else FontAwesomeIcons.Solid.EyeSlash
+                        if (passwordVisible) Icons.Filled.LockOpen else Icons.Filled.Lock
 
                     IconButton(
                         onClick = { passwordVisible = !passwordVisible }
                     ) {
                         Icon(
+                            modifier = Modifier.size(20.sdp),
                             imageVector = visibilityIcon,
                             contentDescription = if (passwordVisible) "Hide password" else "Show password",
                             tint = MaterialTheme.colorScheme.onBackground,

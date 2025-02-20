@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,6 +27,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -36,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,11 +51,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.input.key.Key.Companion.L
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.Navigator
 import coil3.compose.LocalPlatformContext
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
@@ -63,17 +68,17 @@ import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyDpImage
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
-import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
+import com.sdjic.gradnet.presentation.theme.errorColor
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Camera
 import network.chaintech.cmpimagepickncrop.CMPImagePickNCropDialog
 import network.chaintech.cmpimagepickncrop.imagecropper.rememberImageCropper
 
-class AddPost : Screen {
+class AddPost(val navigator: Navigator) : Screen {
     @Composable
     override fun Content() {
-        AddPostContent { }
+        AddPostContent { navigator.pop() }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -82,6 +87,7 @@ class AddPost : Screen {
         addPostScreenModel: AddPostScreenModel = koinScreenModel(), onDismiss: () -> Unit
     ) {
 
+        var showExitDialog by remember { mutableStateOf(false) }
         var isPanelVisible by remember { mutableStateOf(false) }
         val richTextState = rememberRichTextState()
         val openLinkDialog = remember { mutableStateOf(false) }
@@ -89,32 +95,55 @@ class AddPost : Screen {
         var openImagePicker by remember { mutableStateOf(false) }
         val selectedImages by addPostScreenModel.selectedImages.collectAsState()
 
-        Scaffold(topBar = {
-            TopAppBar(navigationIcon = {
-                IconButton(
-                    onClick = onDismiss
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }, actions = {
-                PrimaryButton(
-                    modifier = Modifier.padding(end = 5.dp),
-                    shape = CircleShape,
-                    enabled = true,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = FloatingActionButtonDefaults.containerColor,
-                    ),
-                    onClick = {},
-                    contentPadding = PaddingValues(horizontal = 25.dp)
-                ) {
-                    Text("Post", color = Color.White)
-                }
-            }, title = {})
-        }) { ip ->
+        Scaffold(
+            modifier = Modifier
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures { _, dragAmount ->
+                        if (dragAmount > 80) { // Detect downward drag
+                            if (richTextState.toText()
+                                    .isNotEmpty() or selectedImages.isNotEmpty()
+                            ) {
+                                showExitDialog = true
+                            } else {
+                                onDismiss()
+                            }
+                        }
+                    }
+                },
+            topBar = {
+                TopAppBar(navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            if (richTextState.toText()
+                                    .isNotEmpty() or selectedImages.isNotEmpty()
+                            ) {
+                                showExitDialog = true
+                            } else {
+                                onDismiss()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }, actions = {
+                    PrimaryButton(
+                        modifier = Modifier.padding(end = 5.dp),
+                        shape = CircleShape,
+                        enabled = true,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = FloatingActionButtonDefaults.containerColor,
+                        ),
+                        onClick = {},
+                        contentPadding = PaddingValues(horizontal = 25.dp)
+                    ) {
+                        Text("Post", color = Color.White)
+                    }
+                }, title = {})
+            }) { ip ->
 
             if (openLinkDialog.value) {
                 Dialog(
@@ -128,6 +157,25 @@ class AddPost : Screen {
                         openLinkDialog = openLinkDialog
                     )
                 }
+            }
+
+            if (showExitDialog) {
+                AlertDialog(
+                    onDismissRequest = { showExitDialog = false },
+                    title = { Text(text = "Discard changes", color = errorColor) },
+                    text = { Text(text = "Are you sure want to discard changes?") },
+                    confirmButton = {  // Buttons
+                        TextButton(onClick = {
+                            showExitDialog = false
+                            onDismiss()
+                        }) { Text("OK") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showExitDialog = false }) {
+                            Text("Cancel", color = Color.Gray)
+                        }
+                    }
+                )
             }
 
             CMPImagePickNCropDialog(

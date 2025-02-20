@@ -144,9 +144,10 @@ class PostScreen : Screen {
                 AnimatedVisibility(
                     visible = listState.isScrollingUp(), enter = fadeIn(), exit = fadeOut()
                 ) {
-                    FloatingActionButton(onClick = {
-                        rootNavigator.push(AddPost())
-                    }) {
+                    FloatingActionButton(
+                        onClick = {
+                            rootNavigator.push(AddPost(rootNavigator))
+                        }) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                     }
                 }

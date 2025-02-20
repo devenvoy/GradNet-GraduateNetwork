@@ -158,7 +158,7 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                 text = "Save",
                                 fontSize = 14.ssp,
                                 fontWeight = W600,
-                                textColor = MaterialTheme.colorScheme.surface,
+                                textColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
                         }
                     },

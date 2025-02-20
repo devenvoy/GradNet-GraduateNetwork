@@ -59,6 +59,7 @@ import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.PostTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
+import com.sdjic.gradnet.presentation.theme.AppTheme
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
@@ -126,22 +127,24 @@ class HomeScreen : Screen {
                     drawerState = drawerState,
                 ) {
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                        Scaffold(
-                            bottomBar = {
-                                BottomAppBar(
-                                    modifier = Modifier.shadow(16.dp),
-                                    scrollBehavior = scrollBehavior,
-                                    containerColor = MaterialTheme.colorScheme.background
+                        AppTheme {
+                            Scaffold(
+                                bottomBar = {
+                                    BottomAppBar(
+                                        modifier = Modifier.shadow(16.dp),
+                                        scrollBehavior = scrollBehavior,
+                                        containerColor = MaterialTheme.colorScheme.background
+                                    ) {
+                                        bottomTabList.forEach { TabNavigationItem(it) }
+                                    }
+                                }) { pVal ->
+                                Box(
+                                    modifier = Modifier
+                                        .padding(bottom = pVal.calculateBottomPadding())
+                                        .fillMaxSize()
                                 ) {
-                                    bottomTabList.forEach { TabNavigationItem(it) }
+                                    CurrentTab()
                                 }
-                            }) { pVal ->
-                            Box(
-                                modifier = Modifier
-                                    .padding(bottom = pVal.calculateBottomPadding())
-                                    .fillMaxSize()
-                            ) {
-                                CurrentTab()
                             }
                         }
                     }

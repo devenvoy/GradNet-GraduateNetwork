@@ -137,6 +137,7 @@ fun ProfessionSetUpScreen(
                         placeholder = { SText(text = "enter url") },
                         trailingIcon = {
                             Icon(
+                                modifier = Modifier.size(20.sdp),
                                 imageVector = FontAwesomeIcons.Solid.Globe,
                                 contentDescription = "web"
                             )

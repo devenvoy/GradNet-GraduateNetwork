@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import coil3.PlatformContext
 import coil3.compose.AsyncImage
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -43,6 +44,8 @@ fun BackgroundImage(
                 .data(data)
                 .crossfade(true)
                 .crossfade(300)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .diskCacheKey("image_${data.hashCode()}")
                 .build(),
             contentDescription = "background image",
             contentScale = ContentScale.FillWidth,

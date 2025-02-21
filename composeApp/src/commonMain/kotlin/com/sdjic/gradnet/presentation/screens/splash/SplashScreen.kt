@@ -13,7 +13,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
-import kotlinx.coroutines.delay
+import com.sdjic.gradnet.presentation.screens.onboarding.OnBoardingScreen
 import org.koin.compose.koinInject
 
 class SplashScreen : Screen {
@@ -22,11 +22,14 @@ class SplashScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val pref = koinInject<AppCacheSetting>()
         LaunchedEffect(Unit) {
-            delay(1000)
-            if (pref.isVerified) {
-                navigator.replace(HomeScreen())
+            if (pref.isLoggedIn) {
+                if (pref.isVerified) {
+                    navigator.replace(HomeScreen())
+                } else {
+                    navigator.replace(SetUpScreen(false))
+                }
             } else {
-                navigator.replace(SetUpScreen(false))
+                navigator.replace(OnBoardingScreen())
             }
         }
         SplashScreenContent()

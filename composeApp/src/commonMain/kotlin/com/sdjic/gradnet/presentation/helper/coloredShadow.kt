@@ -15,3 +15,24 @@ expect fun Modifier.coloredShadow(
     offsetX: Dp = 0.dp
 ): Modifier
 
+fun colorFromHex(hex: String): Color {
+    val cleanHex = hex.removePrefix("#")
+
+    // Parse color components
+    val colorLong = cleanHex.toLong(16)
+    return when (cleanHex.length) {
+        6 -> Color(
+            red = ((colorLong shr 16) and 0xFF) / 255f,
+            green = ((colorLong shr 8) and 0xFF) / 255f,
+            blue = (colorLong and 0xFF) / 255f,
+            alpha = 1f
+        )
+        8 -> Color(
+            alpha = ((colorLong shr 24) and 0xFF) / 255f,
+            red = ((colorLong shr 16) and 0xFF) / 255f,
+            green = ((colorLong shr 8) and 0xFF) / 255f,
+            blue = (colorLong and 0xFF) / 255f
+        )
+        else -> throw IllegalArgumentException("Invalid hex color format: $hex")
+    }
+}

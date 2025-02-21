@@ -7,18 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.transitions.SlideTransition
+import cafe.adriel.voyager.transitions.FadeTransition
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
 import com.sdjic.gradnet.di.appModules
-import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.helper.ConnectivityManager
-import com.sdjic.gradnet.presentation.screens.onboarding.OnBoardingScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
-import org.koin.compose.getKoin
 
 @Composable
 @Preview
@@ -35,17 +32,9 @@ fun App() {
         }
 
         KoinApplication(
-            application = {
-                modules(appModules)
-            }
-        ) {
-            val keyStore = getKoin().get<AppCacheSetting>()
-            if (keyStore.isLoggedIn) {
-                Navigator(SplashScreen()) { SlideTransition(it) }
-            } else {
-                if (authReady) {
-                    Navigator(OnBoardingScreen())
-                }
+            application = { modules(appModules) }) {
+            if (authReady) {
+                Navigator(SplashScreen()){ FadeTransition(it) }
             }
         }
     }

@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -47,6 +46,7 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.composables.drawer.CustomDrawer
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.core.model.NavigationItem
@@ -54,17 +54,20 @@ import com.sdjic.gradnet.presentation.helper.LocalDrawerController
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.MyTab
+import com.sdjic.gradnet.presentation.screens.aboutUs.AboutUsScreen
 import com.sdjic.gradnet.presentation.screens.home.tabs.EventsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.PostTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
+import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 class HomeScreen : Screen {
     override val key: ScreenKey = uniqueScreenKey
@@ -157,6 +160,7 @@ class HomeScreen : Screen {
     private fun DrawerContent(navigator: Navigator, drawerState: DrawerState) {
         val selectedNavigationItem by remember { mutableStateOf(NavigationItem.Profile) }
         val scope = rememberCoroutineScope()
+        val pref = koinInject<AppCacheSetting>()
         ModalDrawerSheet(
             modifier = Modifier.fillMaxWidth(.8f),
             drawerShape = MaterialTheme.shapes.large
@@ -167,6 +171,18 @@ class HomeScreen : Screen {
                     scope.launch {
                         drawerState.apply {
                             if (isOpen) close() else open()
+                        }
+                        when (it) {
+                            NavigationItem.Profile -> {}
+                            NavigationItem.Settings -> {}
+                            NavigationItem.AboutUs -> {
+                                navigator.push(AboutUsScreen())
+                            }
+
+                            NavigationItem.Logout -> {
+                                pref.logout { }
+                                navigator.replaceAll(SplashScreen())
+                            }
                         }
                     }
                 }

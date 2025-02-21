@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -74,7 +73,6 @@ import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.sdjic.gradnet.presentation.composables.LoadingAnimation
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.text.ExpandableRichText
-import com.sdjic.gradnet.presentation.composables.text.ExpandableText
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
@@ -146,7 +144,7 @@ class PostScreen : Screen {
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            rootNavigator.push(AddPost(rootNavigator))
+                            rootNavigator.push(AddPost())
                         }) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                     }

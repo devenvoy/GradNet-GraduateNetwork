@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.lazy.LazyListState
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.core.TOP_BAR_HEIGHT
@@ -211,3 +213,12 @@ fun rememberTopBarVisibilityState(listState: LazyListState, threshold: Int = 60)
 
     return Pair(topBarVisible.value, topBarHeight.value)
 }
+
+fun Modifier.parallaxLayoutModifier(scrollState: ScrollState, rate: Int) =
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+        val height = if (rate > 0) scrollState.value / rate else scrollState.value
+        layout(placeable.width, placeable.height) {
+            placeable.place(0, height)
+        }
+    }

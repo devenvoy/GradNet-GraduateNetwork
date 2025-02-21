@@ -1,13 +1,16 @@
 package com.sdjic.gradnet.presentation.screens.event
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
@@ -37,6 +40,7 @@ import com.sdjic.gradnet.presentation.composables.text.Label
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
+import com.sdjic.gradnet.presentation.helper.parallaxLayoutModifier
 import com.sdjic.gradnet.presentation.theme.errorColor
 
 class EventDetailScreen(
@@ -73,19 +77,25 @@ class EventDetailScreen(
                 )
             }
         ) {
+
+            val scrollState = rememberScrollState()
+
             Column(
                 modifier = Modifier.padding(it)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollState)
             ) {
 //                eventDto.eventPic?.let {
-                    BannerWidget(
-                        modifier = Modifier.height(250.dp),
-                        imageUrl = eventDto.eventPic ?: DummyBgImage,
-                        contentDescription = null
-                    )
+                BannerWidget(
+                    modifier = Modifier.height(250.dp)
+                        .parallaxLayoutModifier(scrollState, 2),
+                    imageUrl = eventDto.eventPic ?: DummyBgImage,
+                    contentDescription = null
+                )
 //                }
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Label(text = eventDto.eventName ?: "")
@@ -161,6 +171,8 @@ class EventDetailScreen(
                     ) {
                         Text(text = "Register here")
                     }
+
+                    Spacer(modifier = Modifier.height(60.dp))
                 }
             }
         }

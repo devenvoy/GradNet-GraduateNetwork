@@ -13,20 +13,12 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 @Composable
 fun FilterChipDropdown(
     modifier: Modifier = Modifier,
+    savedTopics: Set<String>,
+    selectedTopics: Set<String>,
+    onSelectedTopicChange: (Set<String>) -> Unit,
+    onSavedTopicsChange: (Set<String>) -> Unit
 ) {
 
-    var selectedTopics by remember { mutableStateOf(setOf<String>()) }
-    var savedTopics by remember {
-        mutableStateOf(
-            setOf(
-                "Work",
-                "Hobby",
-                "Personal",
-                "Office",
-                "Workout"
-            )
-        )
-    }
     var isAddingTopic by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -37,7 +29,7 @@ fun FilterChipDropdown(
         TopicsList(
             modifier = modifier,
             selectedTopics = selectedTopics,
-            onSelectedTopics = { selectedTopics = it },
+            onSelectedTopics = onSelectedTopicChange,
             isAddingTopic = isAddingTopic,
             onAddingTopicChange = { isAddingTopic = it },
             searchQuery = searchQuery,
@@ -51,12 +43,12 @@ fun FilterChipDropdown(
         TopicDropdown(
             modifier = modifier,
             selectedTopics = selectedTopics,
-            onSelectedTopicsChange = { selectedTopics = it },
+            onSelectedTopicsChange = onSelectedTopicChange,
             onAddingTopicChange = { isAddingTopic = it },
             searchQuery = searchQuery,
             onSearchQueryChange = { searchQuery = it },
             savedTopics = savedTopics,
-            onSavedTopicsChange = { savedTopics = it },
+            onSavedTopicsChange = onSavedTopicsChange
         )
     }
 }

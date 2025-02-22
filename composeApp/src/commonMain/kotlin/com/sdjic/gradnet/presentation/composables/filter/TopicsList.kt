@@ -32,12 +32,11 @@ fun TopicsList(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .padding(top = 8.dp)
             .shadow(
                 elevation = 8.dp,
                 shape = MaterialTheme.shapes.medium,
-                spotColor = Color(0xFF474F60).copy(alpha = 0.08f)
+                spotColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.08f)
             ),
         color = Color(0xFFD9E2FF),
     ) {
@@ -46,7 +45,7 @@ fun TopicsList(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
 
-            Title("Topics")
+            Title("Filters", textColor = MaterialTheme.colorScheme.onBackground)
 
             ChipFlowRow(
                 selectedTopics = selectedTopics,

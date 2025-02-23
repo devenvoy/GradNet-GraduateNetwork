@@ -2,12 +2,12 @@ package com.sdjic.gradnet.di
 
 import com.sdjic.gradnet.data.local.preference.AppCacheSettingImpl
 import com.sdjic.gradnet.data.local.room.GradNetDB
-import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
-import com.sdjic.gradnet.data.network.repo.CryptoRepository
-import com.sdjic.gradnet.data.network.repo.DummyPostRepository
-import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
 import com.sdjic.gradnet.data.local.room.TestRepositoryImpl
 import com.sdjic.gradnet.data.local.room.UserDataSourceImpl
+import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.CryptoRepository
+import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.PostRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.UserRepositoryImpl
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
@@ -15,9 +15,11 @@ import com.sdjic.gradnet.di.platform_di.platformModule
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.domain.repo.EventRepository
+import com.sdjic.gradnet.domain.repo.PostRepository
 import com.sdjic.gradnet.domain.repo.TestRepository
 import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
+import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
@@ -44,19 +46,20 @@ val screenModelsModule = module {
 }
 
 val userCases = module {
+    single { GetPostsUseCase(get()) }
 }
 
 val repositoryModule = module {
 
-    single<AuthRepository>{  AuthRepositoryImpl(get()) }
-    single <UserRepository>{ UserRepositoryImpl(get()) }
-    single <UserDataSource>{ UserDataSourceImpl(get()) }
-    single <EventRepository>{ EventRepositoryImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<UserRepository> { UserRepositoryImpl(get()) }
+    single<UserDataSource> { UserDataSourceImpl(get()) }
+    single<EventRepository> { EventRepositoryImpl(get()) }
+    single<PostRepository> { PostRepositoryImpl(get()) }
 
     // trying only
     single<TestRepository> { TestRepositoryImpl(testDao = get()) }
     single<CryptoRepository> { CryptoRepository(httpClient = get()) }
-    single<DummyPostRepository> { DummyPostRepository(httpClient = get()) }
 }
 
 val dispatcherModule = module {
@@ -73,7 +76,7 @@ val dataModule = module {
     }
     single { get<GradNetDB>().testDao }
     single { get<GradNetDB>().userDao }
-    single<AppCacheSetting>{ AppCacheSettingImpl()  }
+    single<AppCacheSetting> { AppCacheSettingImpl() }
 }
 
 val appModules = listOf(

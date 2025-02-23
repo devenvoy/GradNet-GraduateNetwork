@@ -44,6 +44,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,7 +56,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -75,17 +75,15 @@ import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.text.ExpandableRichText
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.core.DummyBgImage
-import com.sdjic.gradnet.presentation.core.DummyDpImage
-import com.sdjic.gradnet.presentation.core.getEmptyUserDto
 import com.sdjic.gradnet.presentation.core.model.Post
+import com.sdjic.gradnet.presentation.helper.DateTimeUtils
+import com.sdjic.gradnet.presentation.helper.DateTimeUtils.toEpochMillis
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.isScrollingUp
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
-import com.sdjic.gradnet.presentation.screens.onboarding.onboardingList
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.app_name
@@ -94,6 +92,7 @@ import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -103,9 +102,7 @@ import org.jetbrains.compose.resources.stringResource
 class PostScreen : Screen {
     @Composable
     override fun Content() {
-        AppTheme {
-            PostScreenContent()
-        }
+        AppTheme { PostScreenContent() }
     }
 
     @OptIn(ExperimentalMaterial3Api::class, InternalVoyagerApi::class)
@@ -191,20 +188,7 @@ class PostScreen : Screen {
                     data = data,
                     state = listState,
                 ) { item ->
-                    PostItem(
-                        post = Post(
-                            postId = item.id?.toLong() ?: 0,
-                            user = getEmptyUserDto(),
-                            createdAt = "1h",
-                            content = "${item.title}\n\n${item.body}",
-                            likesCount = item.reactions?.likes ?: 0,
-                            images = listOf(
-                                DummyBgImage,
-                                "https://farm4.staticflickr.com/3049/2327691528_f060ee2d1f.jpg",
-                                "https://farm4.staticflickr.com/3224/3081748027_0ee3d59fea_z_d.jpg"
-                            ),
-                        )
-                    )
+                    PostItem(item)
                 }
             }
         }
@@ -258,8 +242,6 @@ class PostScreen : Screen {
                         },
                     )
                 }
-
-
         }
     }
 
@@ -295,22 +277,33 @@ class PostScreen : Screen {
         Column(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
         ) {
+
+
+            var postedAgo by remember { mutableStateOf("Loading...") }
+
+            LaunchedEffect(post.createdAt) {
+                val localDateTime = LocalDateTime.parse(post.createdAt)
+                postedAgo =
+                    DateTimeUtils.getTimeAgoAsync(toEpochMillis(localDateTime))
+            }
+
+
             Row {
                 CircularProfileImage(
                     context = platformContext,
-                    data = DummyDpImage,
+                    data = post.userImage,
                     imageSize = 36.dp,
                     borderWidth = 0.dp
                 )
                 Column(modifier = Modifier.padding(horizontal = 6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SText(
-                            text = post.user.username,
+                            text = post.userName,
                             fontSize = 16.sp,
                             fontWeight = FontWeight(800)
                         )
                         SText(
-                            text = "  . ${post.createdAt}",
+                            text = " • $postedAgo",
                             fontSize = 14.sp,
                             fontWeight = FontWeight(400),
                             textColor = Color.Gray
@@ -365,7 +358,6 @@ class PostScreen : Screen {
                     is AsyncImagePainter.State.Success -> {
 
                         Image(
-                            contentScale = ContentScale.FillBounds,
                             painter = painterReq,
                             contentDescription = null,
                             modifier = Modifier.fillMaxWidth()
@@ -401,7 +393,7 @@ class PostScreen : Screen {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    onboardingList.forEachIndexed { index, _ ->
+                    images.forEachIndexed { index, _ ->
                         OnboardingPagerSlide(
                             isSelected = index == pagerState.currentPage,
                             selectedColor = MaterialTheme.colorScheme.primary,

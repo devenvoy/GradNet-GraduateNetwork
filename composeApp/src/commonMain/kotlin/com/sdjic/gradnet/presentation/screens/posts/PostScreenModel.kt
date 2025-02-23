@@ -4,9 +4,9 @@ import androidx.paging.PagingData
 import app.cash.paging.cachedIn
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.sdjic.gradnet.data.network.entity.response.Post
-import com.sdjic.gradnet.data.network.repo.DummyPostRepository
+import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
 import com.sdjic.gradnet.presentation.core.model.Filter
+import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PostScreenModel(
-    private val dummyPostRepository: DummyPostRepository
+    private val getPostsUseCase: GetPostsUseCase
 ) : ScreenModel {
 
     val userTypeFilters = MutableStateFlow(
@@ -43,7 +43,7 @@ class PostScreenModel(
     init {
         toggleSelectAll()
         screenModelScope.launch {
-            dummyPostRepository.getPosts()
+            getPostsUseCase(5)
                 .cachedIn(screenModelScope)
                 .collect { pagingData ->
                     _posts.value = pagingData

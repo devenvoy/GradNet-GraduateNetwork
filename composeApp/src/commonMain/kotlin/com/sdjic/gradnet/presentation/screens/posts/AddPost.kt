@@ -142,7 +142,11 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
                         colors = ButtonDefaults.buttonColors(
                             containerColor = FloatingActionButtonDefaults.containerColor,
                         ),
-                        onClick = {},
+                        onClick = {
+                            addPostScreenModel.uploadNewPost(
+                                richTextState.toMarkdown()
+                            )
+                        },
                         contentPadding = PaddingValues(horizontal = 25.dp)
                     ) {
                         Text("Post", color = Color.White)

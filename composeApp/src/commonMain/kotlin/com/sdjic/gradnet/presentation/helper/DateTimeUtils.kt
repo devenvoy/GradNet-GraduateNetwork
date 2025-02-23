@@ -41,8 +41,13 @@ object DateTimeUtils {
     }
 
     suspend fun parseDateAsync(dateString: String): LocalDateTime = withContext(Dispatchers.Default) {
-        val instant = Instant.parse(dateString)
-        return@withContext instant.toLocalDateTime(TimeZone.UTC)
-    }
+        try {
+            val instant = Instant.parse("${dateString}Z")
+            return@withContext instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
+        } catch (e: Exception) {
+            val localDateTime = LocalDateTime.parse(dateString)
+            return@withContext localDateTime
+        }
+    }
 }

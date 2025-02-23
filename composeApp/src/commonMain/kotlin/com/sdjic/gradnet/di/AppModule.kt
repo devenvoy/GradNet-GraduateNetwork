@@ -41,7 +41,7 @@ val screenModelsModule = module {
     factory { SetUpAccountViewModel(get()) }
     factory { PostScreenModel(get()) }
     factory { EventScreenModel(get()) }
-    factory { AddPostScreenModel() }
+    factory { AddPostScreenModel(get(),get()) }
     factory { JobScreenModel() }
 }
 

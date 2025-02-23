@@ -30,7 +30,7 @@ fun ExpandableRichText(
     var isExpanded by remember { mutableStateOf(false) }
     var isOverflowing by remember { mutableStateOf(false) }
 
-    val richTextState = rememberRichTextState().apply { setHtml(text) }
+    val richTextState = rememberRichTextState().apply { setMarkdown(text) }
 
     Column(modifier = modifier) {
         RichText(

@@ -77,6 +77,7 @@ import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils
+import com.sdjic.gradnet.presentation.helper.DateTimeUtils.parseDateAsync
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils.toEpochMillis
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
@@ -92,7 +93,6 @@ import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -282,7 +282,7 @@ class PostScreen : Screen {
             var postedAgo by remember { mutableStateOf("Loading...") }
 
             LaunchedEffect(post.createdAt) {
-                val localDateTime = LocalDateTime.parse(post.createdAt)
+                val localDateTime = parseDateAsync(post.createdAt)
                 postedAgo =
                     DateTimeUtils.getTimeAgoAsync(toEpochMillis(localDateTime))
             }

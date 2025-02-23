@@ -69,6 +69,8 @@ import com.sdjic.gradnet.presentation.composables.images.RoundedCornerImage
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyDpImage
+import com.sdjic.gradnet.presentation.helper.UiState
+import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.VerticalSlideTransition
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.theme.errorColor
@@ -77,6 +79,8 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Camera
 import network.chaintech.cmpimagepickncrop.CMPImagePickNCropDialog
 import network.chaintech.cmpimagepickncrop.imagecropper.rememberImageCropper
+
+typealias AddPostState = UiState<String>
 
 @OptIn(ExperimentalVoyagerApi::class)
 class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
@@ -99,6 +103,7 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
         val imageCropper = rememberImageCropper()
         var openImagePicker by remember { mutableStateOf(false) }
         val selectedImages by addPostScreenModel.selectedImages.collectAsState()
+        val uiState by addPostScreenModel.uiState.collectAsState()
 
         Scaffold(
             modifier = Modifier
@@ -167,6 +172,12 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
                     )
                 }
             }
+
+            UiStateHandler(
+                uiState = uiState,
+                onErrorShowed = {},
+                content = { onDismiss() }
+            )
 
             if (showExitDialog) {
                 AlertDialog(

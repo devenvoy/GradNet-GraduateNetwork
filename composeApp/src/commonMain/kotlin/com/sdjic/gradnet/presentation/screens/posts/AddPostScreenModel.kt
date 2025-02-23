@@ -3,12 +3,14 @@ package com.sdjic.gradnet.presentation.screens.posts
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.data.network.utils.onError
+import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.di.platform_di.toByteArray
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.PostRepository
+import com.sdjic.gradnet.presentation.helper.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +26,9 @@ class AddPostScreenModel(
     private val _selectedImages = MutableStateFlow<List<ImageBitmap>>(emptyList())
     val selectedImages: StateFlow<List<ImageBitmap>> = _selectedImages.asStateFlow()
 
-    val message = MutableSharedFlow<Pair<String, Boolean>?>()
+    private val _uiState = MutableStateFlow<AddPostState>(UiState.Idle)
+    val uiState = _uiState.asStateFlow()
+
 
     fun onImageSelected(image: ImageBitmap) {
         _selectedImages.update { it + image }
@@ -34,14 +38,12 @@ class AddPostScreenModel(
         _selectedImages.update { it - image }
     }
 
-    fun showMessage(message: String, isSuccessful: Boolean) {
-        this.message.tryEmit(message to isSuccessful)
-    }
 
     fun uploadNewPost(content: String) {
         screenModelScope.launch {
+            _uiState.update { UiState.Loading }
             if (content.isEmpty() or content.isBlank()) {
-                showMessage("Message cannot be empty", false)
+                _uiState.update{ UiState.Error("Message can't be empty") }
                 return@launch
             }
             val imageBytes = withContext(Dispatchers.IO){
@@ -52,7 +54,11 @@ class AddPostScreenModel(
                 postContent = content,
                 location = "",
                 files = imageBytes
-            )
+            ).onSuccess {r->
+                _uiState.update { UiState.Success(r.detail) }
+            }.onError {e->
+                _uiState.update { UiState.Error(e.detail) }
+            }
         }
     }
 }

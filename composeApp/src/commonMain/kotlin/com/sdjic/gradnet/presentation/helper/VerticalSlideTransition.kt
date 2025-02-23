@@ -8,9 +8,10 @@ import androidx.compose.ui.unit.IntOffset
 import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.transitions.ScreenTransition
+import com.maxkeppeker.sheets.core.utils.JvmSerializable
 
 @OptIn(ExperimentalVoyagerApi::class)
-class VerticalSlideTransition : ScreenTransition {
+class VerticalSlideTransition : ScreenTransition, JvmSerializable {
 
     override fun enter(lastEvent: StackEvent): EnterTransition {
         return slideIn { size ->

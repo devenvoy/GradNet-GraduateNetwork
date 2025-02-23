@@ -25,6 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
@@ -46,6 +49,8 @@ import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.helper.shimmerLoadingAnimation
 import com.sdjic.gradnet.presentation.theme.AppTheme
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
+import network.chaintech.sdpcomposemultiplatform.ssp
 
 class EventScreen : Screen {
     @Composable
@@ -166,9 +171,14 @@ class EventScreen : Screen {
                                 text = banners[page].eventTitle ?: "",
                                 textColor = MaterialTheme.colorScheme.background
                             )
-                            SText(
+                            Text(
                                 text = banners[page].description ?: "",
-                                textColor = MaterialTheme.colorScheme.background.copy(.7f)
+                                color = MaterialTheme.colorScheme.background.copy(.7f),
+                                fontFamily = displayFontFamily(),
+                                fontSize = 10.ssp,
+                                lineHeight = TextUnit.Unspecified,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 2
                             )
                         }
                     }

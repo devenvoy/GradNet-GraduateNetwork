@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
@@ -24,13 +23,14 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.transitions.ScreenTransition
 import com.sdjic.gradnet.data.network.entity.dto.EventDto
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.filter.CustomImageChip
@@ -40,12 +40,14 @@ import com.sdjic.gradnet.presentation.composables.text.Label
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
+import com.sdjic.gradnet.presentation.helper.FadeTransition
 import com.sdjic.gradnet.presentation.helper.parallaxLayoutModifier
 import com.sdjic.gradnet.presentation.theme.errorColor
 
+@OptIn(ExperimentalVoyagerApi::class)
 class EventDetailScreen(
     private val eventDto: EventDto
-) : Screen {
+) : Screen , ScreenTransition by FadeTransition() {
     @Composable
     override fun Content() {
         EventDetailScreenContent()

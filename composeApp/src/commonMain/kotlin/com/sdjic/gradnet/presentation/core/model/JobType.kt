@@ -6,4 +6,5 @@ sealed class JobType(val type: String) {
     data object Remote : JobType("Remote")
     data object Internship : JobType("Internship")
     data object Contract : JobType("Contract")
+    data object Hybrid : JobType("Hybrid")
 }

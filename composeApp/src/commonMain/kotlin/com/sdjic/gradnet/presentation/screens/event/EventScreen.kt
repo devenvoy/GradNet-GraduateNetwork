@@ -31,31 +31,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.data.network.entity.dto.EventDto
 import com.sdjic.gradnet.presentation.composables.images.BannerWidget
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.helper.AutoSwipePagerEffect
+import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.helper.shimmerLoadingAnimation
+import com.sdjic.gradnet.presentation.theme.AppTheme
 
 class EventScreen : Screen {
     @Composable
     override fun Content() {
-        EventScreenContent()
+        AppTheme { EventScreenContent() }
     }
 
     @Composable
     fun EventScreenContent() {
         val eventScreenModel = koinScreenModel<EventScreenModel>()
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalRootNavigator.current
         val list by eventScreenModel.eventList.collectAsStateWithLifecycle()
 
         Scaffold { pVal ->
@@ -138,8 +139,14 @@ class EventScreen : Screen {
                 verticalAlignment = Alignment.Top,
             ) { page ->
                 Card(
-                    modifier = Modifier.height(if (pagerState.currentPage == page) 220.dp else 200.dp)
+                    modifier = Modifier.height(if (pagerState.currentPage == page) 220.dp else 190.dp)
                         .offset(y = if (pagerState.currentPage == page) (-10).dp else 0.dp)
+                        .shadow(
+                            20.dp,
+                            CardDefaults.shape,
+                            ambientColor = MaterialTheme.colorScheme.onBackground,
+                            spotColor = MaterialTheme.colorScheme.onBackground
+                        )
                 ) {
                     Box(
                         contentAlignment = Alignment.BottomStart

@@ -1,18 +1,19 @@
 package com.sdjic.gradnet.presentation.core.model
 
 data class Job(
-    val id: String,
-    val title: String,
-    val company: String,
-    val location: String,
-    val salary: String?, // Nullable if salary is not mentioned
+    val id: String,    // Unique identifier for the job
+    val title: String,  //
+    val company: String, //
     val jobType: JobType, // Sealed class for job types
+    val location: String,  //
     val description: String,
+    val salary: String?, // Nullable if salary is not mentioned
     val requirements: List<String>, // List of job requirements
     val benefits: List<String>, // List of perks/benefits
     val postedDate: String,
     val applyLink: String, // URL to apply
     val companyLogo: String?, // URL of company logo
+    val category: String,
     val experienceRequired: String, // Experience needed (e.g., 2+ years)
     val skills: List<String> // Required skills
 )

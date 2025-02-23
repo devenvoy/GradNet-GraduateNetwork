@@ -1,34 +1,16 @@
 package com.sdjic.gradnet.presentation.screens.home
 
-import app.cash.paging.PagingData
-import app.cash.paging.cachedIn
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.sdjic.gradnet.data.network.entity.response.CryptoResponse
-import com.sdjic.gradnet.data.network.repo.CryptoRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import com.sdjic.gradnet.domain.AppCacheSetting
 
 class HomeScreenViewModel(
-    private val cryptoRepository: CryptoRepository
+    private val pref: AppCacheSetting,
 ) : ScreenModel {
 
-    private val _coinList = MutableStateFlow<PagingData<CryptoResponse.Coin>>(PagingData.empty())
-    val coinList = _coinList.stateIn(
-        scope = screenModelScope,
-        started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = PagingData.empty()
-    )
 
-    init {
-        screenModelScope.launch {
-            cryptoRepository.getCryptos("INR")
-                .cachedIn(screenModelScope)
-                .collect { pagingData ->
-                    _coinList.value = pagingData
-                }
+    fun appLogout() {
+        pref.logout {
+
         }
     }
 }

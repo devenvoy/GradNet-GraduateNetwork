@@ -86,6 +86,7 @@ import com.sdjic.gradnet.presentation.helper.isScrollingUp
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
 import com.sdjic.gradnet.presentation.screens.onboarding.onboardingList
+import com.sdjic.gradnet.presentation.theme.AppTheme
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.app_name
 import gradnet_graduatenetwork.composeapp.generated.resources.heart
@@ -102,7 +103,9 @@ import org.jetbrains.compose.resources.stringResource
 class PostScreen : Screen {
     @Composable
     override fun Content() {
-        PostScreenContent()
+        AppTheme {
+            PostScreenContent()
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class, InternalVoyagerApi::class)

@@ -22,6 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.presentation.composables.filter.FilterChipDropdown
 import com.sdjic.gradnet.presentation.core.model.Job
 import com.sdjic.gradnet.presentation.core.model.JobType
@@ -40,12 +42,19 @@ class JobScreen : Screen {
 
     @Composable
     private fun JobScreenContent() {
-        CryptoListContent()
+        val navigator = LocalNavigator.currentOrThrow
+        CryptoListContent(
+            navigateToDetail = {
+                navigator.push(JobDetailScreen(it))
+            }
+        )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun CryptoListContent() {
+    fun CryptoListContent(
+        navigateToDetail: (Job) -> Unit
+    ) {
         val viewModel = koinScreenModel<JobScreenModel>()
         val scrollBehavior = LocalScrollBehavior.current
 
@@ -107,7 +116,7 @@ class JobScreen : Screen {
                         JobItem(
                             job = sampleJobs.first()
                         ) {
-
+                            navigateToDetail(sampleJobs.first())
                         }
                     }
                 }
@@ -171,6 +180,7 @@ val sampleJobs = listOf(
         applyLink = "https://careers.google.com",
         companyLogo = "https://logo.clearbit.com/google.com",
         experienceRequired = "3+ years",
-        skills = listOf("Kotlin", "Jetpack Compose", "MVVM")
+        skills = listOf("Kotlin", "Jetpack Compose", "MVVM"),
+        category = ""
     )
 )

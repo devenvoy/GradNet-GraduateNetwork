@@ -8,9 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.composables.text.Title
@@ -32,13 +30,9 @@ fun TopicsList(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 8.dp)
-            .shadow(
-                elevation = 8.dp,
-                shape = MaterialTheme.shapes.medium,
-                spotColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.08f)
-            ),
-        color = Color(0xFFD9E2FF),
+            .padding(top = 8.dp),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

@@ -41,7 +41,7 @@ fun FilterChipDropdown(
         if (searchQuery.isEmpty()) return
 
         TopicDropdown(
-            modifier = modifier,
+            modifier = Modifier,
             selectedTopics = selectedTopics,
             onSelectedTopicsChange = onSelectedTopicChange,
             onAddingTopicChange = { isAddingTopic = it },

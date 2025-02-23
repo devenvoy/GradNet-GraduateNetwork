@@ -6,7 +6,8 @@ import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.CryptoRepository
 import com.sdjic.gradnet.data.network.repo.DummyPostRepository
 import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
-import com.sdjic.gradnet.data.network.repo.TestRepositoryImpl
+import com.sdjic.gradnet.data.local.room.TestRepositoryImpl
+import com.sdjic.gradnet.data.local.room.UserDataSourceImpl
 import com.sdjic.gradnet.data.network.repo.UserRepositoryImpl
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
 import com.sdjic.gradnet.di.platform_di.getHttpClient
@@ -15,6 +16,7 @@ import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.domain.repo.EventRepository
 import com.sdjic.gradnet.domain.repo.TestRepository
+import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
@@ -48,6 +50,7 @@ val repositoryModule = module {
 
     single<AuthRepository>{  AuthRepositoryImpl(get()) }
     single <UserRepository>{ UserRepositoryImpl(get()) }
+    single <UserDataSource>{ UserDataSourceImpl(get()) }
     single <EventRepository>{ EventRepositoryImpl(get()) }
 
     // trying only
@@ -69,6 +72,7 @@ val dataModule = module {
         getDatabaseBuilder().build().setQueryCoroutineContext(Dispatchers.IO).build()
     }
     single { get<GradNetDB>().testDao }
+    single { get<GradNetDB>().userDao }
     single<AppCacheSetting>{ AppCacheSettingImpl()  }
 }
 

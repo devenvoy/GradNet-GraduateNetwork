@@ -27,18 +27,17 @@ class GetPostsUseCase(
     }
 
     private fun postDtoToPost(postDto: PostDto?): Post? {
-        if (postDto == null) {
-            return null
-        }
-        return Post(
-            postId = postDto.postId,
-            userId = postDto.userId.orEmpty(),
-            userName = postDto.userName.orEmpty(),
-            userImage = postDto.userImage.orEmpty(),
-            content = postDto.description,
-            likesCount = 0,
-            images = postDto.photos?.filterNotNull() ?: emptyList(),
-            createdAt = postDto.createdAt
-        )
+        return if (postDto != null)
+            Post(
+                postId = postDto.postId,
+                userId = postDto.userId.orEmpty(),
+                userName = postDto.userName,
+                userImage = postDto.userProfilePic.orEmpty(),
+                content = postDto.description,
+                likesCount = 0,
+                images = postDto.photos?.filterNotNull() ?: emptyList(),
+                createdAt = postDto.createdAt
+            )
+        else null
     }
 }

@@ -11,6 +11,7 @@ import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,12 +44,17 @@ class PostScreenModel(
     init {
         toggleSelectAll()
         screenModelScope.launch {
-            getPostsUseCase(5)
-                .cachedIn(screenModelScope)
-                .collect { pagingData ->
-                    _posts.value = pagingData
-                }
+           refreshPosts()
         }
+    }
+
+    suspend fun refreshPosts() {
+        getPostsUseCase(5)
+            .cachedIn(screenModelScope)
+            .distinctUntilChanged()
+            .collect { pagingData ->
+                _posts.value = pagingData
+            }
     }
 
     fun onAction(action: PostScreenAction) = screenModelScope.launch {

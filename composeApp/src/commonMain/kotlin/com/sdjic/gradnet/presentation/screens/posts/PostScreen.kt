@@ -46,6 +46,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,6 +61,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
+import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
@@ -115,10 +118,24 @@ class PostScreen : Screen {
         val scrollBehavior = LocalScrollBehavior.current
         val rootNavigator = LocalRootNavigator.current
 
-        var isRefreshing by remember { mutableStateOf(false) }
-
+        var hasLoadedOnce by remember { mutableStateOf(false) }
         val postScreenModel = koinScreenModel<PostScreenModel>()
-        val data = postScreenModel.posts.collectAsLazyPagingItems()
+        val data: LazyPagingItems<Post> = postScreenModel.posts.collectAsLazyPagingItems()
+
+
+        val isRefreshing by remember {
+            derivedStateOf {
+                if (!hasLoadedOnce) false
+                else data.loadState.refresh is LoadState.Loading
+            }
+        }
+
+        // Track when data is first loaded
+        LaunchedEffect(data.loadState) {
+            if (data.loadState.refresh is LoadState.NotLoading) {
+                hasLoadedOnce = true
+            }
+        }
 
         BackHandler(enabled = listState.firstVisibleItemIndex > 5) {
             scope.launch {
@@ -157,11 +174,9 @@ class PostScreen : Screen {
                     dragHandle = null,
                     containerColor = MaterialTheme.colorScheme.background,
                     onDismissRequest = {
-                        isRefreshing = true
                         scope.launch { modalSheetState.hide() }
                         postScreenModel.onAction(PostScreenAction.OnFilterSheetStateChange(false))
                         postScreenModel.onAction(PostScreenAction.OnUpdateFilter)
-                        isRefreshing = false
                     }
                 ) {
                     FilterBottomSheetContent(
@@ -175,13 +190,7 @@ class PostScreen : Screen {
                 modifier = Modifier.padding(pVal),
                 isRefreshing = isRefreshing,
                 state = pullToRefreshState,
-                onRefresh = {
-                    scope.launch {
-                        isRefreshing = true
-                        delay(2000L)
-                        isRefreshing = false
-                    }
-                }
+                onRefresh = { data.refresh() }
             ) {
                 PagingListUI(
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

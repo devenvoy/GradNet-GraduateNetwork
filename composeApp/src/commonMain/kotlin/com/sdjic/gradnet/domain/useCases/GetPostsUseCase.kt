@@ -31,7 +31,7 @@ class GetPostsUseCase(
             Post(
                 postId = postDto.postId,
                 userId = postDto.userId.orEmpty(),
-                userName = postDto.userName,
+                userName = postDto.userName.orEmpty(),
                 userImage = postDto.userProfilePic.orEmpty(),
                 content = postDto.description,
                 likesCount = 0,

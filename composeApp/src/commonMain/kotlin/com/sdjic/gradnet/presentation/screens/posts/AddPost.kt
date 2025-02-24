@@ -63,6 +63,7 @@ import coil3.compose.LocalPlatformContext
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
+import com.sdjic.gradnet.presentation.composables.UploadDialog
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.images.RoundedCornerImage
@@ -176,7 +177,12 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
             UiStateHandler(
                 uiState = uiState,
                 onErrorShowed = {},
-                content = { onDismiss() }
+                content = {  }
+            )
+
+            UploadDialog(
+                state = addPostScreenModel.uploadDialogState.collectAsState().value,
+                onDismiss = onDismiss
             )
 
             if (showExitDialog) {

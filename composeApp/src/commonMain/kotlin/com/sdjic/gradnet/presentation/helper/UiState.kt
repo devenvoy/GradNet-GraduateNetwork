@@ -25,6 +25,15 @@ sealed class UiState<out T> {
     ) : UiState<Nothing>()
 }
 
+sealed class UploadDialogState {
+    data object Idle : UploadDialogState() // Dialog hidden
+    data object Starting : UploadDialogState() // Shows "Starting upload..."
+    data class Progress(val progress: Float) : UploadDialogState() // Shows progress bar
+    data class Success(val message: String) : UploadDialogState() // Shows success message
+    data class Error(val error: String) : UploadDialogState() // Shows error message
+}
+
+
 typealias LoginUiState = UiState<Boolean>
 typealias SignUpUiState = UiState<Boolean>
 typealias SetUpOrEditUiState = UiState<String>

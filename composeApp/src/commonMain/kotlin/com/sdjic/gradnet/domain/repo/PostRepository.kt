@@ -5,6 +5,7 @@ import com.sdjic.gradnet.data.network.entity.response.PostResponse
 import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.utils.Result
+import io.ktor.client.content.ProgressListener
 
 interface PostRepository {
     suspend fun getPosts(page: Int, perPage: Int): Result<ServerResponse<PostResponse>, ServerError>
@@ -17,6 +18,7 @@ interface PostRepository {
         accessToken: String,
         postContent: String,
         location: String,
-        files: List<ByteArray>
+        files: List<ByteArray>,
+        listener: ProgressListener?
     ): Result<ServerResponse<PostDto>, ServerError>
 }

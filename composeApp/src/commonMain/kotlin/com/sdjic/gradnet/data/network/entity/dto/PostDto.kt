@@ -11,8 +11,32 @@ data class PostDto(
     @SerialName("location") val location: String?,
     @SerialName("photos") val photos: List<String?>?,
     @SerialName("created_at") val createdAt: String,
-    @SerialName("user_id") val userId: String? = null,
-    @SerialName("user_name") val userName: String,
-    @SerialName("user_profile_pic") val userProfilePic: String?,
-    @SerialName("user_role") val userRole: String?
-)
+) {
+    @SerialName("user_id")
+    var userId: String? = null
+
+    @SerialName("user_name")
+    var userName: String? = null
+
+    @SerialName("user_profile_pic") var userProfilePic: String? = null
+
+    @SerialName("user_role") var userRole: String? = null
+
+
+    constructor(
+        postId: String,
+        description: String,
+        location: String?,
+        photos: List<String?>?,
+        createdAt: String,
+        userId: String?,
+        userName: String?,
+        userProfilePic: String?,
+        userRole: String?
+    ) : this(postId, description, location, photos, createdAt){
+        this.userId = userId
+        this.userName = userName
+        this.userProfilePic = userProfilePic
+        this.userRole = userRole
+    }
+}

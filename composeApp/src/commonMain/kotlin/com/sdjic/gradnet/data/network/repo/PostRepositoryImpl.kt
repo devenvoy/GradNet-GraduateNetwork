@@ -9,6 +9,8 @@ import com.sdjic.gradnet.data.network.utils.BaseGateway
 import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.domain.repo.PostRepository
 import io.ktor.client.HttpClient
+import io.ktor.client.content.ProgressListener
+import io.ktor.client.plugins.onUpload
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
@@ -56,7 +58,8 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
         accessToken: String,
         postContent: String,
         location: String,
-        files: List<ByteArray>
+        files: List<ByteArray>,
+        listener: ProgressListener?
     ): Result<ServerResponse<PostDto>, ServerError> {
         return tryToExecute<ServerResponse<PostDto>> {
             post("$baseUrl/posts/create") {
@@ -81,6 +84,7 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
                         }
                     )
                 )
+                onUpload(listener)
             }
         }
     }

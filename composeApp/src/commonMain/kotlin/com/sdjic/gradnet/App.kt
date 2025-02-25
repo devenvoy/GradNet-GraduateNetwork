@@ -1,6 +1,7 @@
 package com.sdjic.gradnet
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,15 @@ fun App() {
                 GoogleAuthCredentials("352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com")
             )
             authReady = true
+        }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                /*  coroutineScope.launch {
+                      updateStatusApi(false) Call your API here
+                  }
+                  */
+            }
         }
 
         KoinApplication(

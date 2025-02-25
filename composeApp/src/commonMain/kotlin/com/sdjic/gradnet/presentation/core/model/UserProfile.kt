@@ -8,7 +8,6 @@ import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 data class UserProfile(
 
     // base user
-    val id: String = "",
     val userName: String = "",
     val email: String = "",
     val userId: String = "",
@@ -21,15 +20,15 @@ data class UserProfile(
     val createdAt : String? = null,
     val updatedAt : String? = null,
 
-    // same for alumni and faculty
-    val dob : String? = null,
-    val gender : String? = null,
-    val skills: List<String>? = null,
-    val languages: List<String>? = null,
-    val educations: List<EducationModel>? = null,
+    // Same for alumni and faculty
+    val dob: String? = null,
+    val gender: String? = null,
+    val skills: List<String>? = emptyList(),
+    val languages: List<String>? = emptyList(),
+    val educations: List<EducationModel>? = emptyList(),
 
-    // same for all user role
-    val name : String = "",
+    // Same for all user roles
+    val name: String = "",
     val backgroundPic: String? = null,
     val profilePic: String? = null,
     val about: String = "",
@@ -37,7 +36,14 @@ data class UserProfile(
     val showPersonalDetails: Boolean = false,
     val address: String? = null,
     val socialUrls: SocialUrls? = null,
-    val experiences: List<ExperienceModel>? = null,
+    val experiences: List<ExperienceModel>? = emptyList(),
+
+    // Newly added fields
+    val website: String? = null,
+    val industryType: String? = null,
+    val department: String? = null,
+    val designation: String? = null,
+    val employee: String? = null,
 )
 
 fun UserProfile.toBasicState(): BasicState {

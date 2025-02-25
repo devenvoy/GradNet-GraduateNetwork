@@ -3,10 +3,15 @@ package com.sdjic.gradnet.presentation.screens.accountSetup
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.data.network.utils.toEducationTable
+import com.sdjic.gradnet.data.network.utils.toExperienceTable
+import com.sdjic.gradnet.data.network.utils.toUrlTable
 import com.sdjic.gradnet.data.network.utils.toUserProfile
 import com.sdjic.gradnet.domain.AppCacheSetting
+import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.core.model.toBasicState
@@ -30,7 +35,8 @@ import kotlinx.coroutines.launch
 import org.koin.mp.KoinPlatform.getKoin
 
 class SetUpAccountViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userDataSource: UserDataSource
 ) : ScreenModel {
 
     private val _basicState = MutableStateFlow(BasicState())
@@ -62,17 +68,27 @@ class SetUpAccountViewModel(
             _userData.value = UiState.Loading
             val result = userRepository.fetchUser(prefs.accessToken)
             result.onSuccess { user ->
-                user.value?.let { updateUserData(user.value.toUserProfile()) }
+                user.value?.let { updateUserPreference(user.value) }
             }.onError { _userData.value = UiState.Error(it.detail) }
         }
     }
 
-    private fun updateUserData(user: UserProfile) {
+    private fun updateUserDataState(user: UserProfile) {
         _basicState.update { user.toBasicState() }
         _educationState.update { user.toEducationState() }
         _professionState.update { user.toProfessionState() }
         _userData.value = UiState.Success(user)
         _isVerified.value = user.isVerified
+    }
+
+    suspend fun updateUserPreference(user: UserProfileResponse) {
+        val userProfile = user.toUserProfile()
+        updateUserDataState(userProfile)
+        prefs.isVerified = user.verified
+        prefs.saveUserProfile(userProfile)
+        userDataSource.upsertAllUrls(user.urls.map { it.toUrlTable() })
+        userDataSource.upsertAllEducations(user.education.map { it.toEducationTable() })
+        userDataSource.upsertAllExperiences(user.experience.map { it.toExperienceTable() })
     }
 
     fun onBasicAction(basicScreenAction: BasicScreenAction) {
@@ -154,7 +170,7 @@ class SetUpAccountViewModel(
                 }
 
                 is EducationScreenAction.OnRemoveEducation -> {
-                    if(_educationState.value.eductionList.isEmpty()) return@launch
+                    if (_educationState.value.eductionList.isEmpty()) return@launch
                     val updatedEducationList =
                         _educationState.value.eductionList.toMutableList().apply {
                             removeAt(educationScreenAction.index)
@@ -234,7 +250,7 @@ class SetUpAccountViewModel(
                 }
 
                 is ProfessionScreenAction.OnRemoveExperience -> {
-                    if(_professionState.value.experienceList.isEmpty()) return@launch
+                    if (_professionState.value.experienceList.isEmpty()) return@launch
                     val updatedExperiences =
                         _professionState.value.experienceList.toMutableList().apply {
                             removeAt(action.index)
@@ -301,9 +317,7 @@ class SetUpAccountViewModel(
             )
             result.onSuccess { r ->
                 r.value?.let { user ->
-                    updateUserData(user.toUserProfile())
-                    prefs.accessToken = r.value.accessToken
-                    prefs.isVerified = r.value.verified
+                    updateUserPreference(user)
                     _setUpOrEditState.update { UiState.Success(r.detail) }
                     onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
                 }
@@ -342,7 +356,8 @@ class SetUpAccountViewModel(
         ).apply {
             onSuccess { r ->
                 r.value?.let { user ->
-                    updateUserData(user.toUserProfile())
+                    prefs.accessToken = user.accessToken
+                    updateUserDataState(user.toUserProfile())
                     _setUpOrEditState.update { UiState.Success(r.detail) }
                 }
             }

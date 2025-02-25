@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "education_table")
 data class EducationTable(
-    @PrimaryKey val id: Int = 0,
+    @PrimaryKey val id: Long = 0,
     val schoolName: String = "",
     val degree: String? = null,
     val field: String? = null,

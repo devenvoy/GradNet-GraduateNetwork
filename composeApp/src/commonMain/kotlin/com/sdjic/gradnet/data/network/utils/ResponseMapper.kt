@@ -1,5 +1,8 @@
 package com.sdjic.gradnet.data.network.utils
 
+import com.sdjic.gradnet.data.local.entity.EducationTable
+import com.sdjic.gradnet.data.local.entity.ExperienceTable
+import com.sdjic.gradnet.data.local.entity.UrlTable
 import com.sdjic.gradnet.data.network.entity.dto.EducationDto
 import com.sdjic.gradnet.data.network.entity.dto.ExperienceDto
 import com.sdjic.gradnet.data.network.entity.dto.URLDto
@@ -38,12 +41,29 @@ fun ExperienceDto.toExperienceModel(): ExperienceModel {
 }
 
 
+fun List<URLDto>.toSocialUrls(): SocialUrls {
+    val linkedIn = this.find { it.type.equals("linkedin", ignoreCase = true) }?.url
+    val github = this.find { it.type.equals("github", ignoreCase = true) }?.url
+    val twitter = this.find { it.type.equals("twitter", ignoreCase = true) }?.url
+    val otherUrls = this.filterNot {
+        it.type.equals("linkedin", ignoreCase = true) ||
+                it.type.equals("github", ignoreCase = true) ||
+                it.type.equals("twitter", ignoreCase = true)
+    }.map { it.url }
+
+    return SocialUrls(
+        linkedIn = linkedIn,
+        github = github,
+        twitter = twitter,
+        otherUrls = otherUrls
+    )
+}
+
 fun UserProfileResponse.toUserProfile(): UserProfile {
     return UserProfile(
-        id = this.id,
+        userId = this.id,
         userName = this.name,
         email = this.email,
-        userId = this.id,
         verificationId = (this.verifyId ?: "").toString(),
         userRole = UserRole.getUserRole(this.role),
         isVerified = this.verified,
@@ -65,25 +85,46 @@ fun UserProfileResponse.toUserProfile(): UserProfile {
         showPersonalDetails = false,
         address = this.address,
         socialUrls = this.urls.takeIf { it.isNotEmpty() }?.toSocialUrls(),
-        experiences = this.experience.map { it.toExperienceModel() }.takeIf { it.isNotEmpty() }
+        experiences = this.experience.map { it.toExperienceModel() }.takeIf { it.isNotEmpty() },
+        website = this.website,
+        industryType = this.industryType,
+        department = this.department,
+        designation = this.designation,
+        employee = this.employee,
     )
 }
 
 
-fun List<URLDto>.toSocialUrls(): SocialUrls {
-    val linkedIn = this.find { it.type.equals("linkedin", ignoreCase = true) }?.url
-    val github = this.find { it.type.equals("github", ignoreCase = true) }?.url
-    val twitter = this.find { it.type.equals("twitter", ignoreCase = true) }?.url
-    val otherUrls = this.filterNot {
-        it.type.equals("linkedin", ignoreCase = true) ||
-                it.type.equals("github", ignoreCase = true) ||
-                it.type.equals("twitter", ignoreCase = true)
-    }.map { it.url }
+fun URLDto.toUrlTable() : UrlTable{
+     return UrlTable(
+        id = 0,
+        type = type,
+        url = url
+    )
+}
 
-    return SocialUrls(
-        linkedIn = linkedIn,
-        github = github,
-        twitter = twitter,
-        otherUrls = otherUrls
+fun EducationDto.toEducationTable() : EducationTable{
+    return EducationTable(
+        id = id,
+        schoolName = schoolName,
+        degree = degree,
+        field = fieldOfStudy,
+        location = location,
+        description = description,
+        startDate = startDate,
+        endDate = endDate
+    )
+}
+
+fun ExperienceDto.toExperienceTable() : ExperienceTable{
+    return ExperienceTable(
+        id = id,
+        title = jobTitle,
+        type = jobType,
+        company = companyName,
+        location = location,
+        description = jobDescription,
+        startDate = startDate,
+        endDate = endDate
     )
 }

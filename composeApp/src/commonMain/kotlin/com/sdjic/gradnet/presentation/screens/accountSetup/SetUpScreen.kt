@@ -95,7 +95,7 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
             val scope = rememberCoroutineScope()
             Box(
                 modifier = Modifier.padding(sPad)
-            ){
+            ) {
                 UiStateHandler(
                     uiState = setUpAccountViewModel.userData.collectAsState().value,
                     content = { userProfile ->
@@ -138,19 +138,24 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                 .align(Alignment.BottomCenter)
                                 .padding(16.sdp)
                                 .fillMaxWidth()
-                                .shadow(4.dp,RoundedCornerShape(8.sdp),true,MaterialTheme.colorScheme.primary),
+                                .shadow(
+                                    4.dp,
+                                    RoundedCornerShape(8.sdp),
+                                    true,
+                                    MaterialTheme.colorScheme.primary
+                                ),
                             contentPadding = PaddingValues(vertical = 10.sdp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer
                             ),
                             onClick = {
-                                if (isEditProfile) navigator.pop()
-                                else {
-                                    if (userProfile.isVerified) {
-                                        navigator.replace(HomeScreen())
-                                    } else {
-                                        setUpAccountViewModel.showErrorState("Please verify to proceed")
-                                    }
+
+                                setUpAccountViewModel.updateUserProfile()
+                                if (userProfile.isVerified) {
+                                    if (!isEditProfile) navigator.replace(HomeScreen())
+//                                    else navigator.pop()
+                                } else {
+                                    setUpAccountViewModel.showErrorState("Please verify to proceed")
                                 }
                             }
                         ) {

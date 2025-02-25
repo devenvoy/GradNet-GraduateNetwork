@@ -33,6 +33,11 @@ class AppCacheSettingImpl : AppCacheSetting {
         set(value) {
             settings[SettingStorageKeys.IS_VERIFIED.key] = value
         }
+    override var firstInitialized: Boolean
+        get() = settings[SettingStorageKeys.FIRST_INITIALIZED.key] ?: false
+        set(value) {
+            settings[SettingStorageKeys.FIRST_INITIALIZED.key] = value
+        }
 
     override var userRole: String
         get() = settings[SettingStorageKeys.ROLE.key] ?: UserRole.Alumni.name

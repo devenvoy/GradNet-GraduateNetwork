@@ -8,15 +8,17 @@ interface AppCacheSetting {
 
     val isLoggedIn: Boolean
 
-    var userId : String
+    var userId: String
 
-    var isVerified : Boolean
+    var isVerified: Boolean
 
-    var userRole : String
+    var firstInitialized: Boolean
+
+    var userRole: String
 
     fun saveUserProfile(userProfile: UserProfile)
 
     fun getUserProfile(): UserProfile
 
-    fun logout(callBack:()->Unit)
+    fun logout(callBack: () -> Unit)
 }

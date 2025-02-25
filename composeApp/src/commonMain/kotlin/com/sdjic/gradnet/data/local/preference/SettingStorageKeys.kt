@@ -20,6 +20,7 @@ enum class SettingStorageKeys {
     ROLE,
     PLUS_MEMBER,
     IS_VERIFIED,
+    FIRST_INITIALIZED,
     VERIFIED_ID,
     IS_ACTIVE,
     LANGUAGES,

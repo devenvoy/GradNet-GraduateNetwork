@@ -64,24 +64,38 @@ class SetUpAccountViewModel(
     private val prefs = getKoin().get<AppCacheSetting>()
 
     init {
-        fetchUserDetails()
+        loadUserProfile()
     }
 
-    fun fetchUserDetails(isEditState: Boolean = false) {
+    fun loadUserProfile() {
         screenModelScope.launch {
             _userData.value = UiState.Loading
-            var result = prefs.getUserProfile()
-            val educationList = userDataSource.getAllEducations().map { it.toEducationModel() }
-            val experienceList = userDataSource.getAllExperiences().map { it.toExperienceModel() }
-            val urlList = userDataSource.getAllUrls().map { it.toUrlDto() }
+            try {
+                var result = prefs.getUserProfile()
+                if (!prefs.isVerified or !prefs.firstInitialized) {
+                    userRepository.fetchUser(prefs.accessToken).onSuccess {
+                        it.value?.let { up ->
+                            prefs.firstInitialized = true
+                            updateUserPreference(up)
+                            result = up.toUserProfile()
+                        }
+                    }
+                }
+                val educationList = userDataSource.getAllEducations().map { it.toEducationModel() }
+                val experienceList =
+                    userDataSource.getAllExperiences().map { it.toExperienceModel() }
+                val urlList = userDataSource.getAllUrls().map { it.toUrlDto() }
 
-            result = result.copy(
-                educations = educationList,
-                experiences = experienceList,
-                socialUrls = urlList.toSocialUrls()
-            )
+                result = result.copy(
+                    educations = educationList,
+                    experiences = experienceList,
+                    socialUrls = urlList.toSocialUrls()
+                )
 
-            updateUserDataState(user = result)
+                updateUserDataState(user = result)
+            } catch (e: Exception) {
+                _userData.value = UiState.Error(e.message)
+            }
         }
     }
 
@@ -94,13 +108,17 @@ class SetUpAccountViewModel(
     }
 
     suspend fun updateUserPreference(user: UserProfileResponse) {
-        val userProfile = user.toUserProfile()
-        updateUserDataState(userProfile)
-        prefs.isVerified = user.verified
-        prefs.saveUserProfile(userProfile)
-        userDataSource.upsertAllUrls(user.urls.map { it.toUrlTable() })
-        userDataSource.upsertAllEducations(user.education.map { it.toEducationTable() })
-        userDataSource.upsertAllExperiences(user.experience.map { it.toExperienceTable() })
+        try {
+            val userProfile = user.toUserProfile()
+            updateUserDataState(userProfile)
+            prefs.isVerified = user.verified
+            prefs.saveUserProfile(userProfile)
+            userDataSource.upsertAllUrls(user.urls.map { it.toUrlTable() })
+            userDataSource.upsertAllEducations(user.education.map { it.toEducationTable() })
+            userDataSource.upsertAllExperiences(user.experience.map { it.toExperienceTable() })
+        } catch (e: Exception) {
+            _userData.value = UiState.Error(e.message)
+        }
     }
 
     fun onBasicAction(basicScreenAction: BasicScreenAction) {
@@ -378,4 +396,29 @@ class SetUpAccountViewModel(
             }
         }
     }
+
+    fun updateUserProfile() {
+        screenModelScope.launch {
+            _setUpOrEditState.update { UiState.Loading }
+            userRepository.updateUser(
+                prefs.userRole,
+                prefs.accessToken,
+                _basicState.value,
+                _educationState.value,
+                _professionState.value
+            )
+                .onSuccess { r ->
+                    if (r.value != null) {
+                        updateUserPreference(r.value)
+                        _setUpOrEditState.update { UiState.Success(r.detail) }
+                    } else {
+                        _setUpOrEditState.update { UiState.Error(r.detail) }
+                    }
+                }
+                .onError { e ->
+                    _setUpOrEditState.update { UiState.Error(e.detail) }
+                }
+        }
+    }
 }
+

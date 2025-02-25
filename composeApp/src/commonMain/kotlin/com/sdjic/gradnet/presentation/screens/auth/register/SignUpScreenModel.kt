@@ -5,7 +5,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.mmk.kmpauth.google.GoogleUser
-import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.entity.response.SignUpRequest
 import com.sdjic.gradnet.data.network.entity.response.SignUpResponse
 import com.sdjic.gradnet.data.network.utils.onError
@@ -88,9 +87,7 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                 )
                 result.onSuccess {
                     it.value?.let { res ->
-                        prefs.accessToken = res.accessToken.toString()
-                        prefs.userId = res.user?.userId.toString()
-                        prefs.isVerified = res.user?.isVerified == true
+                        updateRegisterPref(res)
                         _signUpState.value = UiState.Success(res.user?.isVerified == true)
                     }
                 }.onError {
@@ -118,9 +115,7 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                         )
                         result.onSuccess {
                             it.value?.let { res ->
-                                prefs.accessToken = res.accessToken.toString()
-                                prefs.userId = res.user?.userId.toString()
-                                prefs.isVerified = res.user?.isVerified == true
+                                updateRegisterPref(res)
                                 _signUpState.value = UiState.Success(res.user?.isVerified == true)
                             }
                         }.onError {
@@ -146,6 +141,13 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             }
             _signUpState.value = UiState.Error(message)
         }
+    }
+
+    private fun updateRegisterPref(loginResponse: SignUpResponse) {
+        prefs.accessToken = loginResponse.accessToken.toString()
+        prefs.userId = loginResponse.user?.userId.toString()
+        prefs.isVerified = loginResponse.user?.isVerified == true
+        prefs.userRole = UserRole.getUserRole(loginResponse.user?.userType ?: "").name
     }
 
     private fun validateInputs(): List<String>? {

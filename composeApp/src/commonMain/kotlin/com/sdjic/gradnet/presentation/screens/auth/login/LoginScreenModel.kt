@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.mmk.kmpauth.google.GoogleUser
+import com.sdjic.gradnet.data.network.entity.response.LoginResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting
@@ -12,6 +13,7 @@ import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.presentation.helper.ConnectivityManager
 import com.sdjic.gradnet.presentation.helper.LoginUiState
 import com.sdjic.gradnet.presentation.helper.UiState
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -34,55 +36,58 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
                 _loginState.value = UiState.ValidationError(validationResult)
                 return@launch
             }
-            if(ConnectivityManager.isConnected){
+            if (ConnectivityManager.isConnected) {
                 val result = authRepository.login(email.value.text, password.value.text)
                 result.onSuccess {
                     it.value?.let { res ->
-                        prefs.accessToken = res.accessToken.toString()
-                        prefs.userId = res.userDto?.userId.toString()
-                        prefs.isVerified = res.userDto?.isVerified == true
+                        updateLoginPref(res)
                         _loginState.value = UiState.Success(res.userDto?.isVerified == true)
                     }
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
                 }
-            }else{
+            } else {
                 _loginState.value = UiState.Error("Not Connected to Internet")
             }
         }
     }
 
-    fun  loginWithGoogle(googleUser: GoogleUser) {
+    fun loginWithGoogle(googleUser: GoogleUser) {
         screenModelScope.launch {
             _loginState.value = UiState.Loading
             // Send this idToken to your backend to verify
             val idToken = googleUser.idToken
-            if(ConnectivityManager.isConnected){
-                val result = authRepository.login(googleUser.email!!,googleUser.email!!.reversed())
+            if (ConnectivityManager.isConnected) {
+                val result = authRepository.login(googleUser.email!!, googleUser.email!!.reversed())
                 result.onSuccess {
                     it.value?.let { res ->
-                        prefs.accessToken = res.accessToken.toString()
-                        prefs.userId = res.userDto?.userId.toString()
-                        prefs.isVerified = res.userDto?.isVerified == true
+                        updateLoginPref(res)
                         _loginState.value = UiState.Success(res.userDto?.isVerified == true)
                     }
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
                 }
-            }else{
+            } else {
                 _loginState.value = UiState.Error("Not Connected to Internet")
             }
         }
     }
 
-    fun showErrorState(message: String){
+    fun showErrorState(message: String) {
         screenModelScope.launch {
-            if(_loginState.value != UiState.Loading){
+            if (_loginState.value != UiState.Loading) {
                 _loginState.value = UiState.Loading
                 delay(1000L)
             }
             _loginState.value = UiState.Error(message)
         }
+    }
+
+    private fun updateLoginPref(loginResponse: LoginResponse) {
+        prefs.accessToken = loginResponse.accessToken.toString()
+        prefs.userId = loginResponse.userDto?.userId.toString()
+        prefs.isVerified = loginResponse.userDto?.isVerified == true
+        prefs.userRole = UserRole.getUserRole(loginResponse.userDto?.userType ?: "").name
     }
 
     private fun validateInputs(): List<String>? {

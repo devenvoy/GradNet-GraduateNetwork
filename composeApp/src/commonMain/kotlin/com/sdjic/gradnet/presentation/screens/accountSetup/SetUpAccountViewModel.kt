@@ -6,8 +6,12 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.data.network.utils.toEducationModel
 import com.sdjic.gradnet.data.network.utils.toEducationTable
+import com.sdjic.gradnet.data.network.utils.toExperienceModel
 import com.sdjic.gradnet.data.network.utils.toExperienceTable
+import com.sdjic.gradnet.data.network.utils.toSocialUrls
+import com.sdjic.gradnet.data.network.utils.toUrlDto
 import com.sdjic.gradnet.data.network.utils.toUrlTable
 import com.sdjic.gradnet.data.network.utils.toUserProfile
 import com.sdjic.gradnet.domain.AppCacheSetting
@@ -63,13 +67,21 @@ class SetUpAccountViewModel(
         fetchUserDetails()
     }
 
-    fun fetchUserDetails() {
+    fun fetchUserDetails(isEditState: Boolean = false) {
         screenModelScope.launch {
             _userData.value = UiState.Loading
-            val result = userRepository.fetchUser(prefs.accessToken)
-            result.onSuccess { user ->
-                user.value?.let { updateUserPreference(user.value) }
-            }.onError { _userData.value = UiState.Error(it.detail) }
+            var result = prefs.getUserProfile()
+            val educationList = userDataSource.getAllEducations().map { it.toEducationModel() }
+            val experienceList = userDataSource.getAllExperiences().map { it.toExperienceModel() }
+            val urlList = userDataSource.getAllUrls().map { it.toUrlDto() }
+
+            result = result.copy(
+                educations = educationList,
+                experiences = experienceList,
+                socialUrls = urlList.toSocialUrls()
+            )
+
+            updateUserDataState(user = result)
         }
     }
 
@@ -317,6 +329,7 @@ class SetUpAccountViewModel(
             )
             result.onSuccess { r ->
                 r.value?.let { user ->
+                    prefs.accessToken = user.accessToken
                     updateUserPreference(user)
                     _setUpOrEditState.update { UiState.Success(r.detail) }
                     onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
@@ -356,8 +369,7 @@ class SetUpAccountViewModel(
         ).apply {
             onSuccess { r ->
                 r.value?.let { user ->
-                    prefs.accessToken = user.accessToken
-                    updateUserDataState(user.toUserProfile())
+                    updateUserPreference(user)
                     _setUpOrEditState.update { UiState.Success(r.detail) }
                 }
             }

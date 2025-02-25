@@ -16,7 +16,7 @@ import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 
 fun EducationDto.toEducationModel(): EducationModel {
     return EducationModel(
-        id = this.id.toInt(),
+        id = this.id,
         schoolName = this.schoolName,
         degree = this.degree.ifEmpty { null },
         field = this.fieldOfStudy?.ifEmpty { null },
@@ -29,7 +29,7 @@ fun EducationDto.toEducationModel(): EducationModel {
 
 fun ExperienceDto.toExperienceModel(): ExperienceModel {
     return ExperienceModel(
-        id = this.id.toInt(),
+        id = this.id,
         title = this.jobTitle,
         type = this.jobType?.ifEmpty { null },
         company = this.companyName?.ifEmpty { null },
@@ -94,16 +94,15 @@ fun UserProfileResponse.toUserProfile(): UserProfile {
     )
 }
 
-
-fun URLDto.toUrlTable() : UrlTable{
-     return UrlTable(
-        id = 0,
-        type = type,
-        url = url
-    )
+fun UrlTable.toUrlDto(): URLDto {
+    return URLDto(type = type, url = url)
 }
 
-fun EducationDto.toEducationTable() : EducationTable{
+fun URLDto.toUrlTable(): UrlTable {
+    return UrlTable(0, type, url)
+}
+
+fun EducationDto.toEducationTable(): EducationTable {
     return EducationTable(
         id = id,
         schoolName = schoolName,
@@ -116,7 +115,7 @@ fun EducationDto.toEducationTable() : EducationTable{
     )
 }
 
-fun ExperienceDto.toExperienceTable() : ExperienceTable{
+fun ExperienceDto.toExperienceTable(): ExperienceTable {
     return ExperienceTable(
         id = id,
         title = jobTitle,
@@ -128,3 +127,30 @@ fun ExperienceDto.toExperienceTable() : ExperienceTable{
         endDate = endDate
     )
 }
+
+fun EducationTable.toEducationModel(): EducationModel {
+    return EducationModel(
+        id = this.id,
+        schoolName = this.schoolName,
+        degree = this.degree,
+        field = this.field,
+        location = this.location,
+        description = this.description,
+        startDate = this.startDate,
+        endDate = this.endDate
+    )
+}
+
+fun ExperienceTable.toExperienceModel(): ExperienceModel {
+    return ExperienceModel(
+        id = this.id,
+        title = this.title,
+        type = this.type,
+        company = this.company,
+        location = this.location,
+        description = this.description,
+        startDate = this.startDate,
+        endDate = this.endDate
+    )
+}
+

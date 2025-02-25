@@ -1,4 +1,5 @@
 package com.sdjic.gradnet.data.local.preference
+
 enum class SettingStorageKeys {
     ACCESS_TOKEN,
     USER_ID,
@@ -21,6 +22,8 @@ enum class SettingStorageKeys {
     IS_VERIFIED,
     VERIFIED_ID,
     IS_ACTIVE,
+    LANGUAGES,
+    SKILLS,
     CREATED_AT,
     UPDATED_AT;
 

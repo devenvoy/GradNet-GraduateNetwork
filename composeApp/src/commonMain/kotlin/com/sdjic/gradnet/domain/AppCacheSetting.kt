@@ -12,7 +12,7 @@ interface AppCacheSetting {
 
     var isVerified : Boolean
 
-//    val observableFromLanguage: Flow<Language>
+    var userRole : String
 
     fun saveUserProfile(userProfile: UserProfile)
 

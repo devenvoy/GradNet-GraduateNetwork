@@ -1,7 +1,10 @@
 package com.sdjic.gradnet.presentation.core.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ExperienceModel(
-    val id : Int = 0,
+    val id : Long = 0,
     val title : String = "",
     val type:String? = null,
     val company:String? = null,

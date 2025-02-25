@@ -34,6 +34,12 @@ class AppCacheSettingImpl : AppCacheSetting {
             settings[SettingStorageKeys.IS_VERIFIED.key] = value
         }
 
+    override var userRole: String
+        get() = settings[SettingStorageKeys.ROLE.key] ?: UserRole.Alumni.name
+        set(value) {
+            settings[SettingStorageKeys.ROLE.key] = value
+        }
+
     // Store simple fields
     override fun saveUserProfile(userProfile: UserProfile) {
         settings[SettingStorageKeys.USER_ID.key] = userProfile.userId
@@ -58,6 +64,8 @@ class AppCacheSettingImpl : AppCacheSetting {
         settings[SettingStorageKeys.DESIGNATION.key] = userProfile.designation
         settings[SettingStorageKeys.EMPLOYEE.key] = userProfile.employee
         settings[SettingStorageKeys.ROLE.key] = userProfile.userRole.name
+        settings[SettingStorageKeys.LANGUAGES.key] = userProfile.languages?.joinToString("|")
+        settings[SettingStorageKeys.SKILLS.key] = userProfile.skills?.joinToString("|")
     }
 
     // Retrieve simple fields
@@ -81,10 +89,16 @@ class AppCacheSettingImpl : AppCacheSetting {
             department = settings[SettingStorageKeys.DEPARTMENT.key] ?: "",
             designation = settings[SettingStorageKeys.DESIGNATION.key] ?: "",
             employee = settings[SettingStorageKeys.EMPLOYEE.key] ?: "",
-            userRole = UserRole.getUserRole(settings[SettingStorageKeys.ROLE.key] ?: UserRole.Alumni.name),
+            userRole = UserRole.getUserRole(
+                settings[SettingStorageKeys.ROLE.key] ?: UserRole.Alumni.name
+            ),
             website = settings[SettingStorageKeys.WEBSITE.key] ?: "",
             about = settings[SettingStorageKeys.ABOUT_SELF.key] ?: "",
             verificationId = settings[SettingStorageKeys.VERIFIED_ID.key] ?: "",
+            languages = (settings[SettingStorageKeys.LANGUAGES.key] ?: "").split("|")
+                .filter { it.isNotEmpty() or it.isNotBlank() },
+            skills = (settings[SettingStorageKeys.SKILLS.key] ?: "").split("|")
+                .filter { it.isNotEmpty() or it.isNotBlank() }
         )
     }
 

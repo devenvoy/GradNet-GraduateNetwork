@@ -2,6 +2,7 @@ package com.sdjic.gradnet.presentation.screens.posts
 
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -31,6 +32,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -57,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -94,8 +97,10 @@ import gradnet_graduatenetwork.composeapp.generated.resources.app_name
 import gradnet_graduatenetwork.composeapp.generated.resources.heart
 import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
+import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -197,7 +202,12 @@ class PostScreen : Screen {
                     data = data,
                     state = listState,
                 ) { item ->
-                    PostItem(item)
+                    PostItem(
+                        modifier = Modifier.animateItem(
+                            fadeInSpec = null, fadeOutSpec = null, placementSpec = tween(500)
+                        ),
+                        post = item
+                    )
                 }
             }
         }
@@ -280,11 +290,14 @@ class PostScreen : Screen {
     }
 
     @Composable
-    fun PostItem(post: Post) {
+    fun PostItem(
+        modifier: Modifier = Modifier,
+        post: Post
+    ) {
         val platformContext = LocalPlatformContext.current
         var isLiked by remember { mutableStateOf(false) }
         Column(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+            modifier = modifier.padding(horizontal = 8.dp, vertical = 8.dp)
         ) {
 
 
@@ -355,12 +368,21 @@ class PostScreen : Screen {
         val pagerState = rememberPagerState(initialPage = 0, pageCount = { images.size })
         Box {
             HorizontalPager(
-                state = pagerState, modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp)
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth().heightIn(min = 300.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(
+                        MaterialTheme.colorScheme.onBackground.copy(.2f),
+                        RoundedCornerShape(6.dp)
+                    )
             ) { page ->
 
                 val painterReq = rememberAsyncImagePainter(
-                    model = ImageRequest.Builder(LocalPlatformContext.current).data(images[page])
-                        .crossfade(true).crossfade(300).build()
+                    model = ImageRequest.Builder(LocalPlatformContext.current)
+                        .data(images[page])
+                        .crossfade(true)
+                        .crossfade(300)
+                        .build()
                 )
 
                 when (painterReq.state.collectAsState().value) {
@@ -369,9 +391,12 @@ class PostScreen : Screen {
                         Image(
                             painter = painterReq,
                             contentDescription = null,
-                            modifier = Modifier.fillMaxWidth()
-                                .aspectRatio(16 / 9f)
-                                .clip(RoundedCornerShape(4.dp))
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .heightIn(max = 400.dp)
+                                .zoomable(rememberZoomState()),
+                            contentScale = ContentScale.Fit,
                         )
                     }
 
@@ -379,9 +404,13 @@ class PostScreen : Screen {
                         Box(
                             modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                         ) {
-                            Title(
-                                text = "error",
-                                modifier = Modifier.clickable(onClick = { painterReq.restart() })
+
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = null,
+                                modifier = Modifier.size(40.dp).noRippleEffect {
+                                    painterReq.restart()
+                                }
                             )
                         }
                     }

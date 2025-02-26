@@ -36,9 +36,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.mp.KoinPlatform.getKoin
 
 class SetUpAccountViewModel(
+    private val prefs:AppCacheSetting,
     private val userRepository: UserRepository,
     private val userDataSource: UserDataSource
 ) : ScreenModel {
@@ -52,7 +52,7 @@ class SetUpAccountViewModel(
     private val _professionState = MutableStateFlow(ProfessionState())
     val professionState: StateFlow<ProfessionState> get() = _professionState.asStateFlow()
 
-    private val _isVerified = MutableStateFlow(false)
+    private val _isVerified = MutableStateFlow(prefs.isVerified)
     val isVerified = _isVerified.asStateFlow()
 
     private val _userData = MutableStateFlow<FetchUserUiState>(UiState.Idle)
@@ -61,7 +61,6 @@ class SetUpAccountViewModel(
     private val _setUpOrEditState = MutableStateFlow<SetUpOrEditUiState>(UiState.Idle)
     val setUpOrEditState = _setUpOrEditState.asStateFlow()
 
-    private val prefs = getKoin().get<AppCacheSetting>()
 
     init {
         loadUserProfile()
@@ -72,7 +71,7 @@ class SetUpAccountViewModel(
             _userData.value = UiState.Loading
             try {
                 var result = prefs.getUserProfile()
-                if (!prefs.isVerified or !prefs.firstInitialized) {
+                if (!_isVerified.value or !prefs.firstInitialized) {
                     userRepository.fetchUser(prefs.accessToken).onSuccess {
                         it.value?.let { up ->
                             prefs.firstInitialized = true
@@ -104,10 +103,9 @@ class SetUpAccountViewModel(
         _educationState.update { user.toEducationState() }
         _professionState.update { user.toProfessionState() }
         _userData.value = UiState.Success(user)
-        _isVerified.value = user.isVerified
     }
 
-    suspend fun updateUserPreference(user: UserProfileResponse) {
+    private suspend fun updateUserPreference(user: UserProfileResponse) {
         try {
             val userProfile = user.toUserProfile()
             updateUserDataState(userProfile)

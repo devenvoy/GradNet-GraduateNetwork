@@ -38,7 +38,7 @@ val screenModelsModule = module {
     factory { HomeScreenViewModel(get()) }
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
-    factory { SetUpAccountViewModel(get(),get()) }
+    factory { SetUpAccountViewModel(get(),get(),get()) }
     factory { PostScreenModel(get()) }
     factory { EventScreenModel(get()) }
     factory { AddPostScreenModel(get(),get()) }

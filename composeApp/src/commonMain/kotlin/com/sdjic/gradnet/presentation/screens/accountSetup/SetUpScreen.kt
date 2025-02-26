@@ -149,9 +149,8 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                 containerColor = MaterialTheme.colorScheme.primaryContainer
                             ),
                             onClick = {
-
-                                setUpAccountViewModel.updateUserProfile()
                                 if (userProfile.isVerified) {
+                                    setUpAccountViewModel.updateUserProfile()
                                     if (!isEditProfile) navigator.replace(HomeScreen())
 //                                    else navigator.pop()
                                 } else {

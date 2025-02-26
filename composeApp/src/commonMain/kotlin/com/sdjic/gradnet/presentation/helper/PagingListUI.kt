@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,7 +46,7 @@ fun <T : Any> PagingListUI(
     data: LazyPagingItems<T>,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyListState = rememberLazyListState(),
-    content: @Composable (T) -> Unit
+    content: @Composable LazyItemScope.(T) -> Unit
 ) {
     val composition by rememberLottieComposition {
         LottieCompositionSpec.DotLottie(Res.readBytes("files/loading.lottie"))

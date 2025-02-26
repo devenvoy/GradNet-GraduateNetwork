@@ -92,6 +92,7 @@ kotlin {
 
             implementation(project(":color"))
             implementation(project(":calendar"))
+            implementation (libs.zoomable)
         }
 
         iosMain.dependencies {

@@ -49,7 +49,7 @@ fun List<URLDto>.toSocialUrls(): SocialUrls {
         it.type.equals("linkedin", ignoreCase = true) ||
                 it.type.equals("github", ignoreCase = true) ||
                 it.type.equals("twitter", ignoreCase = true)
-    }.map { it.url }
+    }.map { it.url }.filter { it.isNotEmpty() }
 
     return SocialUrls(
         linkedIn = linkedIn,

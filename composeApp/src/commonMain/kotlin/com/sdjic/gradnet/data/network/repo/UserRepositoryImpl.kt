@@ -88,7 +88,9 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
                 URLDto("linkedinUrl",professionState.linkedinUrl),
                 URLDto("twitterUrl",professionState.twitterUrl),
                 URLDto("githubUrl",professionState.githubUrl),
-                *professionState.otherUrls.map { URLDto(it,it) }.toTypedArray()
+                *professionState.otherUrls.filter { it.isNotEmpty() }
+                    .map { URLDto(it, it) }
+                    .toTypedArray()
             ),
         )
     }

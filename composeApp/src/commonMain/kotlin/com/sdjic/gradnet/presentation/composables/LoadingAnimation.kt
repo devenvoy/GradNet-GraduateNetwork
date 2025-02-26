@@ -37,7 +37,7 @@ fun LoadingAnimation() {
             .alpha(1f - progress)
             .border(
                 5.dp,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = Color.White,
                 shape = CircleShape
             )
     )

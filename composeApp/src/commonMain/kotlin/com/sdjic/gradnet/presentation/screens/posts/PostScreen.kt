@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -165,9 +166,7 @@ class PostScreen : Screen {
                     visible = listState.isScrollingUp(), enter = fadeIn(), exit = fadeOut()
                 ) {
                     FloatingActionButton(
-                        onClick = {
-                            rootNavigator.push(AddPost())
-                        }) {
+                        onClick = { rootNavigator.push(AddPost()) }) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                     }
                 }
@@ -192,12 +191,13 @@ class PostScreen : Screen {
             }
 
             PullToRefreshBox(
-                modifier = Modifier.padding(pVal),
+                modifier = Modifier.padding(top = pVal.calculateTopPadding()),
                 isRefreshing = isRefreshing,
                 state = pullToRefreshState,
                 onRefresh = { data.refresh() }
             ) {
                 PagingListUI(
+                    contentPadding = PaddingValues(bottom = pVal.calculateBottomPadding()),
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     data = data,
                     state = listState,
@@ -296,19 +296,15 @@ class PostScreen : Screen {
     ) {
         val platformContext = LocalPlatformContext.current
         var isLiked by remember { mutableStateOf(false) }
+        var postedAgo by remember { mutableStateOf("Loading...") }
+        LaunchedEffect(post.createdAt) {
+            val localDateTime = parseDateAsync(post.createdAt)
+            postedAgo =
+                DateTimeUtils.getTimeAgoAsync(toEpochMillis(localDateTime))
+        }
         Column(
             modifier = modifier.padding(horizontal = 8.dp, vertical = 8.dp)
         ) {
-
-
-            var postedAgo by remember { mutableStateOf("Loading...") }
-
-            LaunchedEffect(post.createdAt) {
-                val localDateTime = parseDateAsync(post.createdAt)
-                postedAgo =
-                    DateTimeUtils.getTimeAgoAsync(toEpochMillis(localDateTime))
-            }
-
 
             Row {
                 CircularProfileImage(
@@ -350,14 +346,14 @@ class PostScreen : Screen {
                     contentDescription = null,
                     modifier = Modifier.size(28.dp).clickable(onClick = { isLiked = !isLiked }),
                     tint = if (isLiked) Color.Red
-                    else MaterialTheme.colorScheme.onSurface.copy(.4f)
+                    else MaterialTheme.colorScheme.onSurface.copy(.8f)
                 )
                 SText(post.likesCount.toString())
                 Icon(
                     painter = painterResource(Res.drawable.ic_share),
                     contentDescription = null,
                     modifier = Modifier.clickable(onClick = {}).size(28.dp),
-                    tint = MaterialTheme.colorScheme.onSurface.copy(.4f)
+                    tint = MaterialTheme.colorScheme.onSurface.copy(.8f)
                 )
             }
         }
@@ -369,12 +365,10 @@ class PostScreen : Screen {
         Box {
             HorizontalPager(
                 state = pagerState,
+                beyondViewportPageCount = 2,
                 modifier = Modifier.fillMaxWidth().heightIn(min = 300.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(
-                        MaterialTheme.colorScheme.onBackground.copy(.2f),
-                        RoundedCornerShape(6.dp)
-                    )
+                    .background(Color.Black, RoundedCornerShape(6.dp))
             ) { page ->
 
                 val painterReq = rememberAsyncImagePainter(

@@ -235,7 +235,7 @@ fun ProfessionSetUpScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start,
         ) {
-            professionState.otherUrls.fastForEachIndexed { index, item ->
+            professionState.otherUrls.forEachIndexed { index, item ->
                 Row(
                     modifier = Modifier.padding(horizontal = 10.sdp, vertical = 2.sdp),
                     verticalAlignment = Alignment.CenterVertically

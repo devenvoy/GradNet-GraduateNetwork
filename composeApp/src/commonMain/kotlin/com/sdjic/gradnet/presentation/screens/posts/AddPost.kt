@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -234,7 +233,7 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
 
 
                 Surface(
-                    modifier = Modifier.fillMaxWidth().navigationBarsPadding().imePadding(),
+                    modifier = Modifier.fillMaxWidth().imePadding(),
                     shadowElevation = 16.dp,
                     tonalElevation = 0.dp,
                     shape = RoundedCornerShape(

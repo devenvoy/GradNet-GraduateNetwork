@@ -101,9 +101,9 @@ class AppCacheSettingImpl : AppCacheSetting {
             about = settings[SettingStorageKeys.ABOUT_SELF.key] ?: "",
             verificationId = settings[SettingStorageKeys.VERIFIED_ID.key] ?: "",
             languages = (settings[SettingStorageKeys.LANGUAGES.key] ?: "").split("|")
-                .filter { it.isNotEmpty() or it.isNotBlank() },
+                .filter { it.isNotEmpty() },
             skills = (settings[SettingStorageKeys.SKILLS.key] ?: "").split("|")
-                .filter { it.isNotEmpty() or it.isNotBlank() }
+                .filter { it.isNotEmpty() }
         )
     }
 

@@ -60,6 +60,7 @@ import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.PostTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
+import com.sdjic.gradnet.presentation.screens.setting.SettingScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import kotlinx.coroutines.launch
@@ -174,7 +175,9 @@ class HomeScreen : Screen {
                         }
                         when (it) {
                             NavigationItem.Profile -> {}
-                            NavigationItem.Settings -> {}
+                            NavigationItem.Settings -> {
+                                navigator.push(SettingScreen())
+                            }
                             NavigationItem.AboutUs -> {
                                 navigator.push(AboutUsScreen())
                             }

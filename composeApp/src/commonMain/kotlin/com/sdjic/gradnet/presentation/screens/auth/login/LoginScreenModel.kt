@@ -87,7 +87,8 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
         prefs.accessToken = loginResponse.accessToken.toString()
         prefs.userId = loginResponse.userDto?.userId.toString()
         prefs.isVerified = loginResponse.userDto?.isVerified == true
-        prefs.userRole = UserRole.getUserRole(loginResponse.userDto?.userType ?: "").name
+        prefs.userRole =
+            loginResponse.userDto?.userType?.let { UserRole.getUserRole(it)?.name } ?: ""
     }
 
     private fun validateInputs(): List<String>? {

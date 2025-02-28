@@ -88,4 +88,11 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
             }
         }
     }
+
+    override suspend fun sendLikePostCall(
+        accessToken: String,
+        postId: String
+    ): Result<ServerResponse<Any?>, ServerError> {
+        return Result.Success(ServerResponse(200,null,"",true))
+    }
 }

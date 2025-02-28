@@ -147,7 +147,7 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         prefs.accessToken = loginResponse.accessToken.toString()
         prefs.userId = loginResponse.user?.userId.toString()
         prefs.isVerified = loginResponse.user?.isVerified == true
-        prefs.userRole = UserRole.getUserRole(loginResponse.user?.userType ?: "").name
+        prefs.userRole =  loginResponse.user?.userType?.let { UserRole.getUserRole(it)?.name } ?: ""
     }
 
     private fun validateInputs(): List<String>? {

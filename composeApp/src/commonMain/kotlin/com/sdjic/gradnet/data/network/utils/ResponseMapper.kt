@@ -65,7 +65,7 @@ fun UserProfileResponse.toUserProfile(): UserProfile {
         userName = this.name,
         email = this.email,
         verificationId = (this.verifyId ?: "").toString(),
-        userRole = UserRole.getUserRole(this.role),
+        userRole = UserRole.getUserRole(this.role) ?: UserRole.Alumni,
         isVerified = this.verified,
         isPlusMember = this.plusMember,
         isActive = this.isActive,

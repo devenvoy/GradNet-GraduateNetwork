@@ -2,9 +2,13 @@ package com.sdjic.gradnet.presentation.screens.posts
 
 import androidx.paging.PagingData
 import app.cash.paging.cachedIn
+import app.cash.paging.map
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.data.network.utils.onError
+import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
+import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.core.model.Filter
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
@@ -17,7 +21,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PostScreenModel(
-    private val getPostsUseCase: GetPostsUseCase
+    private val getPostsUseCase: GetPostsUseCase,
+    private val likePostUseCase: LikePostUseCase,
+    private val prefs: AppCacheSetting
 ) : ScreenModel {
 
     val userTypeFilters = MutableStateFlow(
@@ -44,7 +50,7 @@ class PostScreenModel(
     init {
         toggleSelectAll()
         screenModelScope.launch {
-           refreshPosts()
+            refreshPosts()
         }
     }
 
@@ -55,6 +61,26 @@ class PostScreenModel(
             .collect { pagingData ->
                 _posts.value = pagingData
             }
+    }
+
+    fun toggleLike(post: Post) {
+        val newPost = if (!post.liked) {
+            post.copy(likesCount = post.likesCount + 1, liked = true)
+        } else {
+            post.copy(likesCount = post.likesCount - 1, liked = false)
+        }
+
+        screenModelScope.launch {
+            _posts.value = _posts.value.map { currentPost ->
+                if (currentPost.postId == post.postId) newPost else currentPost
+            }
+
+            likePostUseCase(post.postId, prefs.accessToken).onError {
+                _posts.value = _posts.value.map { currentPost ->
+                    if (currentPost.postId == post.postId) post else currentPost
+                }
+            }
+        }
     }
 
     fun onAction(action: PostScreenAction) = screenModelScope.launch {

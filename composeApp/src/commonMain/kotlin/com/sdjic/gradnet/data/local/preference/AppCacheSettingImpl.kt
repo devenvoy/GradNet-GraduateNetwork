@@ -94,9 +94,7 @@ class AppCacheSettingImpl : AppCacheSetting {
             department = settings[SettingStorageKeys.DEPARTMENT.key] ?: "",
             designation = settings[SettingStorageKeys.DESIGNATION.key] ?: "",
             employee = settings[SettingStorageKeys.EMPLOYEE.key] ?: "",
-            userRole = UserRole.getUserRole(
-                settings[SettingStorageKeys.ROLE.key] ?: UserRole.Alumni.name
-            ),
+            userRole = UserRole.getUserRole(settings[SettingStorageKeys.ROLE.key]?:"") ?: UserRole.Alumni,
             website = settings[SettingStorageKeys.WEBSITE.key] ?: "",
             about = settings[SettingStorageKeys.ABOUT_SELF.key] ?: "",
             verificationId = settings[SettingStorageKeys.VERIFIED_ID.key] ?: "",

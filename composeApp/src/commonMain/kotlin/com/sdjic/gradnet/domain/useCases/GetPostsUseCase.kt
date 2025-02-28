@@ -8,6 +8,7 @@ import com.sdjic.gradnet.data.network.utils.map
 import com.sdjic.gradnet.domain.ResultPagingSource
 import com.sdjic.gradnet.domain.repo.PostRepository
 import com.sdjic.gradnet.presentation.core.model.Post
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.flow.Flow
 
 class GetPostsUseCase(
@@ -33,9 +34,11 @@ class GetPostsUseCase(
                 userId = postDto.userId.orEmpty(),
                 userName = postDto.userName.orEmpty(),
                 userImage = postDto.userProfilePic.orEmpty(),
+                userRole = UserRole.getUserRole(postDto.userRole ?: "") ?: UserRole.Alumni,
                 content = postDto.description,
-                likesCount = 0,
+                likesCount = postDto.likes,
                 images = postDto.photos?.filterNotNull() ?: emptyList(),
+                location = postDto.location.orEmpty(),
                 createdAt = postDto.createdAt
             )
         else null

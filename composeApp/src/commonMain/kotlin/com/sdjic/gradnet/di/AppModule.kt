@@ -20,6 +20,7 @@ import com.sdjic.gradnet.domain.repo.TestRepository
 import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
+import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
@@ -39,7 +40,7 @@ val screenModelsModule = module {
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
     factory { SetUpAccountViewModel(get(),get(),get()) }
-    factory { PostScreenModel(get()) }
+    factory { PostScreenModel(get(),get(),get()) }
     factory { EventScreenModel(get()) }
     factory { AddPostScreenModel(get(),get()) }
     factory { JobScreenModel() }
@@ -47,6 +48,7 @@ val screenModelsModule = module {
 
 val userCases = module {
     single { GetPostsUseCase(get()) }
+    single { LikePostUseCase(get()) }
 }
 
 val repositoryModule = module {

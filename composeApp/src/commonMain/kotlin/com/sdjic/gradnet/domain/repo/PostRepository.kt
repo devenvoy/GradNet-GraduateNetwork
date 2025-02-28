@@ -21,4 +21,6 @@ interface PostRepository {
         files: List<ByteArray>,
         listener: ProgressListener?
     ): Result<ServerResponse<PostDto>, ServerError>
+
+    suspend fun sendLikePostCall(accessToken: String, postId: String): Result<ServerResponse<Any?>, ServerError>
 }

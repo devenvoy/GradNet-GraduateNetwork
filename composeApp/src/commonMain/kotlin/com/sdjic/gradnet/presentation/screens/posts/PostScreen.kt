@@ -206,7 +206,10 @@ class PostScreen : Screen {
                         modifier = Modifier.animateItem(
                             fadeInSpec = null, fadeOutSpec = null, placementSpec = tween(500)
                         ),
-                        post = item
+                        post = item,
+                        onLikeClicked = {
+                            postScreenModel.toggleLike(item)
+                        }
                     )
                 }
             }
@@ -292,10 +295,10 @@ class PostScreen : Screen {
     @Composable
     fun PostItem(
         modifier: Modifier = Modifier,
-        post: Post
+        post: Post,
+        onLikeClicked: () -> Unit = {},
     ) {
         val platformContext = LocalPlatformContext.current
-        var isLiked by remember { mutableStateOf(false) }
         var postedAgo by remember { mutableStateOf("Loading...") }
         LaunchedEffect(post.createdAt) {
             val localDateTime = parseDateAsync(post.createdAt)
@@ -342,10 +345,12 @@ class PostScreen : Screen {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(if (isLiked) Res.drawable.heart else Res.drawable.heart_outlined),
+                    painter = painterResource(if (post.liked) Res.drawable.heart else Res.drawable.heart_outlined),
                     contentDescription = null,
-                    modifier = Modifier.size(28.dp).clickable(onClick = { isLiked = !isLiked }),
-                    tint = if (isLiked) Color.Red
+                    modifier = Modifier.size(28.dp).clickable(onClick = {
+                        onLikeClicked()
+                    }),
+                    tint = if (post.liked) Color.Red
                     else MaterialTheme.colorScheme.onSurface.copy(.8f)
                 )
                 SText(post.likesCount.toString())

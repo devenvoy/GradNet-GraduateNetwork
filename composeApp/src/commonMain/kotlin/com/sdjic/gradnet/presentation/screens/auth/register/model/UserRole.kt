@@ -17,12 +17,12 @@ sealed class UserRole(
         UserRole(id = 3, name = "ORGANIZATION", icon = Res.drawable.ic_organization)
 
     companion object{
-        fun getUserRole(name: String): UserRole {
+        fun getUserRole(name: String): UserRole? {
             return when (name) {
                 "ALUMNI" -> Alumni
                 "FACULTY" -> Faculty
                 "ORGANIZATION" -> Organization
-                else -> throw IllegalArgumentException("Invalid user role: $name")
+                else -> null
             }
         }
     }

@@ -1,12 +1,11 @@
 package com.sdjic.gradnet.di.platform_di
 
 data class StorageInfo(
-    val totalStorage: Float,    // in GB
-    val freeStorage: Float,     // in GB
-    val usedByOtherApps: Float, // in GB
-    val usedByApp: Float,       // in MB
-    val usedByCache: Float,     // in MB
-    val usedByDownloadDir: Float // in MB
+    val totalStorage: Float,// in GB
+    val freeStorage: Float,// in GB
+    val usedByOtherApps: Float,// in GB
+    val usedByApp: Float, // in MB
+    val usedByCache: Float // in MB
 )
 
 expect fun getStorageInfo(): StorageInfo

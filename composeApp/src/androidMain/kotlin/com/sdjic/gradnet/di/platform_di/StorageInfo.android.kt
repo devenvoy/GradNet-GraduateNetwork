@@ -1,6 +1,9 @@
 package com.sdjic.gradnet.di.platform_di
 
+import android.app.usage.StorageStats
+import android.app.usage.StorageStatsManager
 import android.content.Context
+import android.os.Build
 import android.os.Environment
 import android.os.StatFs
 import com.sdjic.gradnet.GradNetApp
@@ -8,25 +11,53 @@ import java.io.File
 
 actual fun getStorageInfo(): StorageInfo {
     val context =GradNetApp.AppContext
-    val statFs = StatFs(Environment.getExternalStorageDirectory().absolutePath)
-    val totalSpace = statFs.totalBytes.toFloat() / (1024 * 1024 * 1024) // Convert to GB
-    val freeSpace = statFs.availableBytes.toFloat() / (1024 * 1024 * 1024) // Convert to GB
-    val usedSpace = totalSpace - freeSpace // Total used space in GB
+    val totalStorage = getTotalStorage()
+    val freeStorage = getFreeStorage()
+    val usedByApp = getAppStorageUsage(context)
+    val usedByCache = getCacheSize(context)
+    val usedByOtherApps = totalStorage - freeStorage - (usedByApp / 1024)
 
-    // App directories
-    val appFilesDir = context.filesDir
-    val appCacheDir = context.cacheDir
-    val appDownloadDir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "raw_downloads")
+    return StorageInfo(
+        totalStorage = totalStorage,
+        freeStorage = freeStorage,
+        usedByOtherApps = usedByOtherApps,
+        usedByApp = usedByApp,
+        usedByCache = usedByCache
+    )
+}
 
-    // Get precise storage sizes
-    val usedByApp = getFolderSize(appFilesDir) / (1024f * 1024f) // MB with float precision
-    val usedByCache = getFolderSize(appCacheDir) / (1024f * 1024f) // MB with float precision
-    val usedByDownloadDir = getFolderSize(appDownloadDir) / (1024f * 1024f) // MB with float precision
+/** 📌 Get Total Storage of the Device */
+fun getTotalStorage(): Float {
+    val stat = StatFs(Environment.getDataDirectory().path)
+    return (stat.totalBytes / (1024.0 * 1024 * 1024)).toFloat() // Convert to GB
+}
 
-    // Used by other apps (Total used - This app usage)
-    val usedByOtherApps = usedSpace - (usedByApp / 1024f) // Convert MB to GB with float precision
+/** 📌 Get Free Storage Available */
+fun getFreeStorage(): Float {
+    val stat = StatFs(Environment.getDataDirectory().path)
+    return (stat.availableBytes / (1024.0 * 1024 * 1024)).toFloat() // Convert to GB
+}
 
-    return StorageInfo(totalSpace, freeSpace, usedByOtherApps, usedByApp, usedByCache, usedByDownloadDir)
+/** 📌 Get Storage Used by Current App (IN MB) */
+fun getAppStorageUsage(context: Context): Float {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        try {
+            val storageStatsManager = context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+            val appInfo = context.applicationInfo
+            val storageStats: StorageStats = storageStatsManager.queryStatsForUid(appInfo.storageUuid, appInfo.uid)
+
+            val appSize = storageStats.appBytes + storageStats.dataBytes + storageStats.cacheBytes
+            return (appSize / (1024.0 * 1024.0)).toFloat() // Convert to MB
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    return 0F
+}
+
+/** 📌 Get Cache Size Used by the App (IN MB) */
+fun getCacheSize(context: Context): Float {
+    return (getFolderSize(context.cacheDir) / (1024.0 * 1024.0)).toFloat() // Convert to MB
 }
 
 // Function to calculate folder size with precision

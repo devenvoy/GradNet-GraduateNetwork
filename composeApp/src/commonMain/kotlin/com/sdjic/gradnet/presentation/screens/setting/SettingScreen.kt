@@ -1,39 +1,32 @@
 package com.sdjic.gradnet.presentation.screens.setting
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.sdjic.gradnet.di.platform_di.getScreenWidth
 import com.sdjic.gradnet.di.platform_di.getStorageInfo
-import com.sdjic.gradnet.di.platform_di.roundTwoDecimals
 import com.sdjic.gradnet.presentation.composables.images.BackButton
+import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 
 class SettingScreen : Screen {
     @Composable
@@ -45,8 +38,6 @@ class SettingScreen : Screen {
     @Composable
     fun SettingScreenContent() {
         val navigator = LocalNavigator.currentOrThrow
-        val storageInfo = remember { getStorageInfo() }
-
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -56,18 +47,20 @@ class SettingScreen : Screen {
             }
         ) {
             Column(
-                modifier = Modifier
-                    .padding(it)
+                modifier = Modifier.padding(it)
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(8.dp)
             ) {
 
-                StorageVisualizer(
-                    totalStorageGB = storageInfo.totalStorage,
-                    freeStorageGB = storageInfo.freeStorage,
-                    usedByOtherAppsGB = storageInfo.usedByOtherApps,
-                    usedByThisAppMB = storageInfo.usedByApp,
-                    usedByCacheMB = storageInfo.usedByCache
+                SettingItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    icon = Icons.Outlined.Storage,
+                    title = "Manage Storage",
+                    subtitle = "${getStorageInfo().usedByCache} MB",
+                    onClick = {
+                        navigator.push(StorageScreen())
+                    }
                 )
             }
         }
@@ -75,105 +68,32 @@ class SettingScreen : Screen {
 }
 
 @Composable
-fun StorageVisualizer(
-    totalStorageGB: Float,
-    freeStorageGB: Float,
-    usedByOtherAppsGB: Float,
-    usedByThisAppMB: Float,
-    usedByCacheMB: Float
+fun SettingItem(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit = {}
 ) {
-    val totalStorageMB = totalStorageGB * 1024
-    val usedByOtherAppsMB = usedByOtherAppsGB * 1024
-
-    val screenWidth = getScreenWidth()
-    val barHeight = 30.dp
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Text(text = "Device Storage Usage", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(barHeight)
-                .background(Color.Gray.copy(alpha = 0.3f))
-        ) {
-
-            Box(
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                StorageBar(
-                    screenWidth,
-                    usedByOtherAppsMB,
-                    totalStorageMB,
-                    Color(0xFFB0BEC5)
-                )
-                StorageBar(
-                    screenWidth,
-                    usedByThisAppMB * 10,
-                    totalStorageMB,
-                    Color(0xFF1E88E5)
-                ) // Blue - This App
-                StorageBar(
-                    screenWidth,
-                    usedByCacheMB * 10,
-                    totalStorageMB,
-                    Color(0xFFFFA726)
-                ) // Orange - Cache
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        StorageLegendItem(
-            Color.Gray.copy(alpha = 0.3f),
-            "Total Storage: ${roundTwoDecimals(totalStorageGB)} GB"
-        )
-        StorageLegendItem(
-            Color(0xFFB0BEC5),
-            "Used by Other Apps: ${roundTwoDecimals(usedByOtherAppsGB)} GB"
-        )
-        StorageLegendItem(
-            Color(0xFF1E88E5),
-            "Used by This App: ${roundTwoDecimals(usedByThisAppMB)} MB"
-        )
-        StorageLegendItem(
-            Color(0xFFFFA726),
-            "Used by Cache: ${roundTwoDecimals(usedByCacheMB)} MB"
-        )
-        StorageLegendItem(
-            Color.Gray.copy(alpha = 0.3f),
-            "Free Storage: ${roundTwoDecimals(freeStorageGB)} GB"
-        )
-    }
-}
-
-@Composable
-fun StorageBar(screenWidth: Dp, sizeMB: Float, totalStorageMB: Float, color: Color) {
-    val widthRatio = sizeMB / totalStorageMB
-    Box(
-        modifier = Modifier
-            .fillMaxHeight()
-            .width(screenWidth * widthRatio)
-            .background(color)
-    )
-}
-
-@Composable
-fun StorageLegendItem(color: Color, label: String) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(4.dp)
+        modifier = modifier.noRippleEffect(onClick),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .size(12.dp)
-                .background(color, shape = CircleShape)
+        Icon(
+            modifier = Modifier.padding(end = 16.dp),
+            imageVector = icon,
+            tint = MaterialTheme.colorScheme.onSurface,
+            contentDescription = null
         )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(text = label, fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Column {
+            Text(
+                text = title,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = subtitle,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }

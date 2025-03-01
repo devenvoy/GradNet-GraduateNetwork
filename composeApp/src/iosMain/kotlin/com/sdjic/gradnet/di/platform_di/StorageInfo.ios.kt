@@ -9,6 +9,7 @@ import platform.Foundation.NSFileSystemSize
 import platform.Foundation.NSHomeDirectory
 import platform.Foundation.NSNumber
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSUserDomainMask
 
 
@@ -64,4 +65,19 @@ fun getFolderSize(path: String): Float {
         size += (attributes?.get(NSFileSize) as? NSNumber)?.longLongValue ?: 0L
     }
     return size.toFloat() / (1024 * 1024)
+}
+
+@OptIn(ExperimentalForeignApi::class)
+actual fun clearCache() {
+    val tempDir = NSTemporaryDirectory()
+    val fileManager = NSFileManager.defaultManager
+
+    try {
+        val files = fileManager.contentsOfDirectoryAtPath(tempDir, null) ?: return
+        for (file in files) {
+            fileManager.removeItemAtPath("$tempDir/$file", null)
+        }
+    } catch (e: Exception) {
+        println("Error clearing cache: ${e.message}")
+    }
 }

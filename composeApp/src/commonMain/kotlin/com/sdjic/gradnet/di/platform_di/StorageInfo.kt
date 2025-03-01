@@ -10,6 +10,9 @@ data class StorageInfo(
 
 expect fun getStorageInfo(): StorageInfo
 
+expect fun clearCache()
+
+
 fun roundTwoDecimals(value: Float): Float {
     return (value * 100).toInt() / 100f
 }

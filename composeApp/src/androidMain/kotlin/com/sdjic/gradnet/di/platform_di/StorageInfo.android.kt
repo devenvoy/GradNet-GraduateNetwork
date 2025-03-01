@@ -70,3 +70,12 @@ fun getFolderSize(file: File): Float {
     }
     return size.toFloat() // Return size as Float for precision
 }
+
+actual fun clearCache() {
+    val context: Context = GradNetApp.AppContext
+        try {
+            context.cacheDir?.deleteRecursively()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+}

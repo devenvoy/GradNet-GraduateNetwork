@@ -179,7 +179,6 @@ val sampleJobs = listOf(
         postedDate = "2025-02-22T12:00:00",
         applyLink = "https://careers.google.com",
         companyLogo = "https://logo.clearbit.com/google.com",
-        experienceRequired = "3+ years",
         skills = listOf("Kotlin", "Jetpack Compose", "MVVM"),
         category = ""
     )

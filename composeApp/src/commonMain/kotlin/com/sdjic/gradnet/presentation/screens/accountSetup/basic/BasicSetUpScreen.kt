@@ -159,6 +159,7 @@ fun BasicSetUpScreen(
                     UserRole.Alumni -> "Spid no"
                     UserRole.Faculty -> "Faculty id"
                     UserRole.Organization -> "Organization id"
+                    UserRole.Admin -> "Admin"
                 }
             )
         }

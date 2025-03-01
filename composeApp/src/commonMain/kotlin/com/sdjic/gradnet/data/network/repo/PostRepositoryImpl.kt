@@ -27,11 +27,13 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
     private val baseUrl = BuildConfig.BASE_URL
 
     override suspend fun getPosts(
+        accessToken: String,
         page: Int,
         perPage: Int
     ): Result<ServerResponse<PostResponse>, ServerError> {
         return tryToExecute<ServerResponse<PostResponse>> {
             get("$baseUrl/posts") {
+                header("Authorization", "Bearer $accessToken")
                 parameter("page", "$page")
                 parameter("per_page", "$perPage")
             }

@@ -11,7 +11,7 @@ data class Post(
     val location : String,
     val userRole: UserRole,
     val likesCount: Int,
-    val liked: Boolean = false,
+    val liked: Boolean ,
     val images: List<String>,
     val createdAt: String
 )

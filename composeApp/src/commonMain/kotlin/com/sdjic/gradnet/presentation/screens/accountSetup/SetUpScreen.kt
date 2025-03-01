@@ -99,11 +99,12 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                 UiStateHandler(
                     uiState = setUpAccountViewModel.userData.collectAsState().value,
                     content = { userProfile ->
-                        val userRole by remember { mutableStateOf(userProfile.userRole) }
+                        val userRole by setUpAccountViewModel.userRole.collectAsState()
 
                         val setUpScreenTabs by remember {
                             mutableStateOf(
                                 when (userRole) {
+                                    UserRole.Admin,
                                     UserRole.Alumni,
                                     UserRole.Faculty -> listOf(
                                         TabItem.Basic,
@@ -111,7 +112,7 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                         TabItem.Profession
                                     )
 
-                                    UserRole.Organization -> listOf(
+                                    UserRole.Organization, null -> listOf(
                                         TabItem.Basic,
                                         TabItem.Profession
                                     )
@@ -130,7 +131,7 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                 setUpAccountViewModel = setUpAccountViewModel,
                                 tabs = setUpScreenTabs,
                                 pagerState = pagerState,
-                                userRole = userRole
+                                userRole = userRole ?: UserRole.Organization
                             )
                         }
                         PrimaryButton(

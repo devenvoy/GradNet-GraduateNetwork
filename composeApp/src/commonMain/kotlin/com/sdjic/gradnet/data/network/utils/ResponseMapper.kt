@@ -11,25 +11,22 @@ import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.core.model.ExperienceModel
 import com.sdjic.gradnet.presentation.core.model.SocialUrls
 import com.sdjic.gradnet.presentation.core.model.UserProfile
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 
 
 fun EducationDto.toEducationModel(): EducationModel {
     return EducationModel(
-        id = this.id,
         schoolName = this.schoolName,
-        degree = this.degree.ifEmpty { null },
-        field = this.fieldOfStudy?.ifEmpty { null },
-        location = this.location?.ifEmpty { null },
-        description = this.description?.ifEmpty { null },
-        startDate = this.startDate?.ifEmpty { null },
-        endDate = this.endDate?.ifEmpty { null }
+        degree = this.degree,
+        field = this.fieldOfStudy,
+        location = this.location,
+        description = this.description,
+        startDate = this.startDate,
+        endDate = this.endDate
     )
 }
 
 fun ExperienceDto.toExperienceModel(): ExperienceModel {
     return ExperienceModel(
-        id = this.id,
         title = this.jobTitle,
         type = this.jobType?.ifEmpty { null },
         company = this.companyName?.ifEmpty { null },
@@ -42,14 +39,14 @@ fun ExperienceDto.toExperienceModel(): ExperienceModel {
 
 
 fun List<URLDto>.toSocialUrls(): SocialUrls {
-    val linkedIn = this.find { it.type.equals("linkedin", ignoreCase = true) }?.url
-    val github = this.find { it.type.equals("github", ignoreCase = true) }?.url
-    val twitter = this.find { it.type.equals("twitter", ignoreCase = true) }?.url
+    val linkedIn = this.find { it.type.equals("linkedinUrl", ignoreCase = true) }?.url
+    val github = this.find { it.type.equals("githubUrl", ignoreCase = true) }?.url
+    val twitter = this.find { it.type.equals("twitterUrl", ignoreCase = true) }?.url
     val otherUrls = this.filterNot {
-        it.type.equals("linkedin", ignoreCase = true) ||
-                it.type.equals("github", ignoreCase = true) ||
-                it.type.equals("twitter", ignoreCase = true)
-    }.map { it.url }.filter { it.isNotEmpty() }
+        it.type.equals("linkedinUrl", ignoreCase = true) ||
+                it.type.equals("twitterUrl", ignoreCase = true) ||
+                it.type.equals("githubUrl", ignoreCase = true)
+    }.map { it.url ?: "" }.filter { it.isEmpty() }
 
     return SocialUrls(
         linkedIn = linkedIn,
@@ -65,7 +62,6 @@ fun UserProfileResponse.toUserProfile(): UserProfile {
         userName = this.name,
         email = this.email,
         verificationId = (this.verifyId ?: "").toString(),
-        userRole = UserRole.getUserRole(this.role) ?: UserRole.Alumni,
         isVerified = this.verified,
         isPlusMember = this.plusMember,
         isActive = this.isActive,
@@ -99,12 +95,11 @@ fun UrlTable.toUrlDto(): URLDto {
 }
 
 fun URLDto.toUrlTable(): UrlTable {
-    return UrlTable(0, type, url)
+    return UrlTable(0, type, url ?: "")
 }
 
 fun EducationDto.toEducationTable(): EducationTable {
     return EducationTable(
-        id = id,
         schoolName = schoolName,
         degree = degree,
         field = fieldOfStudy,
@@ -117,7 +112,6 @@ fun EducationDto.toEducationTable(): EducationTable {
 
 fun ExperienceDto.toExperienceTable(): ExperienceTable {
     return ExperienceTable(
-        id = id,
         title = jobTitle,
         type = jobType,
         company = companyName,
@@ -130,7 +124,6 @@ fun ExperienceDto.toExperienceTable(): ExperienceTable {
 
 fun EducationTable.toEducationModel(): EducationModel {
     return EducationModel(
-        id = this.id,
         schoolName = this.schoolName,
         degree = this.degree,
         field = this.field,
@@ -143,7 +136,6 @@ fun EducationTable.toEducationModel(): EducationModel {
 
 fun ExperienceTable.toExperienceModel(): ExperienceModel {
     return ExperienceModel(
-        id = this.id,
         title = this.title,
         type = this.type,
         company = this.company,

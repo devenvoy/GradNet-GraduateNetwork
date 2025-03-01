@@ -13,8 +13,7 @@ data class Job(
     val postedDate: String,
     val applyLink: String, // URL to apply
     val companyLogo: String?, // URL of company logo
-    val category: String,
-    val experienceRequired: String, // Experience needed (e.g., 2+ years)
+    val category: String, // industry
     val skills: List<String> // Required skills
 )
 

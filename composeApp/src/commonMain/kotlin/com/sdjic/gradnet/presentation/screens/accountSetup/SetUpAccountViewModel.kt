@@ -30,6 +30,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSc
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationState
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionState
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -54,6 +55,9 @@ class SetUpAccountViewModel(
 
     private val _isVerified = MutableStateFlow(prefs.isVerified)
     val isVerified = _isVerified.asStateFlow()
+
+    private val _userRole = MutableStateFlow(UserRole.getUserRole(prefs.userRole))
+    val userRole = _userRole.asStateFlow()
 
     private val _userData = MutableStateFlow<FetchUserUiState>(UiState.Idle)
     val userData = _userData.asStateFlow()

@@ -47,7 +47,7 @@ val screenModelsModule = module {
 }
 
 val userCases = module {
-    single { GetPostsUseCase(get()) }
+    single { GetPostsUseCase(get(),get()) }
     single { LikePostUseCase(get()) }
 }
 

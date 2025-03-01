@@ -15,11 +15,13 @@ sealed class UserRole(
     data object Faculty : UserRole(id = 2, name = "FACULTY", icon = Res.drawable.ic_faculty)
     data object Organization :
         UserRole(id = 3, name = "ORGANIZATION", icon = Res.drawable.ic_organization)
+    data object Admin : UserRole(id = 4, name = "ADMIN", icon = Res.drawable.ic_alumni)
 
     companion object{
         fun getUserRole(name: String): UserRole? {
             return when (name) {
                 "ALUMNI" -> Alumni
+                "ADMIN" -> Admin
                 "FACULTY" -> Faculty
                 "ORGANIZATION" -> Organization
                 else -> null

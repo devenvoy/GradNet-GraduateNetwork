@@ -15,5 +15,6 @@ data class PostDto(
     @SerialName("photos") val photos: List<String?>?,
     @SerialName("created_at") val createdAt: String,
     @SerialName("likes") val likes : Int = 0,
+    @SerialName("liked_by") val isLiked : Boolean,
     @SerialName("user_role") var userRole: String? = null
 )

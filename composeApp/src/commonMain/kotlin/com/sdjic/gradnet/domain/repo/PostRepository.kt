@@ -8,7 +8,7 @@ import com.sdjic.gradnet.data.network.utils.Result
 import io.ktor.client.content.ProgressListener
 
 interface PostRepository {
-    suspend fun getPosts(page: Int, perPage: Int): Result<ServerResponse<PostResponse>, ServerError>
+    suspend fun getPosts(accessToken: String,page: Int, perPage: Int): Result<ServerResponse<PostResponse>, ServerError>
 
     suspend fun getPostByUserId(userId: String): Result<ServerResponse<List<PostDto>>, ServerError>
 

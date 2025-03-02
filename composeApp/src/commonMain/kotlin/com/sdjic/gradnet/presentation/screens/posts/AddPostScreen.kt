@@ -355,14 +355,14 @@ fun UserDetailRow(userProfile: UserProfile) {
     ) {
         CircularProfileImage(
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-            placeHolderName = userProfile.name,
+            placeHolderName = userProfile.name.ifEmpty { userProfile.userName },
             data = userProfile.profilePic,
             borderWidth = 0.dp,
             imageSize = 50.dp
         )
         Column {
             Title(userProfile.name)
-            SText(userProfile.designation ?: "")
+            SText(userProfile.designation ?: userProfile.email)
         }
     }
 }

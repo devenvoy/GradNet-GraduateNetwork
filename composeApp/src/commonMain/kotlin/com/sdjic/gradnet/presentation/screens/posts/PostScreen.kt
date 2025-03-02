@@ -47,6 +47,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -65,6 +66,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -98,6 +102,7 @@ import gradnet_graduatenetwork.composeapp.generated.resources.app_name
 import gradnet_graduatenetwork.composeapp.generated.resources.heart
 import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.snapBackZoomable
@@ -123,6 +128,7 @@ class PostScreen : Screen {
         val modalSheetState = rememberModalBottomSheetState()
         val scrollBehavior = LocalScrollBehavior.current
         val rootNavigator = LocalRootNavigator.current
+        val lifecycleOwner = LocalLifecycleOwner.current
 
         var hasLoadedOnce by remember { mutableStateOf(false) }
         val postScreenModel = koinScreenModel<PostScreenModel>()
@@ -136,6 +142,27 @@ class PostScreen : Screen {
             }
         }
 
+        // Auto refresh every 5 minutes
+        LaunchedEffect(Unit) {
+            while (true) {
+                delay(5 * 60 * 1000) // 5 minutes
+                data.refresh()
+            }
+        }
+
+        // Refresh on resume
+        DisposableEffect(lifecycleOwner) {
+            val observer = LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    data.refresh()
+                }
+            }
+            lifecycleOwner.lifecycle.addObserver(observer)
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+            }
+        }
+
         // Track when data is first loaded
         LaunchedEffect(data.loadState) {
             if (data.loadState.refresh is LoadState.NotLoading) {
@@ -145,6 +172,7 @@ class PostScreen : Screen {
 
         BackHandler(enabled = listState.firstVisibleItemIndex > 5) {
             scope.launch {
+                data.refresh()
                 listState.animateScrollToItem(0)
             }
         }
@@ -346,9 +374,7 @@ class PostScreen : Screen {
                 Icon(
                     painter = painterResource(if (post.liked) Res.drawable.heart else Res.drawable.heart_outlined),
                     contentDescription = null,
-                    modifier = Modifier.size(28.dp).clickable(onClick = {
-                        onLikeClicked()
-                    }),
+                    modifier = Modifier.size(28.dp).noRippleEffect(onLikeClicked),
                     tint = if (post.liked) Color.Red
                     else MaterialTheme.colorScheme.onSurface.copy(.8f)
                 )
@@ -356,7 +382,7 @@ class PostScreen : Screen {
                 Icon(
                     painter = painterResource(Res.drawable.ic_share),
                     contentDescription = null,
-                    modifier = Modifier.clickable(onClick = {}).size(28.dp),
+                    modifier = Modifier.noRippleEffect(onClick = {}).size(28.dp),
                     tint = MaterialTheme.colorScheme.onSurface.copy(.8f)
                 )
             }

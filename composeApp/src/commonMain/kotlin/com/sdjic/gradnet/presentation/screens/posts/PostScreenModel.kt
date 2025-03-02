@@ -11,11 +11,10 @@ import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
 import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.core.model.Filter
 import com.sdjic.gradnet.presentation.core.model.Post
-import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.screens.auth.register.model.getUserRoles
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,13 +25,10 @@ class PostScreenModel(
     private val prefs: AppCacheSetting
 ) : ScreenModel {
 
-    val userTypeFilters = MutableStateFlow(
-        listOf(
-            Filter(UserRole.Alumni.name, false),
-            Filter(UserRole.Faculty.name, false),
-            Filter(UserRole.Organization.name, false),
-        )
+    private val _userTypeFilters = MutableStateFlow(
+        getUserRoles().map { Filter(it.name, false) }
     )
+    val userTypeFilters = _userTypeFilters.asStateFlow()
 
     private val _selectAllUserTypes = MutableStateFlow(false)
     val selectAllUserTypes = _selectAllUserTypes.asStateFlow()
@@ -49,26 +45,20 @@ class PostScreenModel(
 
     init {
         toggleSelectAll()
-        screenModelScope.launch {
-            refreshPosts()
-        }
+        screenModelScope.launch { refreshPosts() }
     }
 
     suspend fun refreshPosts() {
         getPostsUseCase(5)
             .cachedIn(screenModelScope)
-            .distinctUntilChanged()
-            .collect { pagingData ->
-                _posts.value = pagingData
-            }
+            .collect { pagingData -> _posts.update { pagingData } }
     }
 
     fun toggleLike(post: Post) {
-        val newPost = if (!post.liked) {
-            post.copy(likesCount = post.likesCount + 1, liked = true)
-        } else {
-            post.copy(likesCount = post.likesCount - 1, liked = false)
-        }
+        val newPost =  post.copy(
+            liked = !post.liked,
+            likesCount = if (post.liked) post.likesCount - 1 else post.likesCount + 1
+        )
 
         screenModelScope.launch {
             _posts.value = _posts.value.map { currentPost ->
@@ -85,23 +75,15 @@ class PostScreenModel(
 
     fun onAction(action: PostScreenAction) = screenModelScope.launch {
         when (action) {
-            is PostScreenAction.OnFilterChange -> {
-                updateFilter(action.filter)
-            }
-
-            is PostScreenAction.OnFilterSheetStateChange -> {
-                _showFilterSheet.update { action.show }
-            }
-
+            is PostScreenAction.OnFilterChange -> updateFilter(action.filter)
+            is PostScreenAction.OnFilterSheetStateChange -> _showFilterSheet.value = action.show
             PostScreenAction.OnToggleSelectAll -> toggleSelectAll()
-            PostScreenAction.OnUpdateFilter -> {
-                // todo update post query retry paging3
-            }
+            PostScreenAction.OnUpdateFilter -> refreshPosts()
         }
     }
 
     private fun updateFilter(filter: Filter) {
-        userTypeFilters.update { list ->
+        _userTypeFilters.update { list ->
             list.map {
                 if (it.key == filter.key) {
                     it.copy(value = filter.value)
@@ -114,10 +96,9 @@ class PostScreenModel(
     }
 
     fun toggleSelectAll() {
-        val newState = !_selectAllUserTypes.value
-        _selectAllUserTypes.value = newState
-        userTypeFilters.update {
-            it.map { it.copy(value = newState) }
-        }
+        val allSelected = _userTypeFilters.value.all { it.value }
+        _selectAllUserTypes.value = allSelected
+        _userTypeFilters.update { filters -> filters.map { it.copy(value = allSelected) } }
+
     }
 }

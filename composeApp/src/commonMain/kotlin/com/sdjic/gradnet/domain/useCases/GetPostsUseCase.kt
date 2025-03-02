@@ -26,28 +26,26 @@ class GetPostsUseCase(
                         page = page,
                         perPage = pageSize
                     ).map { result ->
-                        result.value?.postDtos?.mapNotNull { postDtoToPost(it) } ?: emptyList()
+                        result.value?.postDtos?.mapNotNull(::postDtoToPost) ?: emptyList()
                     }
                 }
             }
         ).flow
     }
 
-    private fun postDtoToPost(postDto: PostDto?): Post? {
-        return if (postDto != null)
-            Post(
-                postId = postDto.postId,
-                userId = postDto.userId.orEmpty(),
-                userName = postDto.userName.orEmpty(),
-                userImage = postDto.userProfilePic.orEmpty(),
-                userRole = UserRole.getUserRole(postDto.userRole ?: "") ?: UserRole.Alumni,
-                content = postDto.description,
-                likesCount = postDto.likes,
-                liked = postDto.isLiked,
-                images = postDto.photos?.filterNotNull() ?: emptyList(),
-                location = postDto.location.orEmpty(),
-                createdAt = postDto.createdAt
-            )
-        else null
+    private fun postDtoToPost(postDto: PostDto?) = postDto?.let {
+        Post(
+            postId = it.postId,
+            userId = it.userId.orEmpty(),
+            userName = it.userName.orEmpty(),
+            userImage = it.userProfilePic.orEmpty(),
+            userRole = UserRole.getUserRole(it.userRole ?: "") ?: UserRole.Alumni,
+            content = it.description,
+            likesCount = it.likes,
+            liked = it.isLiked,
+            images = it.photos?.filterNotNull() ?: emptyList(),
+            location = it.location.orEmpty(),
+            createdAt = it.createdAt
+        )
     }
 }

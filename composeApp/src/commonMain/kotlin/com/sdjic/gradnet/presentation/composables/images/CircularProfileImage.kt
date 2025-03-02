@@ -15,8 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
-import coil3.PlatformContext
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.compose.rememberAsyncImagePainter
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -25,7 +26,7 @@ import network.chaintech.sdpcomposemultiplatform.sdp
 @Composable
 fun CircularProfileImage(
     modifier: Modifier = Modifier,
-    context: PlatformContext,
+    placeHolderName: String,
     data: Any?,
     imageBitmap: ImageBitmap? = null,
     imageSize: Dp = 70.sdp,
@@ -33,6 +34,10 @@ fun CircularProfileImage(
     borderWidth: Dp = 2.sdp,
     backgroundColor: Color = Color.LightGray
 ) {
+    val context = LocalPlatformContext.current
+    val placeholderUrl = "https://ui-avatars.com/api/?name=$placeHolderName&background=random"
+    val placeholderPainter = rememberAsyncImagePainter(placeholderUrl)
+
     Box(
         modifier = modifier
             .size(imageSize)
@@ -49,6 +54,8 @@ fun CircularProfileImage(
                 .diskCachePolicy(CachePolicy.ENABLED)
                 .diskCacheKey("image_${data.hashCode()}")
                 .build(),
+            placeholder = placeholderPainter,
+            error = placeholderPainter,
             contentDescription = "user profile image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()

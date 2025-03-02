@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,13 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.composables.text.SText
+import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 @Composable
 fun CustomImageChip(
     text: String,
     selected: Boolean,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
+    onCloseClick: () -> Unit,
     modifier: Modifier = Modifier,
     showEndIcon: Boolean = true
 ) {
@@ -57,9 +59,9 @@ fun CustomImageChip(
             )
             if (selected && showEndIcon) {
                 Icon(
-                    imageVector = Icons.Filled.Done,
-                    contentDescription = "Done icon",
-                    modifier = Modifier.padding(end = 8.sdp)
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "close icon",
+                    modifier = Modifier.padding(end = 8.sdp).noRippleEffect(onCloseClick)
                 )
             }
         }

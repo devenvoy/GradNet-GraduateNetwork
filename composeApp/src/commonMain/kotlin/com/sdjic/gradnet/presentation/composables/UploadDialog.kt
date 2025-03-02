@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
@@ -64,7 +65,8 @@ fun UploadDialog(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            Icons.Default.CheckCircle,
+                            modifier = Modifier.size(98.dp),
+                            imageVector = Icons.Default.CheckCircle,
                             contentDescription = "Success",
                             tint = Color.Green
                         )
@@ -79,7 +81,12 @@ fun UploadDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(Icons.Default.Error, contentDescription = "Error", tint = Color.Red)
+                        Icon(
+                            modifier = Modifier.size(98.dp),
+                            imageVector = Icons.Default.Error,
+                            contentDescription = "Error",
+                            tint = Color.Red
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                         titleText = "Uploading Finished"
                         Text(state.error)

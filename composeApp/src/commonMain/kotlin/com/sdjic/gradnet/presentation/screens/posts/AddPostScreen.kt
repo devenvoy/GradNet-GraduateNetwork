@@ -58,7 +58,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.transitions.ScreenTransition
-import coil3.compose.LocalPlatformContext
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
@@ -66,9 +65,12 @@ import com.sdjic.gradnet.presentation.composables.UploadDialog
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.images.RoundedCornerImage
+import com.sdjic.gradnet.presentation.composables.richTextEditor.SlackLinkDialog
+import com.sdjic.gradnet.presentation.composables.richTextEditor.SlackPanel
+import com.sdjic.gradnet.presentation.composables.richTextEditor.SlackPanelButton
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.core.DummyDpImage
+import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.VerticalSlideTransition
@@ -83,7 +85,7 @@ import network.chaintech.cmpimagepickncrop.imagecropper.rememberImageCropper
 typealias AddPostState = UiState<String>
 
 @OptIn(ExperimentalVoyagerApi::class)
-class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
+class AddPostScreen : Screen, ScreenTransition by VerticalSlideTransition() {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -96,12 +98,14 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
         addPostScreenModel: AddPostScreenModel = koinScreenModel(), onDismiss: () -> Unit
     ) {
 
+        val imageCropper = rememberImageCropper()
+        val richTextState = rememberRichTextState()
         var showExitDialog by remember { mutableStateOf(false) }
         var isPanelVisible by remember { mutableStateOf(false) }
-        val richTextState = rememberRichTextState()
-        val openLinkDialog = remember { mutableStateOf(false) }
-        val imageCropper = rememberImageCropper()
         var openImagePicker by remember { mutableStateOf(false) }
+        val openLinkDialog = remember { mutableStateOf(false) }
+
+        val user by addPostScreenModel.user.collectAsState()
         val selectedImages by addPostScreenModel.selectedImages.collectAsState()
         val uiState by addPostScreenModel.uiState.collectAsState()
 
@@ -176,7 +180,7 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
             UiStateHandler(
                 uiState = uiState,
                 onErrorShowed = {},
-                content = {  }
+                content = { }
             )
 
             UploadDialog(
@@ -214,7 +218,7 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
             Column(
                 modifier = Modifier.padding(ip)
             ) {
-                UserDetailRow()
+                UserDetailRow(userProfile = user)
 
                 RichTextEditor(
                     state = richTextState,
@@ -345,21 +349,20 @@ class AddPost : Screen, ScreenTransition by VerticalSlideTransition() {
 }
 
 @Composable
-fun UserDetailRow() {
-    val platformContext = LocalPlatformContext.current
+fun UserDetailRow(userProfile: UserProfile) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         CircularProfileImage(
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-            context = platformContext,
-            data = DummyDpImage,
+            placeHolderName = userProfile.name,
+            data = userProfile.profilePic,
             borderWidth = 0.dp,
             imageSize = 50.dp
         )
         Column {
-            Title("Devansh Amdavadwala")
-            SText("Android Developer")
+            Title(userProfile.name)
+            SText(userProfile.designation ?: "")
         }
     }
 }

@@ -9,6 +9,7 @@ import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.di.platform_di.toByteArray
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.PostRepository
+import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UploadDialogState
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,8 @@ class AddPostScreenModel(
     private val _uploadDialogState = MutableStateFlow<UploadDialogState>(UploadDialogState.Idle)
     val uploadDialogState: StateFlow<UploadDialogState> = _uploadDialogState.asStateFlow()
 
-
+    private val _user = MutableStateFlow(pref.getUserProfile())
+    val user: StateFlow<UserProfile> = _user.asStateFlow()
 
     fun onImageSelected(image: ImageBitmap) {
         _selectedImages.update { it + image }

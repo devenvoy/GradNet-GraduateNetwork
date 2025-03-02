@@ -275,7 +275,7 @@ fun ProfileBackgroundImages(
             }
             CircularProfileImage(
                 modifier = Modifier.clickable(onClick = onProfileClick),
-                context = platformContext,
+                placeHolderName = basicState.nameField.ifEmpty { "Graduate network" },
                 data = basicState.profileImageUrl,
                 imageBitmap = basicState.profileImage,
                 imageSize = 90.sdp

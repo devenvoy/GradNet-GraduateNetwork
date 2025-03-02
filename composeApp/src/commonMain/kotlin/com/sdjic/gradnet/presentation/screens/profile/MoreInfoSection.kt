@@ -1,6 +1,5 @@
 package com.sdjic.gradnet.presentation.screens.profile
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -18,18 +17,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.gradnet.presentation.core.model.SocialUrls
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.github
 import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
 import gradnet_graduatenetwork.composeapp.generated.resources.mail_outline
 import gradnet_graduatenetwork.composeapp.generated.resources.phone
 import gradnet_graduatenetwork.composeapp.generated.resources.twitter_bird
+import network.chaintech.kmp_date_time_picker.ui.timepicker.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun MoreInfoSection() {
+fun MoreInfoSection(phoneNumber: String, email: String, socialUrls: SocialUrls?) {
     SText(
         text = "Contact Info",
         fontSize = 14.ssp,
@@ -48,7 +49,7 @@ fun MoreInfoSection() {
         },
         headlineContent = {
             Text(
-                text = "+91 9876543210",
+                text = phoneNumber,
                 style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
         },
@@ -59,7 +60,7 @@ fun MoreInfoSection() {
                 contentDescription = null
             )
         },
-        modifier = Modifier.clickable(onClick = {})
+        modifier = Modifier.noRippleEffect {}
     )
     // email
     ContactInfoItem(
@@ -72,7 +73,7 @@ fun MoreInfoSection() {
         },
         headlineContent = {
             Text(
-                text = "devanshamdavadwala@gmail.com",
+                text = email,
                 style = typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
             )
         },
@@ -83,8 +84,7 @@ fun MoreInfoSection() {
                 contentDescription = null
             )
         },
-        modifier = Modifier
-            .clickable(onClick = {})
+        modifier = Modifier.noRippleEffect {}
     )
     ContactInfoItem(
         leadingContent = {
@@ -107,8 +107,7 @@ fun MoreInfoSection() {
                 contentDescription = null
             )
         },
-        modifier = Modifier
-            .clickable(onClick = {})
+        modifier = Modifier.noRippleEffect {}
     )
     ContactInfoItem(
         leadingContent = {
@@ -132,8 +131,7 @@ fun MoreInfoSection() {
                 contentDescription = null
             )
         },
-        modifier = Modifier
-            .clickable(onClick = {})
+        modifier = Modifier.noRippleEffect {}
     )
     ContactInfoItem(
         leadingContent = {
@@ -157,8 +155,7 @@ fun MoreInfoSection() {
                 contentDescription = null
             )
         },
-        modifier = Modifier
-            .clickable(onClick = {})
+        modifier = Modifier.noRippleEffect {}
     )
 }
 

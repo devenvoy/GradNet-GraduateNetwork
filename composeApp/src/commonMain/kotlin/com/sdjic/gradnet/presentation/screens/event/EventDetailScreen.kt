@@ -143,7 +143,7 @@ class EventDetailScreen(
                                     text = number,
                                     selected = true,
                                     showEndIcon = false,
-                                    onClick = {},
+                                    onCloseClick = {},
                                     modifier = Modifier.padding(2.dp)
                                 )
                             }

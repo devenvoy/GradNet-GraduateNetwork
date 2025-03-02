@@ -22,6 +22,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
+import kotlinx.serialization.json.JsonElement
 
 class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(httpClient) {
     private val baseUrl = BuildConfig.BASE_URL
@@ -62,8 +63,8 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
         location: String,
         files: List<ByteArray>,
         listener: ProgressListener?
-    ): Result<ServerResponse<PostDto>, ServerError> {
-        return tryToExecute<ServerResponse<PostDto>> {
+    ): Result<ServerResponse<JsonElement>, ServerError> {
+        return tryToExecute<ServerResponse<JsonElement>> {
             post("$baseUrl/posts/create") {
                 header("Authorization", "Bearer $accessToken")
                 contentType(ContentType.MultiPart.FormData)
@@ -94,7 +95,17 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
     override suspend fun sendLikePostCall(
         accessToken: String,
         postId: String
-    ): Result<ServerResponse<Any?>, ServerError> {
-        return Result.Success(ServerResponse(200,null,"",true))
+    ): Result<ServerResponse<JsonElement>, ServerError> {
+        return tryToExecute<ServerResponse<JsonElement>> {
+            post("$baseUrl/posts/like") {
+                header("Authorization", "Bearer $accessToken")
+                contentType(ContentType.Application.Json)
+                setBody("""
+                    {
+                      "post_id": "$postId"
+                    }
+                """.trimIndent())
+            }
+        }
     }
 }

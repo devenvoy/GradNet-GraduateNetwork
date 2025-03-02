@@ -109,111 +109,33 @@ fun EducationSetUpScreen(
     }
 
     if (educationState.showLanguageDialog) {
-        BasicAlertDialog(
-            properties = DialogProperties(usePlatformDefaultWidth = false),
-            onDismissRequest = {}
-        ) {
-            Surface(
-                modifier = Modifier.padding(10.sdp),
-                shape = RoundedCornerShape(12.sdp)
-            ) {
-                val isAssertExpanded = remember { mutableStateOf(false) }
-                var selectedText by remember { mutableStateOf("") }
-                Column(
-                    modifier = Modifier.padding(10.sdp),
-                ) {
-                    Title(
-                        text = "Select Language",
-                        size = 16.ssp,
-                        modifier = Modifier.padding(8.sdp)
-                    )
-                    DropDownTextField(
-                        modifier = Modifier.padding(vertical = 10.sdp),
-                        hintText = "Select language",
-                        options = LanguagesList.filter { it !in educationState.languages },
-                        onClick = { isAssertExpanded.value = it },
-                        expanded = isAssertExpanded,
-                        onDismissReq = { isAssertExpanded.value = false },
-                        selectedText = selectedText,
-                        onValueSelected = { selectedText = it }
-                    )
-                    Row(modifier = Modifier.align(Alignment.End)) {
-                        TextButton(onClick = {
-                            isAssertExpanded.value = false
-                            onAction(
-                                EducationScreenAction.OnLanguageDialogStateChange(false)
-                            )
-                        }) { SText("Cancel", fontSize = 12.ssp) }
-                        TextButton(onClick = {
-                            onAction(EducationScreenAction.OnAddLanguage(selectedText))
-                            selectedText = ""
-                            isAssertExpanded.value = false
-                            onAction(
-                                EducationScreenAction.OnLanguageDialogStateChange(false)
-                            )
-                        }) {
-                            SText(
-                                "Ok",
-                                fontSize = 12.ssp,
-                                textColor = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                }
+        InterestAddingDialog(
+            title = "Select Language",
+            options = LanguagesList.filter { it !in educationState.languages },
+            onConfirm = {
+                onAction(EducationScreenAction.OnAddLanguage(it))
+            },
+            onDismiss = {
+                onAction(
+                    EducationScreenAction.OnLanguageDialogStateChange(false)
+                )
             }
-        }
+        )
     }
 
     if (educationState.showSkillDialog) {
-        BasicAlertDialog(
-            properties = DialogProperties(usePlatformDefaultWidth = false),
-            onDismissRequest = {}
-        ) {
-            Surface(
-                modifier = Modifier.padding(10.sdp),
-                shape = RoundedCornerShape(12.sdp)
-            ) {
-                val isAssertExpanded = remember { mutableStateOf(false) }
-                var selectedText by remember { mutableStateOf("") }
-                Column(
-                    modifier = Modifier.padding(10.sdp),
-                ) {
-                    Title(text = "Select Skill", size = 16.ssp, modifier = Modifier.padding(8.sdp))
-                    DropDownTextField(
-                        modifier = Modifier.padding(vertical = 10.sdp),
-                        hintText = "Select Skill",
-                        options = SkillList.filter { it !in educationState.skills }.sorted(),
-                        onClick = { isAssertExpanded.value = it },
-                        expanded = isAssertExpanded,
-                        onDismissReq = { isAssertExpanded.value = false },
-                        selectedText = selectedText,
-                        onValueSelected = { selectedText = it }
-                    )
-                    Row(modifier = Modifier.align(Alignment.End)) {
-                        TextButton(onClick = {
-                            isAssertExpanded.value = false
-                            onAction(
-                                EducationScreenAction.OnSkillDialogStateChange(false)
-                            )
-                        }) { SText("Cancel", fontSize = 12.ssp) }
-                        TextButton(onClick = {
-                            onAction(EducationScreenAction.OnAddSkill(selectedText))
-                            selectedText = ""
-                            isAssertExpanded.value = false
-                            onAction(
-                                EducationScreenAction.OnSkillDialogStateChange(false)
-                            )
-                        }) {
-                            SText(
-                                "Ok",
-                                fontSize = 12.ssp,
-                                textColor = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                }
+        InterestAddingDialog(
+            title = "Select Skill",
+            options = SkillList.filter { it !in educationState.skills }.sorted(),
+            onConfirm = {
+                onAction(EducationScreenAction.OnAddSkill(it))
+            },
+            onDismiss = {
+                onAction(
+                    EducationScreenAction.OnSkillDialogStateChange(false)
+                )
             }
-        }
+        )
     }
 
     Column(
@@ -243,7 +165,7 @@ fun EducationSetUpScreen(
                     text = language,
                     modifier = Modifier.padding(2.sdp),
                     selected = true,
-                    onClick = {
+                    onCloseClick = {
                         onAction(EducationScreenAction.OnRemoveLanguage(language))
                     }
                 )
@@ -271,7 +193,7 @@ fun EducationSetUpScreen(
                     text = skill,
                     modifier = Modifier.padding(2.sdp),
                     selected = true,
-                    onClick = {
+                    onCloseClick = {
                         onAction(EducationScreenAction.OnRemoveSkill(skill))
                     }
                 )
@@ -325,6 +247,61 @@ fun EducationSetUpScreen(
         }
     }
 
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun InterestAddingDialog(
+    title: String,
+    options: List<String>,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit,
+) {
+    BasicAlertDialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        onDismissRequest = onDismiss
+    ) {
+        Surface(
+            modifier = Modifier.padding(10.sdp),
+            shape = RoundedCornerShape(12.sdp)
+        ) {
+            val isAssertExpanded = remember { mutableStateOf(false) }
+            var selectedText by remember { mutableStateOf("") }
+            Column(
+                modifier = Modifier.padding(10.sdp),
+            ) {
+                Title(text = title, size = 16.ssp, modifier = Modifier.padding(8.sdp))
+                DropDownTextField(
+                    modifier = Modifier.padding(vertical = 10.sdp),
+                    hintText = title,
+                    options = options,
+                    onClick = { isAssertExpanded.value = it },
+                    expanded = isAssertExpanded,
+                    onDismissReq = { isAssertExpanded.value = false },
+                    selectedText = selectedText,
+                    onValueSelected = { selectedText = it }
+                )
+                Row(modifier = Modifier.align(Alignment.End)) {
+                    TextButton(onClick = {
+                        isAssertExpanded.value = false
+                        onDismiss()
+                    }) { SText("Cancel", fontSize = 12.ssp) }
+                    TextButton(onClick = {
+                        isAssertExpanded.value = false
+                        onConfirm(selectedText)
+                        selectedText = ""
+                        onDismiss()
+                    }) {
+                        SText(
+                            "Ok",
+                            fontSize = 12.ssp,
+                            textColor = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

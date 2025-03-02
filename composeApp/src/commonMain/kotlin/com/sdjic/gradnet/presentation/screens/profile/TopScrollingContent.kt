@@ -16,44 +16,43 @@ import coil3.compose.LocalPlatformContext
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.core.DummyDpImage
+import com.sdjic.gradnet.presentation.core.model.UserProfile
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
 @Composable
-fun TopScrollingContent(scrollState: ScrollState) {
+fun TopScrollingContent(
+    userProfile: UserProfile,
+    scrollState: ScrollState
+) {
     val visibilityChangeFloat = scrollState.value > initialImageFloat - 20
     Row {
-        AnimatedImage(scroll = scrollState.value.toFloat())
+        val dynamicAnimationSizeValue =
+            (initialImageFloat - scrollState.value.toFloat()).coerceIn(26f, initialImageFloat)
+        CircularProfileImage(
+            modifier = Modifier
+                .padding(start = 12.sdp)
+                .size(animateDpAsState(Dp(dynamicAnimationSizeValue)).value),
+            placeHolderName = userProfile.name,
+            data = userProfile.profilePic,
+            imageSize = 80.sdp
+        )
         Column(
             modifier = Modifier
                 .padding(start = 8.sdp, top = 16.sdp)
                 .alpha(animateFloatAsState(if (visibilityChangeFloat) 0f else 1f).value)
         ) {
             SText(
-                text = name,
+                text = userProfile.name,
                 fontSize = 12.ssp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 2.sdp)
             )
             SText(
-                text = "Android developer",
+                text = userProfile.designation ?: userProfile.email,
                 fontSize = 10.ssp,
                 fontWeight = FontWeight(400)
             )
         }
     }
-}
-
-@Composable
-fun AnimatedImage(scroll: Float) {
-    val dynamicAnimationSizeValue = (initialImageFloat - scroll).coerceIn(26f, initialImageFloat)
-    val platformContext = LocalPlatformContext.current
-    CircularProfileImage(
-        modifier = Modifier
-            .padding(start = 12.sdp)
-            .size(animateDpAsState(Dp(dynamicAnimationSizeValue)).value),
-        context = platformContext,
-        data = DummyDpImage,
-        imageSize = 80.sdp
-    )
 }

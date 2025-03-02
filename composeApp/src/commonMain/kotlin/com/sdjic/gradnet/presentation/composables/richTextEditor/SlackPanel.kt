@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.presentation.screens.posts
+package com.sdjic.gradnet.presentation.composables.richTextEditor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

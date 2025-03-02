@@ -100,7 +100,7 @@ import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
-import net.engawapg.lib.zoomable.zoomable
+import net.engawapg.lib.zoomable.snapBackZoomable
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
@@ -166,7 +166,7 @@ class PostScreen : Screen {
                     visible = listState.isScrollingUp(), enter = fadeIn(), exit = fadeOut()
                 ) {
                     FloatingActionButton(
-                        onClick = { rootNavigator.push(AddPost()) }) {
+                        onClick = { rootNavigator.push(AddPostScreen()) }) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = null)
                     }
                 }
@@ -298,7 +298,6 @@ class PostScreen : Screen {
         post: Post,
         onLikeClicked: () -> Unit = {},
     ) {
-        val platformContext = LocalPlatformContext.current
         var postedAgo by remember { mutableStateOf("Loading...") }
         LaunchedEffect(post.createdAt) {
             val localDateTime = parseDateAsync(post.createdAt)
@@ -311,7 +310,7 @@ class PostScreen : Screen {
 
             Row {
                 CircularProfileImage(
-                    context = platformContext,
+                    placeHolderName = post.userName,
                     data = post.userImage,
                     imageSize = 36.dp,
                     borderWidth = 0.dp
@@ -337,7 +336,7 @@ class PostScreen : Screen {
                 }
             }
             if (post.images.isNotEmpty()) {
-                PostImages(images = post.images)
+                PostImages(images = post.images, onLikeClicked = onLikeClicked)
             }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -365,7 +364,10 @@ class PostScreen : Screen {
     }
 
     @Composable
-    fun PostImages(images: List<String>) {
+    fun PostImages(
+        images: List<String>,
+        onLikeClicked: () -> Unit
+    ) {
         val pagerState = rememberPagerState(initialPage = 0, pageCount = { images.size })
         Box {
             HorizontalPager(
@@ -394,7 +396,10 @@ class PostScreen : Screen {
                                 .fillMaxWidth()
                                 .wrapContentHeight()
                                 .heightIn(max = 400.dp)
-                                .zoomable(rememberZoomState()),
+                                .snapBackZoomable(rememberZoomState(),
+                                    onDoubleTap = { onLikeClicked() },
+                                    onLongPress = { /* todo */ }
+                                ),
                             contentScale = ContentScale.Fit,
                         )
                     }

@@ -6,6 +6,7 @@ import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.utils.Result
 import io.ktor.client.content.ProgressListener
+import kotlinx.serialization.json.JsonElement
 
 interface PostRepository {
     suspend fun getPosts(accessToken: String,page: Int, perPage: Int): Result<ServerResponse<PostResponse>, ServerError>
@@ -20,7 +21,7 @@ interface PostRepository {
         location: String,
         files: List<ByteArray>,
         listener: ProgressListener?
-    ): Result<ServerResponse<PostDto>, ServerError>
+    ): Result<ServerResponse<JsonElement>, ServerError>
 
-    suspend fun sendLikePostCall(accessToken: String, postId: String): Result<ServerResponse<Any?>, ServerError>
+    suspend fun sendLikePostCall(accessToken: String, postId: String): Result<ServerResponse<JsonElement>, ServerError>
 }

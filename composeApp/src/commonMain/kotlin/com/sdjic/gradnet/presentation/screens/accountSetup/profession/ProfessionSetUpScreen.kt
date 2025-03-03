@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
 import com.maxkeppeker.sheets.core.models.base.Header
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -57,6 +57,7 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
+import com.sdjic.gradnet.presentation.composables.SwipeableItemWithActions
 import com.sdjic.gradnet.presentation.composables.button.PlusIconButton
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
@@ -71,10 +72,12 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Globe
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.edit_square
 import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
 import gradnet_graduatenetwork.composeapp.generated.resources.github
 import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
 import gradnet_graduatenetwork.composeapp.generated.resources.twitter_bird
+import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -279,23 +282,45 @@ fun ProfessionSetUpScreen(
                     horizontalArrangement = Arrangement.Start,
                     verticalArrangement = Arrangement.spacedBy(8.sdp)
                 ) {
-                    professionState.experienceList.fastForEachIndexed { index, item ->
-                        Box(
-                            modifier = Modifier.padding(horizontal = 8.sdp),
-                        ) {
-
-                            ExperienceItem(experience = item)
-
-                            Icon(
-                                modifier = Modifier.size(16.sdp).align(Alignment.TopEnd)
-                                    .clickable(onClick = {
-                                        onAction(ProfessionScreenAction.OnRemoveExperience(index))
-                                    }),
-                                painter = painterResource(Res.drawable.empty_trash),
-                                tint = errorColor,
-                                contentDescription = "cross",
-                            )
-                        }
+                    professionState.experienceList.forEachIndexed { index, item ->
+                        var isOptionRevealed by remember { mutableStateOf(false) }
+                        SwipeableItemWithActions(
+                            isRevealed = isOptionRevealed,
+                            onExpanded = { isOptionRevealed = true },
+                            onCollapsed = { isOptionRevealed = false },
+                            actions = {
+                                Row(
+                                    modifier = Modifier.fillMaxHeight()
+                                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                                        .padding(horizontal = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.sdp)
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(18.sdp)
+                                            .noRippleEffect {
+                                                onAction(
+                                                    ProfessionScreenAction.OnRemoveExperience(
+                                                        index
+                                                    )
+                                                )
+                                            },
+                                        painter = painterResource(Res.drawable.empty_trash),
+                                        tint = errorColor,
+                                        contentDescription = "cross",
+                                    )
+                                    Icon(
+                                        modifier = Modifier.size(18.sdp)
+                                            .noRippleEffect(onClick = {}),
+                                        painter = painterResource(Res.drawable.edit_square),
+                                        contentDescription = "edit",
+                                    )
+                                }
+                            },
+                            content = {
+                                ExperienceItem(experience = item)
+                            }
+                        )
                     }
                 }
             }

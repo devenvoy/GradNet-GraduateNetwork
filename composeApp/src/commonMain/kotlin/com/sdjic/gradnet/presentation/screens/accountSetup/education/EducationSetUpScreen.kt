@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -57,6 +58,7 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
+import com.sdjic.gradnet.presentation.composables.SwipeableItemWithActions
 import com.sdjic.gradnet.presentation.composables.button.PlusIconButton
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
@@ -72,8 +74,10 @@ import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.edit_square
 import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
 import kotlinx.datetime.LocalDate
+import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
@@ -223,30 +227,48 @@ fun EducationSetUpScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Start,
                 ) {
-                    educationState.eductionList.fastForEachIndexed { index, item ->
-                        Box(
-                            modifier = Modifier.padding(horizontal = 8.sdp, vertical = 4.sdp),
-                        ) {
-
-                            EducationItem(education = item)
-
-                            Icon(
-                                modifier = Modifier.padding(8.sdp).size(16.sdp)
-                                    .align(Alignment.TopEnd)
-                                    .clickable(onClick = {
-                                        onAction(EducationScreenAction.OnRemoveEducation(index))
-                                    }),
-                                painter = painterResource(Res.drawable.empty_trash),
-                                tint = errorColor,
-                                contentDescription = "cross",
-                            )
-                        }
+                    educationState.eductionList.forEachIndexed { index, item ->
+                        var isOptionRevealed by remember { mutableStateOf(false) }
+                        SwipeableItemWithActions(
+                            isRevealed = isOptionRevealed,
+                            onExpanded = { isOptionRevealed = true },
+                            onCollapsed = { isOptionRevealed = false },
+                            actions = {
+                                Row(
+                                    modifier = Modifier.fillMaxHeight()
+                                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                                        .padding(horizontal = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.sdp)
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(18.sdp)
+                                            .noRippleEffect {
+                                                onAction(
+                                                    EducationScreenAction.OnRemoveEducation(index)
+                                                )
+                                            },
+                                        painter = painterResource(Res.drawable.empty_trash),
+                                        tint = errorColor,
+                                        contentDescription = "cross",
+                                    )
+                                    Icon(
+                                        modifier = Modifier.size(18.sdp)
+                                            .noRippleEffect(onClick = {}),
+                                        painter = painterResource(Res.drawable.edit_square),
+                                        contentDescription = "edit",
+                                    )
+                                }
+                            },
+                            content = {
+                                EducationItem(education = item)
+                            }
+                        )
                     }
                 }
             }
         }
     }
-
 }
 
 @Composable

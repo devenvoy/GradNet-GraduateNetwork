@@ -10,10 +10,12 @@ import com.sdjic.gradnet.data.network.utils.BaseGateway
 import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import io.ktor.client.HttpClient
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.serialization.json.JsonElement
 
 class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(httpClient) {
 
@@ -25,7 +27,8 @@ class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(h
         val result = tryToExecute<ServerResponse<LoginResponse>> {
             post(BuildConfig.BASE_URL + "/login") {
                 contentType(ContentType.Application.Json)
-                setBody("""{
+                setBody(
+                    """{
                     "email": "$email",
                     "password": "$password"
                 }""".trimIndent()
@@ -45,5 +48,32 @@ class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(h
             }
         }
         return result
+    }
+
+    override suspend fun updatePassword(
+        accessToken: String,
+        oldPassword: String,
+        newPassword: String
+    ): Result<ServerResponse<JsonElement>, ServerError> {
+        return tryToExecute {
+            post(BuildConfig.BASE_URL + "/") {
+                contentType(ContentType.Application.Json)
+                header("Authorization", "Bearer $accessToken")
+                setBody(
+                    """{
+                    "old_password": "$oldPassword",
+                    "new_password": "$newPassword",
+                    "re_new_password": "$newPassword",
+                    """.trimIndent()
+                )
+            }
+        }
+    }
+
+    override suspend fun forgotPassword(
+        email: String,
+        newPassword: String
+    ): Result<ServerResponse<JsonElement>, ServerError> {
+        return Result.Error(ServerError(500, null,"Server Error"))
     }
 }

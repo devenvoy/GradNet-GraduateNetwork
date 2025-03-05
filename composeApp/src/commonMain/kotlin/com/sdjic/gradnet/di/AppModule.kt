@@ -23,6 +23,7 @@ import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
 import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
+import com.sdjic.gradnet.presentation.screens.auth.password.ChangePasswordScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
 import com.sdjic.gradnet.presentation.screens.demo.TestViewModel
 import com.sdjic.gradnet.presentation.screens.event.EventScreenModel
@@ -44,6 +45,7 @@ val screenModelsModule = module {
     factory { EventScreenModel(get()) }
     factory { AddPostScreenModel(get(),get()) }
     factory { JobScreenModel() }
+    factory { ChangePasswordScreenModel(get(),get()) }
 }
 
 val userCases = module {

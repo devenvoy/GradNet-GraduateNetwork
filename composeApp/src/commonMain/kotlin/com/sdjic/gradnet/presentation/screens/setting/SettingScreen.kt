@@ -1,16 +1,21 @@
 package com.sdjic.gradnet.presentation.screens.setting
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,6 +31,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.di.platform_di.getStorageInfo
 import com.sdjic.gradnet.presentation.composables.images.BackButton
+import com.sdjic.gradnet.presentation.composables.text.Title
+import com.sdjic.gradnet.presentation.screens.auth.password.ChangePasswordScreen
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 
 class SettingScreen : Screen {
@@ -50,7 +57,8 @@ class SettingScreen : Screen {
                 modifier = Modifier.padding(it)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(8.dp)
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
                 SettingItem(
@@ -62,6 +70,16 @@ class SettingScreen : Screen {
                         navigator.push(StorageScreen())
                     }
                 )
+
+                SettingItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    icon = Icons.Outlined.Password,
+                    title = "Change Password",
+                    onClick = {
+                        navigator.push(ChangePasswordScreen())
+                    }
+                )
+
             }
         }
     }
@@ -72,7 +90,7 @@ fun SettingItem(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     title: String,
-    subtitle: String,
+    subtitle: String? = null,
     onClick: () -> Unit = {}
 ) {
     Row(
@@ -80,20 +98,23 @@ fun SettingItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.padding(end = 16.dp),
+            modifier = Modifier.padding(end = 16.dp, start = 8.dp),
             imageVector = icon,
             tint = MaterialTheme.colorScheme.onSurface,
             contentDescription = null
         )
         Column {
-            Text(
+            Title(
                 text = title,
-                color = MaterialTheme.colorScheme.onSurface
+                textColor = MaterialTheme.colorScheme.onSurface
             )
-            Text(
-                text = subtitle,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            subtitle?.let {
+                Text(
+                    text = subtitle,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
+    HorizontalDivider()
 }

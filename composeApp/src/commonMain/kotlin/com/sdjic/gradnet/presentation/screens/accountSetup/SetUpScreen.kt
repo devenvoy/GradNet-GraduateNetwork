@@ -46,7 +46,6 @@ import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
-import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionSetUpScreen
@@ -206,11 +205,6 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
         userRole: UserRole
     ) {
         HorizontalPager(modifier = modifier, state = pagerState) { page ->
-            LaunchedEffect(page) {
-                setUpAccountViewModel.onBasicAction(
-                    BasicScreenAction.OnOtpBottomSheetStateChange(false)
-                )
-            }
             tabs[page].screen(setUpAccountViewModel, userRole)
         }
     }

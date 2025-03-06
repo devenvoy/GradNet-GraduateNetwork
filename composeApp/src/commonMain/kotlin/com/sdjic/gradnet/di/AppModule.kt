@@ -32,6 +32,7 @@ import com.sdjic.gradnet.presentation.screens.jobs.JobScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.AddPostScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.PostScreenModel
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreenModel
+import com.sdjic.gradnet.presentation.screens.verification.UserVerificationScreenModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.koin.dsl.module
@@ -48,6 +49,7 @@ val screenModelsModule = module {
     factory { JobScreenModel() }
     factory { SplashScreenModel(get(),get()) }
     factory { ChangePasswordScreenModel(get(),get()) }
+    factory { UserVerificationScreenModel(get(),get()) }
 }
 
 val userCases = module {

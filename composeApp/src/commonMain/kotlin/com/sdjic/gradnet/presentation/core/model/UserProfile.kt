@@ -52,9 +52,6 @@ fun UserProfile.toBasicState(): BasicState {
         profileImageUrl = this.profilePic,
         backGroundImageUrl = this.backgroundPic,
         verificationField = this.verificationId,
-        otpEmailField = "",
-        otpField = "",
-        showOtpBottomSheet = false,
         openBackGroundImagePicker = false,
         openProfileImagePicker = false
     )

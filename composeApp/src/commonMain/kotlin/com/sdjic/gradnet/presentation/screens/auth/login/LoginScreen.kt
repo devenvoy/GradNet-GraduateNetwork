@@ -47,9 +47,9 @@ import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputPasswordField
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
-import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
+import com.sdjic.gradnet.presentation.screens.verification.UserVerificationScreen
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.alternate_email
@@ -73,7 +73,7 @@ class LoginScreen : Screen {
         LoginScreenContent(
             loginScreenModel = loginScreenModel,
             onLoginResult = {
-                navigator.replace(if (it) HomeScreen() else SetUpScreen(false))
+                navigator.replace(if (it) HomeScreen() else UserVerificationScreen())
             },
             navigateToSignUp = { navigator.replace(SignUpScreen(true)) },
             navigateToForgotPasswordScreen = {}

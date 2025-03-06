@@ -13,7 +13,7 @@ data class  ServerResponse<T>(
     @SerialName("message")
     val detail: String = "",
     @SerialName("status")
-    val status: Boolean?
+    val status: Boolean
 )
 
 @Serializable
@@ -25,5 +25,5 @@ data class  ServerError(
     @SerialName("message")
     val detail: String = "",
     @SerialName("status")
-    val status: Boolean? = false
+    val status: Boolean = false
 ): com.sdjic.gradnet.data.network.utils.Error

@@ -21,9 +21,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.presentation.composables.text.Title
-import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import com.sdjic.gradnet.presentation.screens.onboarding.OnBoardingScreen
+import com.sdjic.gradnet.presentation.screens.verification.UserVerificationScreen
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.app_name
 import io.github.alexzhirkevich.compottie.Compottie
@@ -114,7 +114,7 @@ class SplashScreen : Screen {
             if (viewModel.isUserVerified()) {
                 navigator.replace(HomeScreen())
             } else {
-                navigator.replace(SetUpScreen(false))
+                navigator.replace(UserVerificationScreen())
             }
         } else {
             navigator.replace(OnBoardingScreen())

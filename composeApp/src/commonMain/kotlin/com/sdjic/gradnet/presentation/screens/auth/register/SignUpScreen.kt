@@ -61,10 +61,10 @@ import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputPasswordField
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
-import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
+import com.sdjic.gradnet.presentation.screens.verification.UserVerificationScreen
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -101,7 +101,7 @@ class SignUpScreen(
                 onErrorShowed = {},
                 content = {
                     LaunchedEffect(Unit) {
-                        navigator.replace(if (it) HomeScreen() else SetUpScreen(false))
+                        navigator.replace(if (it) HomeScreen() else  UserVerificationScreen())
                     }
                 })
         }

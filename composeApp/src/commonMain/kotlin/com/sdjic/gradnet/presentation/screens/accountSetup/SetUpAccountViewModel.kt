@@ -126,22 +126,9 @@ class SetUpAccountViewModel(
     fun onBasicAction(basicScreenAction: BasicScreenAction) {
         when (basicScreenAction) {
 
-            BasicScreenAction.ResendOtp -> resendOtp()
-            BasicScreenAction.VerifyOtp -> verifyOtp()
-
             is BasicScreenAction.OnVerificationFieldValueChange -> {
                 _basicState.value =
                     _basicState.value.copy(verificationField = basicScreenAction.value)
-            }
-
-            is BasicScreenAction.OnOtpFieldValueChange -> {
-                _basicState.value =
-                    _basicState.value.copy(otpField = basicScreenAction.value)
-            }
-
-            is BasicScreenAction.OnOtpBottomSheetStateChange -> {
-                _basicState.value =
-                    _basicState.value.copy(showOtpBottomSheet = basicScreenAction.value)
             }
 
             is BasicScreenAction.OnBackGroundDialogState -> {
@@ -336,47 +323,6 @@ class SetUpAccountViewModel(
                 delay(1000L)
             }
             _setUpOrEditState.value = UiState.Error(message)
-        }
-    }
-
-    private fun verifyOtp() {
-        screenModelScope.launch {
-            _setUpOrEditState.update { UiState.Loading }
-            val result = userRepository.verifyOtp(
-                _basicState.value.verificationField,
-                _basicState.value.otpField,
-                token = prefs.accessToken
-            )
-            result.onSuccess { r ->
-                r.value?.let { user ->
-                    prefs.accessToken = user.accessToken
-                    updateUserPreference(user)
-                    _setUpOrEditState.update { UiState.Success(r.detail) }
-                    onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
-                }
-            }.onError {
-                showErrorState(it.detail)
-                onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
-            }
-        }
-    }
-
-    private fun resendOtp() {
-        screenModelScope.launch {
-            _setUpOrEditState.update { UiState.Loading }
-            onBasicAction(BasicScreenAction.OnOtpFieldValueChange(""))
-            userRepository.sendOtp(_basicState.value.verificationField)
-                .apply {
-                    onSuccess { r ->
-                        _setUpOrEditState.update { UiState.Success(r.detail) }
-                        _basicState.update { it.copy(otpEmailField = r.value?.email ?: "") }
-                        onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(true))
-                    }
-                    onError { e ->
-                        showErrorState(e.detail)
-                        onBasicAction(BasicScreenAction.OnOtpBottomSheetStateChange(false))
-                    }
-                }
         }
     }
 

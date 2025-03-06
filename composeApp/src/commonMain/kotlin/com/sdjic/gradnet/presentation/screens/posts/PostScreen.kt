@@ -281,7 +281,8 @@ class PostScreen : Screen {
                         modifier = Modifier.padding(start = 10.dp)
                             .offset(y = (-20 * (ixd + 1)).dp),
                         state = filter.value,
-                        title = { Text(text = filter.key.lowercase().capitalize()) },
+                        title = { Text(text = filter.key.lowercase()
+                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }) },
                         enabled = true,
                         onCheckedChange = {
                             postScreenModel.onAction(

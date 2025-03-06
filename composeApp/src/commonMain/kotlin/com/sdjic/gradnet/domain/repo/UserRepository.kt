@@ -34,4 +34,8 @@ interface UserRepository {
         imageBitmap: ImageBitmap,
         type: String
     ): Result<ServerResponse<UserProfileResponse>, ServerError>
+
+    suspend fun checkUpdateToken(
+        oldToken: String
+    ): Result<ServerResponse<Map<String,String>>, ServerError>
 }

@@ -134,6 +134,15 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
         }
     }
 
+    override suspend fun checkUpdateToken(oldToken: String): Result<ServerResponse<Map<String,String>>, ServerError> {
+        return tryToExecute {
+            post(BuildConfig.BASE_URL + "/refresh-token/"){
+                header(HttpHeaders.Authorization, "Bearer $oldToken")
+                contentType(ContentType.Application.Json)
+            }
+        }
+    }
+
     override suspend fun sendOtp(verificationId: String): Result<ServerResponse<VerifyUserResponse>, ServerError> {
         return tryToExecute<ServerResponse<VerifyUserResponse>> {
             post(BuildConfig.BASE_URL + "/verify-user?verify_id=${verificationId}") {

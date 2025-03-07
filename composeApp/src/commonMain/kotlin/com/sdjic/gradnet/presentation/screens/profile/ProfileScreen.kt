@@ -5,28 +5,38 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Monitor
+import androidx.compose.material.icons.outlined.RememberMe
+import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -35,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -43,6 +54,7 @@ import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.composables.filter.InterestTag
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
+import com.sdjic.gradnet.presentation.composables.tabs.FancyIndicator
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.model.UserProfile
@@ -83,86 +95,174 @@ class ProfileScreen : Screen {
     }
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreenContent(
     userProfile: UserProfile,
     onEditClick: () -> Unit = {}
 ) {
-    val scrollState = rememberScrollState(0)
     val scope = rememberCoroutineScope()
     val drawerState = LocalDrawerController.current
+    val scrollState = rememberLazyListState()
+    val pagerState = rememberPagerState(1, pageCount = { 2 })
 
     Scaffold(
         topBar = {
             TopAppBarView(
                 userProfile = userProfile,
-                scroll = scrollState.value.toFloat(),
-                onMenuClick = {
-                    scope.launch { drawerState.open() }
-                }
+                scroll = scrollState.firstVisibleItemScrollOffset.toFloat(),
+                onMenuClick = { scope.launch { drawerState.open() } }
             )
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             TopBackground(userProfile.backgroundPic ?: "")
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(state = scrollState)
+
+            LazyColumn(
+                modifier = Modifier.padding(paddingValues),
+                state = scrollState
             ) {
-                Spacer(modifier = Modifier.height(120.sdp))
-                TopScrollingContent(userProfile = userProfile, scrollState = scrollState)
-                Column(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(8.sdp)
-                ) {
-                    EditButtonRow(onEditClick = onEditClick, onShareClick = {})
-                    AboutMeSection(userProfile.about)
-                    InterestsSection(title = "Skills", data = userProfile.skills)
-                    InterestsSection(title = "Languages", data = userProfile.languages)
-                    MoreInfoSection(
-                        phoneNumber = userProfile.phoneNumber,
-                        email = userProfile.email,
-                        socialUrls = userProfile.socialUrls
+                item {
+                    Spacer(modifier = Modifier.height(120.sdp))
+                    TopScrollingContent(
+                        userProfile = userProfile,
+                        listState = scrollState
                     )
                 }
-            }
 
-            if (scrollState.value < initialImageFloat + 240) {
-                IconButton(
-                    modifier = Modifier.align(Alignment.TopEnd)
-                        .padding(vertical = 28.sdp, horizontal = 4.sdp),
-                    onClick = {
-                        scope.launch { drawerState.open() }
-                    },
-                    colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.background)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = null
-                    )
+                item {
+                    Column(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(8.sdp)
+                    ) {
+                        SText(
+                            text = userProfile.name,
+                            fontSize = 14.ssp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 2.sdp)
+                        )
+                        SText(
+                            text = userProfile.email,
+                            fontSize = 10.ssp,
+                            fontWeight = FontWeight(400)
+                        )
+                        userProfile.designation?.let { desgn ->
+                            SText(
+                                text = desgn,
+                                fontSize = 10.ssp,
+                                fontWeight = FontWeight(400)
+                            )
+                        }
+                        EditButtonRow(onEditClick = onEditClick, onShareClick = {})
+                    }
+                }
+
+                // Sticky TabRow
+                stickyHeader {
+                    SecondaryTabRow(
+                        selectedTabIndex = pagerState.currentPage,
+                        containerColor = MaterialTheme.colorScheme.background,
+                        indicator = {
+                            FancyIndicator(
+                                MaterialTheme.colorScheme.surfaceVariant,
+                                Modifier.tabIndicatorOffset(pagerState.currentPage)
+                            )
+                        }
+                    ) {
+                        listOf("Posts", "Details").forEachIndexed { index, title ->
+                            Tab(
+                                selected = pagerState.currentPage == index,
+                                selectedContentColor = MaterialTheme.colorScheme.primary,
+                                unselectedContentColor = Color.Gray,
+                                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                                text = { Text(title) })
+                        }
+                    }
+                }
+
+                item {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background)
+                    ) { page ->
+                        when (page) {
+                            0 -> UserPostsContent()
+                            1 -> UserDetailsContent(userProfile)
+                        }
+                    }
                 }
             }
         }
     }
 }
 
+@Composable
+fun UserDetailsContent(userProfile: UserProfile) {
+    Column {
+        AboutMeSection(userProfile.about)
+        InterestsSection(icon = Icons.Outlined.Monitor, title = "Skills", data = userProfile.skills)
+        InterestsSection(
+            icon = Icons.Outlined.Translate,
+            title = "Languages",
+            data = userProfile.languages
+        )
+        MoreInfoSection(
+            phoneNumber = userProfile.phoneNumber,
+            email = userProfile.email,
+            socialUrls = userProfile.socialUrls
+        )
+
+        repeat(10) {
+            InterestsSection(
+                icon = Icons.Outlined.Translate,
+                title = "Languages",
+                data = userProfile.languages
+            )
+        }
+    }
+}
+
+@Composable
+fun UserPostsContent() {
+
+}
+
+
+@Composable
+fun SectionTitle(
+    icon: ImageVector,
+    title: String,
+) {
+    Row(
+        modifier = Modifier.padding(start = 6.sdp, top = 10.sdp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(16.dp),
+            imageVector = icon,
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.width(4.sdp))
+        SText(
+            text = title,
+            fontSize = 14.ssp,
+            fontWeight = FontWeight.W600,
+            textColor = MaterialTheme.colorScheme.onBackground,
+        )
+    }
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun InterestsSection(title: String = "Interests", data: List<String>?) {
+fun InterestsSection(
+    icon: ImageVector = Icons.Outlined.Info,
+    title: String = "Interests",
+    data: List<String>?
+) {
     if (data.isNullOrEmpty()) return
-    SText(
-        text = title,
-        fontSize = 14.ssp,
-        fontWeight = FontWeight.W600,
-        textColor = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.padding(start = 6.sdp, top = 12.sdp)
-    )
+    SectionTitle(icon = icon, title = title)
     FlowRow(modifier = Modifier.padding(6.sdp)) {
         data.forEach { InterestTag(it) }
     }
@@ -171,13 +271,7 @@ fun InterestsSection(title: String = "Interests", data: List<String>?) {
 
 @Composable
 fun AboutMeSection(about: String) {
-    SText(
-        text = "About Me",
-        fontSize = 14.ssp,
-        fontWeight = FontWeight.W600,
-        textColor = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.padding(start = 6.sdp, top = 12.sdp)
-    )
+    SectionTitle(icon = Icons.Outlined.RememberMe, title = "About Me")
     SText(
         text = about,
         modifier = Modifier
@@ -195,7 +289,7 @@ fun AboutMeSection(about: String) {
 @Composable
 fun TopAppBarView(scroll: Float, onMenuClick: () -> Unit, userProfile: UserProfile) {
     AnimatedVisibility(
-        scroll > initialImageFloat + 350,
+        scroll > initialImageFloat,
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically()
     ) {

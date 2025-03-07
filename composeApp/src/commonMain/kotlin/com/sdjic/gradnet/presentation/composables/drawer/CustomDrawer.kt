@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,7 @@ fun CustomDrawer(
                 Spacer(modifier = Modifier.height(4.dp))
             }
             Spacer(modifier = Modifier.weight(1f))
+            HorizontalDivider()
             NavigationItem.entries.toTypedArray().takeLast(1).forEach { navigationItem ->
                 NavigationItemView(
                     navigationItem = navigationItem,

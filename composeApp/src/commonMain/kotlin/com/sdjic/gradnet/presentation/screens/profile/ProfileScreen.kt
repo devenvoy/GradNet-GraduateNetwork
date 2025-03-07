@@ -1,17 +1,19 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+
 package com.sdjic.gradnet.presentation.screens.profile
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,39 +21,45 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Monitor
 import androidx.compose.material.icons.outlined.RememberMe
 import androidx.compose.material.icons.outlined.Translate
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import coil3.compose.LocalPlatformContext
+import com.sdjic.gradnet.di.platform_di.getScreenHeight
 import com.sdjic.gradnet.domain.AppCacheSetting
-import com.sdjic.gradnet.presentation.composables.filter.InterestTag
+import com.sdjic.gradnet.presentation.composables.InterestsSection
+import com.sdjic.gradnet.presentation.composables.SectionTitle
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.tabs.FancyIndicator
@@ -62,9 +70,12 @@ import com.sdjic.gradnet.presentation.helper.LocalDrawerController
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
+import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
 import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
 const val initialImageFloat = 120f
@@ -95,7 +106,6 @@ class ProfileScreen : Screen {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreenContent(
     userProfile: UserProfile,
@@ -106,11 +116,30 @@ fun ProfileScreenContent(
     val scrollState = rememberLazyListState()
     val pagerState = rememberPagerState(1, pageCount = { 2 })
 
+    /* val isStickyHeaderAtTop by remember {
+         derivedStateOf {
+             val visibleItems = scrollState.layoutInfo.visibleItemsInfo
+             val stickyHeader = visibleItems.firstOrNull { it.index == 2 } // TabRow index
+
+             stickyHeader?.offset == 0
+         }
+     }*/
+
+    val headerOffset by remember {
+        derivedStateOf {
+            val visibleItems = scrollState.layoutInfo.visibleItemsInfo
+            val stickyHeader = visibleItems.firstOrNull { it.index == 2 } // TabRow index
+            stickyHeader?.offset ?: Int.MAX_VALUE // Use max value if not in view
+        }
+    }
+
+    val isStickyHeaderNearTop = headerOffset <= 200
+
     Scaffold(
         topBar = {
             TopAppBarView(
                 userProfile = userProfile,
-                scroll = scrollState.firstVisibleItemScrollOffset.toFloat(),
+                isVisible = isStickyHeaderNearTop,
                 onMenuClick = { scope.launch { drawerState.open() } }
             )
         }
@@ -123,7 +152,7 @@ fun ProfileScreenContent(
                 state = scrollState
             ) {
                 item {
-                    Spacer(modifier = Modifier.height(120.sdp))
+                    Spacer(modifier = Modifier.height(120.dp))
                     TopScrollingContent(
                         userProfile = userProfile,
                         listState = scrollState
@@ -214,58 +243,14 @@ fun UserDetailsContent(userProfile: UserProfile) {
             socialUrls = userProfile.socialUrls
         )
 
-        repeat(10) {
-            InterestsSection(
-                icon = Icons.Outlined.Translate,
-                title = "Languages",
-                data = userProfile.languages
-            )
-        }
+        Spacer(modifier = Modifier.height(getScreenHeight() / 2))
     }
 }
 
 @Composable
 fun UserPostsContent() {
 
-}
-
-
-@Composable
-fun SectionTitle(
-    icon: ImageVector,
-    title: String,
-) {
-    Row(
-        modifier = Modifier.padding(start = 6.sdp, top = 10.sdp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            modifier = Modifier.size(16.dp),
-            imageVector = icon,
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.width(4.sdp))
-        SText(
-            text = title,
-            fontSize = 14.ssp,
-            fontWeight = FontWeight.W600,
-            textColor = MaterialTheme.colorScheme.onBackground,
-        )
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun InterestsSection(
-    icon: ImageVector = Icons.Outlined.Info,
-    title: String = "Interests",
-    data: List<String>?
-) {
-    if (data.isNullOrEmpty()) return
-    SectionTitle(icon = icon, title = title)
-    FlowRow(modifier = Modifier.padding(6.sdp)) {
-        data.forEach { InterestTag(it) }
-    }
+    Spacer(modifier = Modifier.height(getScreenHeight() / 2))
 }
 
 
@@ -285,13 +270,13 @@ fun AboutMeSection(about: String) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarView(scroll: Float, onMenuClick: () -> Unit, userProfile: UserProfile) {
+fun TopAppBarView(isVisible: Boolean, onMenuClick: () -> Unit, userProfile: UserProfile) {
+
     AnimatedVisibility(
-        scroll > initialImageFloat,
-        enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically()
+        visible = isVisible,
+        enter = fadeIn(tween(600)),
+        exit = fadeOut(tween(600))
     ) {
         TopAppBar(
             title = { Text(text = userProfile.name.ifEmpty { userProfile.userName }) },
@@ -345,5 +330,72 @@ private fun TopBackground(backGroundPic: String) {
                 .fillMaxWidth()
                 .background(Brush.verticalGradient(gradient))
         )
+    }
+}
+
+
+@Composable
+fun EditButtonRow(onEditClick: () -> Unit, onShareClick: () -> Unit) {
+
+    Spacer(modifier = Modifier.height(10.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.sdp)
+    ) {
+        OutlinedButton(
+            shape = RoundedCornerShape(4.sdp),
+            modifier = Modifier.weight(1f),
+            onClick = onEditClick,
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .6f),
+                containerColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = .1f)
+            )
+        ) {
+            SText("Edit Profile")
+        }
+
+        OutlinedButton(
+            shape = RoundedCornerShape(4.sdp),
+            onClick = onShareClick,
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .6f),
+                containerColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = .1f)
+            )
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_share),
+                contentDescription = "share"
+            )
+        }
+    }
+}
+
+@Composable
+fun TopScrollingContent(
+    userProfile: UserProfile,
+    listState: LazyListState
+) {
+    val scrollOffset = listState.firstVisibleItemScrollOffset * 2
+    val visibilityChangeFloat = scrollOffset > initialImageFloat
+
+    Row {
+        val dynamicAnimationSizeValue =
+            (initialImageFloat - scrollOffset.toFloat()).coerceIn(42f, initialImageFloat)
+
+        CircularProfileImage(
+            modifier = Modifier
+                .padding(start = 12.sdp)
+                .size(animateDpAsState(Dp(dynamicAnimationSizeValue)).value),
+            placeHolderName = userProfile.name,
+            data = userProfile.profilePic,
+            imageSize = 120.dp
+        )
+        Column(
+            modifier = Modifier
+                .padding(start = 8.sdp, top = 16.sdp)
+                .alpha(animateFloatAsState(if (visibilityChangeFloat) 0f else 1f).value)
+        ) {
+            // TODO: Show badges here
+        }
     }
 }

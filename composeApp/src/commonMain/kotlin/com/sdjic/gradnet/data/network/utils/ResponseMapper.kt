@@ -39,9 +39,9 @@ fun ExperienceDto.toExperienceModel(): ExperienceModel {
 
 
 fun List<URLDto>.toSocialUrls(): SocialUrls {
-    val linkedIn = this.find { it.type.equals("linkedinUrl", ignoreCase = true) }?.url
-    val github = this.find { it.type.equals("githubUrl", ignoreCase = true) }?.url
-    val twitter = this.find { it.type.equals("twitterUrl", ignoreCase = true) }?.url
+    val linkedIn = this.find { it.type.lowercase().equals("linkedinUrl", ignoreCase = true) }?.url
+    val github = this.find { it.type.lowercase().equals("githubUrl", ignoreCase = true) }?.url
+    val twitter = this.find { it.type.lowercase().equals("twitterUrl", ignoreCase = true) }?.url
     val otherUrls = this.filterNot {
         it.type.equals("linkedinUrl", ignoreCase = true) ||
                 it.type.equals("twitterUrl", ignoreCase = true) ||

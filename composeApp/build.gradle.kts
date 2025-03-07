@@ -40,7 +40,6 @@ kotlin {
 
             implementation(compose.uiTooling)
             implementation(libs.ktor.client.okhttp)
-            implementation("com.github.chuckerteam.chucker:library:4.1.0")
         }
 
         commonMain.dependencies {
@@ -128,10 +127,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-}
 
-dependencies {
-    debugImplementation(compose.uiTooling)
+    dependencies {
+        debugImplementation(compose.uiTooling)
+        debugImplementation("com.github.chuckerteam.chucker:library:4.1.0")
+        debugImplementation("com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:1.0.7")
+    }
 }
 
 

@@ -7,11 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import com.mmk.kmpnotifier.permission.permissionUtil
 
 class MainActivity : ComponentActivity() {
+    companion object{
+        lateinit var instance: MainActivity
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        instance = this
         val permissionUtil by permissionUtil()
-        permissionUtil.askNotificationPermission() //this will ask permission in Android 13(API Level 33) or above, otherwise permission will be granted.
+        permissionUtil.askNotificationPermission()
         setContent {
             App()
         }

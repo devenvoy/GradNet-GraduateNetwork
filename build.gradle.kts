@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.kotlinCocoapods) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.swiftklib) apply false
 }

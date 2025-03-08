@@ -6,8 +6,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 
-// added
+//   added
     alias(libs.plugins.ksp)
+    alias(libs.plugins.swiftklib)
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.kotlin.serialization)
@@ -48,6 +49,13 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
+        }
+        iosTarget.compilations {
+            val main by getting {
+                cinterops {
+                    create("IosHelper")
+                }
+            }
         }
     }
 
@@ -170,10 +178,6 @@ ksp {
 
 dependencies {
     coreLibraryDesugaring(libs.desugar)
-}
-
-dependencies {
-
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.ui.android)
     // Android
@@ -183,4 +187,11 @@ dependencies {
     add("kspIosSimulatorArm64", libs.room.compiler)
     add("kspIosX64", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
+}
+
+swiftklib {
+    create("IosHelper") {
+        path = file("../iosApp/iosApp/helpers")
+        packageName("com.sdjic.ioshelper")
+    }
 }

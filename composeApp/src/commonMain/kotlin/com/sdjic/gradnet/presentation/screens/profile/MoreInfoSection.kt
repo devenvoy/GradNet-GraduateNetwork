@@ -5,7 +5,11 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.sdjic.gradnet.di.platform_di.getContactsUtil
 import com.sdjic.gradnet.presentation.composables.SectionTitle
 import com.sdjic.gradnet.presentation.composables.button.ContactIconButton
 import com.sdjic.gradnet.presentation.core.model.SocialUrls
@@ -25,6 +29,8 @@ fun MoreInfoSection(phoneNumber: String, email: String, socialUrls: SocialUrls?)
 
     SectionTitle(icon = painterResource(Res.drawable.ic_contacts), title = "Contacts")
 
+    val contactsUtil by remember { mutableStateOf(getContactsUtil()) }
+
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -34,35 +40,50 @@ fun MoreInfoSection(phoneNumber: String, email: String, socialUrls: SocialUrls?)
         // Phone
         ContactIconButton(
             icon = painterResource(Res.drawable.phone),
-            onClick = {}
+            onClick = {
+                contactsUtil.dialPhoneNumber(phoneNumber)
+            }
         )
+
         ContactIconButton(
             icon = painterResource(Res.drawable.mail_outline),
-            onClick = {}
+            onClick = {
+                contactsUtil.sendEmail(email, "", "")
+            }
         )
+
         socialUrls?.github?.let {
             ContactIconButton(
                 icon = painterResource(Res.drawable.github),
-                onClick = {}
+                onClick = {
+                    contactsUtil.openLink(it)
+                }
             )
         }
+
         socialUrls?.linkedIn?.let {
             ContactIconButton(
                 icon = painterResource(Res.drawable.linkedin),
-                onClick = {}
+                onClick = {
+                    contactsUtil.openLink(it)
+                }
             )
         }
         socialUrls?.twitter?.let {
             ContactIconButton(
                 icon = painterResource(Res.drawable.twitter_bird),
-                onClick = {}
+                onClick = {
+                    contactsUtil.openLink(it)
+                }
             )
         }
 
         socialUrls?.otherUrls?.forEach { url ->
             ContactIconButton(
                 icon = painterResource(Res.drawable.ic_link),
-                onClick = {}
+                onClick = {
+                    contactsUtil.openLink(url)
+                }
             )
         }
     }

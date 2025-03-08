@@ -9,7 +9,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -81,6 +80,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.alorma.compose.settings.ui.SettingsCheckbox
+import com.sdjic.gradnet.di.platform_di.getContactsUtil
 import com.sdjic.gradnet.presentation.composables.LoadingAnimation
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.text.ExpandableRichText
@@ -237,7 +237,8 @@ class PostScreen : Screen {
                         post = item,
                         onLikeClicked = {
                             postScreenModel.toggleLike(item)
-                        }
+                        },
+                        onShareClick = { getContactsUtil().sharePost(item) }
                     )
                 }
             }
@@ -326,6 +327,7 @@ class PostScreen : Screen {
         modifier: Modifier = Modifier,
         post: Post,
         onLikeClicked: () -> Unit = {},
+        onShareClick: () -> Unit= {},
     ) {
         var postedAgo by remember { mutableStateOf("Loading...") }
         LaunchedEffect(post.createdAt) {
@@ -383,7 +385,7 @@ class PostScreen : Screen {
                 Icon(
                     painter = painterResource(Res.drawable.ic_share),
                     contentDescription = null,
-                    modifier = Modifier.noRippleEffect(onClick = {}).size(28.dp),
+                    modifier = Modifier.noRippleEffect(onShareClick).size(28.dp),
                     tint = MaterialTheme.colorScheme.onSurface.copy(.8f)
                 )
             }

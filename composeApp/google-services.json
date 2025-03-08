@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "352124325984",
+    "project_id": "gradnet-446916",
+    "storage_bucket": "gradnet-446916.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352124325984:android:7f1d05043ceca27ab1f305",
+        "android_client_info": {
+          "package_name": "com.sdjic.gradnet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "352124325984-v4qgussimtkq2kjbad4tedu2ck1osnt8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sdjic.gradnet",
+            "certificate_hash": "9fe4e3bdf16b73ec417155c2bde203405e3f809a"
+          }
+        },
+        {
+          "client_id": "352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATTwVSoxftKseduPJDt-_6I4W1fdetvHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "352124325984-4td60prqdct0ka27aqhfmiubi8mmvdgc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sdjic.gradnet.GradNet-GraduateNetwork"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

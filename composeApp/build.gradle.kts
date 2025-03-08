@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,16 +7,34 @@ plugins {
     alias(libs.plugins.composeCompiler)
 
 // added
-    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.buildConfig)
+    alias(libs.plugins.kotlinCocoapods)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+   androidTarget()
+
+    cocoapods {
+        summary = "Some description for the Shared Module"
+        homepage = "Link to the Shared Module homepage"
+        version = "1.0"
+        ios.deploymentTarget = "16.0"
+        podfile = project.file("../iosApp/Podfile")
+
+        framework {
+            baseName = "composeApp"
+            isStatic = true
+            export(libs.kmpNotifier)
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            transitiveExport = true
+
+            linkerOpts.add("-lsqlite3")
+//            linkerOpts.add("-Xbinary=bundleId=com.example")
+//            binaryOption("bundleId", "com.example")
+
         }
     }
 
@@ -27,6 +44,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export(libs.kmpNotifier)
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
@@ -92,6 +110,8 @@ kotlin {
             implementation(project(":color"))
             implementation(project(":calendar"))
             implementation (libs.zoomable)
+
+            api(libs.kmpNotifier)
         }
 
         iosMain.dependencies {
@@ -118,9 +138,9 @@ android {
         }
     }
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
+       release {
+           isMinifyEnabled = false
+       }
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true

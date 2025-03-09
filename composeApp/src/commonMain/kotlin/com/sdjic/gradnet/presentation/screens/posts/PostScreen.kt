@@ -9,6 +9,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -96,6 +97,7 @@ import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.isScrollingUp
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
+import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.app_name
@@ -238,7 +240,11 @@ class PostScreen : Screen {
                         onLikeClicked = {
                             postScreenModel.toggleLike(item)
                         },
-                        onShareClick = { getContactsUtil().sharePost(item) }
+                        onShareClick = { getContactsUtil().sharePost(item) },
+                        onProfileClick = {
+                            rootNavigator.push(ProfileScreen(item.userId))
+                        },
+                        checkProfileEnable = true
                     )
                 }
             }
@@ -324,10 +330,12 @@ class PostScreen : Screen {
 
     @Composable
     fun PostItem(
-        modifier: Modifier = Modifier,
         post: Post,
+        checkProfileEnable : Boolean,
+        modifier: Modifier = Modifier,
         onLikeClicked: () -> Unit = {},
         onShareClick: () -> Unit= {},
+        onProfileClick: () -> Unit = {}
     ) {
         var postedAgo by remember { mutableStateOf("Loading...") }
         LaunchedEffect(post.createdAt) {
@@ -341,6 +349,7 @@ class PostScreen : Screen {
 
             Row {
                 CircularProfileImage(
+                    modifier = Modifier.clickable(enabled = checkProfileEnable, onClick = onProfileClick),
                     placeHolderName = post.userName,
                     data = post.userImage,
                     imageSize = 36.dp,
@@ -349,6 +358,7 @@ class PostScreen : Screen {
                 Column(modifier = Modifier.padding(horizontal = 6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SText(
+                            modifier = Modifier.clickable(enabled = checkProfileEnable, onClick = onProfileClick),
                             text = post.userName,
                             fontSize = 16.sp,
                             fontWeight = FontWeight(800)

@@ -33,6 +33,7 @@ import androidx.compose.material.icons.outlined.Monitor
 import androidx.compose.material.icons.outlined.RememberMe
 import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +44,8 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -55,9 +58,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import coil3.compose.LocalPlatformContext
 import com.sdjic.gradnet.di.platform_di.getScreenHeight
-import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.composables.InterestsSection
 import com.sdjic.gradnet.presentation.composables.SectionTitle
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
@@ -68,6 +71,9 @@ import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.helper.LocalDrawerController
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
+import com.sdjic.gradnet.presentation.helper.UiState
+import com.sdjic.gradnet.presentation.helper.UiStateHandler
+import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
@@ -76,31 +82,46 @@ import kotlinx.coroutines.launch
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 
 const val initialImageFloat = 120f
 
-//NOTE: This stuff should usually be in a parent activity/Navigator
-// We can pass callback to profileScreen to get the click.
-//internal fun launchSocialActivity(context: Context, socialType: String) {
-//    val intent = when (socialType) {
-//        "github" -> Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
-//        "repository" -> Intent(Intent.ACTION_VIEW, Uri.parse(githubRepoUrl))
-//        "linkedin" -> Intent(Intent.ACTION_VIEW, Uri.parse(linkedInUrl))
-//        else -> Intent(Intent.ACTION_VIEW, Uri.parse(twitterUrl))
-//    }
-//    context.startActivity(intent)
-//}
 
-class ProfileScreen : Screen {
+typealias ProfileScreenState = UiState<UserProfile>
+
+
+class ProfileScreen(val userId: String? = null) : Screen {
     @Composable
     override fun Content() {
-        val parentNavigator = LocalRootNavigator.current
-        val appCacheSetting = koinInject<AppCacheSetting>()
+        val parentNavigator = runCatching { LocalRootNavigator.current }.getOrNull()
+        val localNavigator = LocalNavigator.current
+        val profileScreenModel = koinScreenModel<ProfileScreenModel>()
+        val state by profileScreenModel.profileState.collectAsState()
+        val isReadOnlyMode by profileScreenModel.isReadOnlyMode.collectAsState()
+
+        val drawerState = runCatching { LocalDrawerController.current }.getOrNull()
+
+        LaunchedEffect(userId) {
+            if (userId == null) {
+                profileScreenModel.loadUserProfile()
+            } else {
+                profileScreenModel.fetchAndLoadUserProfile(userId)
+            }
+        }
+
         AppTheme {
-            ProfileScreenContent(
-                userProfile = appCacheSetting.getUserProfile(),
-                onEditClick = { parentNavigator.push(SetUpScreen(true)) },
+            UiStateHandler(
+                uiState = state,
+                onErrorShowed = {
+                    localNavigator?.pop()
+                },
+                content = {
+                    ProfileScreenContent(
+                        userProfile = it,
+                        isReadOnlyMode = isReadOnlyMode,
+                        drawerState = drawerState,
+                        onEditClick = { parentNavigator?.push(SetUpScreen(true)) },
+                    )
+                }
             )
         }
     }
@@ -109,21 +130,14 @@ class ProfileScreen : Screen {
 @Composable
 fun ProfileScreenContent(
     userProfile: UserProfile,
-    onEditClick: () -> Unit = {}
+    onEditClick: () -> Unit = {},
+    isReadOnlyMode: Boolean = false,
+    drawerState: DrawerState? = null
 ) {
     val scope = rememberCoroutineScope()
-    val drawerState = LocalDrawerController.current
     val scrollState = rememberLazyListState()
     val pagerState = rememberPagerState(1, pageCount = { 2 })
 
-    /* val isStickyHeaderAtTop by remember {
-         derivedStateOf {
-             val visibleItems = scrollState.layoutInfo.visibleItemsInfo
-             val stickyHeader = visibleItems.firstOrNull { it.index == 2 } // TabRow index
-
-             stickyHeader?.offset == 0
-         }
-     }*/
 
     val headerOffset by remember {
         derivedStateOf {
@@ -140,7 +154,7 @@ fun ProfileScreenContent(
             TopAppBarView(
                 userProfile = userProfile,
                 isVisible = isStickyHeaderNearTop,
-                onMenuClick = { scope.launch { drawerState.open() } }
+                onMenuClick = { scope.launch { drawerState?.open() } }
             )
         }
     ) { paddingValues ->
@@ -183,7 +197,9 @@ fun ProfileScreenContent(
                                 fontWeight = FontWeight(400)
                             )
                         }
-                        EditButtonRow(onEditClick = onEditClick, onShareClick = {})
+                        if (isReadOnlyMode.not()) {
+                            EditButtonRow(onEditClick = onEditClick, onShareClick = {})
+                        }
                     }
                 }
 
@@ -249,7 +265,6 @@ fun UserDetailsContent(userProfile: UserProfile) {
 
 @Composable
 fun UserPostsContent() {
-
     Spacer(modifier = Modifier.height(getScreenHeight() / 2))
 }
 

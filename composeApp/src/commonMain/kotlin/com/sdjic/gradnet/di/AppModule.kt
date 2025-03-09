@@ -31,6 +31,7 @@ import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
 import com.sdjic.gradnet.presentation.screens.jobs.JobScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.AddPostScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.PostScreenModel
+import com.sdjic.gradnet.presentation.screens.profile.ProfileScreenModel
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreenModel
 import com.sdjic.gradnet.presentation.screens.verification.UserVerificationScreenModel
 import kotlinx.coroutines.Dispatchers
@@ -38,18 +39,25 @@ import kotlinx.coroutines.IO
 import org.koin.dsl.module
 
 val screenModelsModule = module {
-    factory { TestViewModel(testRepository = get()) }
-    factory { HomeScreenViewModel(get()) }
+
+    factory { SplashScreenModel(get(),get()) }
+
+    // auth
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
-    factory { SetUpAccountViewModel(get(),get(),get()) }
-    factory { PostScreenModel(get(),get(),get()) }
-    factory { EventScreenModel(get()) }
-    factory { AddPostScreenModel(get(),get()) }
-    factory { JobScreenModel() }
-    factory { SplashScreenModel(get(),get()) }
     factory { ChangePasswordScreenModel(get(),get()) }
     factory { UserVerificationScreenModel(get(),get()) }
+
+    factory { HomeScreenViewModel(get()) }
+    factory { ProfileScreenModel(get(),get(),get()) }
+    factory { SetUpAccountViewModel(get(),get(),get()) }
+
+    factory { PostScreenModel(get(),get(),get()) }
+    factory { AddPostScreenModel(get(),get()) }
+    factory { JobScreenModel() }
+    factory { EventScreenModel(get()) }
+
+    factory { TestViewModel(testRepository = get()) }
 }
 
 val userCases = module {

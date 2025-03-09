@@ -19,7 +19,9 @@ interface UserRepository {
         token:String
     ): Result<ServerResponse<UserProfileResponse>, ServerError>
 
-    suspend fun fetchUser(token: String): Result<ServerResponse<UserProfileResponse>, ServerError>
+    suspend fun fetchProfile(token: String): Result<ServerResponse<UserProfileResponse>, ServerError>
+
+    suspend fun fetchUser(userId: String) : Result<ServerResponse<UserProfileResponse>, ServerError>
 
     suspend fun updateUser(
         userRole: String,

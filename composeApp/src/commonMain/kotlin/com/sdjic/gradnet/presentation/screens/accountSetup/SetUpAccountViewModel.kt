@@ -76,7 +76,7 @@ class SetUpAccountViewModel(
             try {
                 var result = prefs.getUserProfile()
                 if (!_isVerified.value or !prefs.firstInitialized) {
-                    userRepository.fetchUser(prefs.accessToken).onSuccess {
+                    userRepository.fetchProfile(prefs.accessToken).onSuccess {
                         it.value?.let { up ->
                             prefs.firstInitialized = true
                             updateUserPreference(up)

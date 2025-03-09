@@ -37,10 +37,18 @@ import kotlinx.coroutines.withContext
 
 class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(httpClient) {
 
-    override suspend fun fetchUser(token: String): Result<ServerResponse<UserProfileResponse>, ServerError> {
+    override suspend fun fetchProfile(token: String): Result<ServerResponse<UserProfileResponse>, ServerError> {
         return tryToExecute<ServerResponse<UserProfileResponse>> {
             get(BuildConfig.BASE_URL + "/fetch_profile") {
                 header(HttpHeaders.Authorization, "Bearer $token")
+                contentType(ContentType.Application.Json)
+            }
+        }
+    }
+
+    override suspend fun fetchUser(userId: String): Result<ServerResponse<UserProfileResponse>, ServerError> {
+        return tryToExecute<ServerResponse<UserProfileResponse>> {
+            get(BuildConfig.BASE_URL + "/fetch_profile/$userId") {
                 contentType(ContentType.Application.Json)
             }
         }

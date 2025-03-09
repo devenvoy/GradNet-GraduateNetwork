@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class UrlTable(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val type: String,
-    val url: String
+    val url: String?
 )

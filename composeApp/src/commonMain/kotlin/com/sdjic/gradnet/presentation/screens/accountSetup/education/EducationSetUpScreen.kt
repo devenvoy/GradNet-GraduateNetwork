@@ -218,6 +218,7 @@ fun EducationSetUpScreen(
         }
         if (educationState.eductionList.isNotEmpty()) {
             Card(
+                modifier = Modifier.padding(bottom = 80.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),

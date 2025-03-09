@@ -95,7 +95,7 @@ fun UrlTable.toUrlDto(): URLDto {
 }
 
 fun URLDto.toUrlTable(): UrlTable {
-    return UrlTable(0, type, url ?: "")
+    return UrlTable(0, type, url)
 }
 
 fun EducationDto.toEducationTable(): EducationTable {

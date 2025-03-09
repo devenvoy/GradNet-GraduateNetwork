@@ -1,6 +1,7 @@
 package com.sdjic.gradnet.presentation.screens.splash
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -59,14 +61,14 @@ class SplashScreen : Screen {
             }
         }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
             SplashScreenContent()
             if (viewModel.showNoInternetDialog.value) {
                 NoInternetDialog { viewModel.checkFlow() }
             }
             if (isLoading) {
                 Box(
-                    modifier = Modifier.padding(bottom = 150.dp).fillMaxSize(),
+                    modifier = Modifier.padding(bottom = 100.dp).fillMaxSize(),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     Image(

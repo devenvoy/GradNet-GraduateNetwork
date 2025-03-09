@@ -34,7 +34,7 @@ fun CustomImageChip(
             else -> Color.Transparent
         },
         contentColor = when {
-            selected -> MaterialTheme.colorScheme.onPrimary
+            selected -> MaterialTheme.colorScheme.onPrimaryContainer
             else -> Color.LightGray
         },
         shape = CircleShape,
@@ -55,7 +55,7 @@ fun CustomImageChip(
             SText(
                 text = text,
                 modifier = Modifier.padding(8.sdp),
-                textColor = MaterialTheme.colorScheme.onSecondary
+                textColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
             if (selected && showEndIcon) {
                 Icon(

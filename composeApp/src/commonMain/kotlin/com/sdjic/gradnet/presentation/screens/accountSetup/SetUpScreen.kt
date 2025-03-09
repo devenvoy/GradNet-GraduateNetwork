@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -68,6 +69,7 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
     @Composable
     fun BaseSetUpContent(navigator: Navigator) {
         Scaffold(
+            modifier = Modifier.imePadding(),
             topBar = {
                 TopAppBar(
                     title = {

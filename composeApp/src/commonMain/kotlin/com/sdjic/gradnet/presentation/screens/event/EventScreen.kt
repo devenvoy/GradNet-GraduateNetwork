@@ -169,11 +169,11 @@ class EventScreen : Screen {
                         ) {
                             Title(
                                 text = banners[page].eventTitle ?: "",
-                                textColor = MaterialTheme.colorScheme.background
+                                textColor = Color.White
                             )
                             Text(
                                 text = banners[page].description ?: "",
-                                color = MaterialTheme.colorScheme.background.copy(.7f),
+                                color = Color.White.copy(.7f),
                                 fontFamily = displayFontFamily(),
                                 fontSize = 10.ssp,
                                 lineHeight = TextUnit.Unspecified,

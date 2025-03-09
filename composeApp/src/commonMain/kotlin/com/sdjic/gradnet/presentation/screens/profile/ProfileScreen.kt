@@ -176,6 +176,7 @@ fun ProfileScreenContent(
                 item {
                     Column(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.surface)
                             .padding(8.sdp)
                     ) {

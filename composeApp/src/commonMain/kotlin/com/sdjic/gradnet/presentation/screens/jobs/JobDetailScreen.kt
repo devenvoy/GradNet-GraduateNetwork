@@ -21,6 +21,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -42,6 +43,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.rememberAsyncImagePainter
+import com.sdjic.gradnet.di.platform_di.getContactsUtil
 import com.sdjic.gradnet.presentation.composables.filter.ChipItem
 import com.sdjic.gradnet.presentation.composables.images.BackButton
 import com.sdjic.gradnet.presentation.core.model.Job
@@ -174,11 +176,13 @@ class JobDetailScreen(private val job: Job) : Screen {
                     )
                 }
 
-
-                ChipItem(
-                    modifier = Modifier,
-                    topic = job.jobType.type
-                )
+                job.jobType?.let {
+                    ChipItem(
+                        modifier = Modifier,
+                        topic = job.jobType.type,
+                        textColor = MaterialTheme.colorScheme.onSecondary
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -236,7 +240,7 @@ class JobDetailScreen(private val job: Job) : Screen {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { /* Open job.applyLink */ },
+                    onClick = { getContactsUtil().openLink(job.applyLink) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Apply Now")

@@ -53,7 +53,7 @@ fun OnBoardingScreenContent(
         pageCount = { onboardingList.size }
     )
 
-    AutoSwipePagerEffect(pagerState = pagerState, durationMillis = 2000L)
+    AutoSwipePagerEffect(pagerState = pagerState, durationMillis = 3000L)
 
     Scaffold { paddingValues ->
         Column(

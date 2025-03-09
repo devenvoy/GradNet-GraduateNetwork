@@ -1,11 +1,8 @@
 package com.sdjic.gradnet.presentation.screens.jobs
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -21,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.cash.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -28,9 +26,11 @@ import com.sdjic.gradnet.presentation.composables.filter.FilterChipDropdown
 import com.sdjic.gradnet.presentation.core.model.Job
 import com.sdjic.gradnet.presentation.core.model.JobType
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
+import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
+import network.chaintech.sdpcomposemultiplatform.sdp
 
 class JobScreen : Screen {
     @Composable
@@ -40,21 +40,12 @@ class JobScreen : Screen {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun JobScreenContent() {
         val navigator = LocalNavigator.currentOrThrow
-        CryptoListContent(
-            navigateToDetail = {
-                navigator.push(JobDetailScreen(it))
-            }
-        )
-    }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun CryptoListContent(
-        navigateToDetail: (Job) -> Unit
-    ) {
+        val navigateToDetail: (Job) -> Unit = { navigator.push(JobDetailScreen(it)) }
         val viewModel = koinScreenModel<JobScreenModel>()
         val scrollBehavior = LocalScrollBehavior.current
 
@@ -64,26 +55,13 @@ class JobScreen : Screen {
         val selectedTopics by viewModel.selectedTopics.collectAsState()
         val savedTopics by viewModel.savedTopics.collectAsState()
 
-//        val data = viewModel.coinList.collectAsLazyPagingItems()
+        val data = viewModel.jobs.collectAsLazyPagingItems()
+
         Scaffold {
-            /*  PagingListUI(
-                  modifier = Modifier.padding(it).padding(10.sdp),
-                  data = data
-              ) { item ->
-                  ListItem(
-                      headlineContent = {
-                          Title(item.name)
-                      },
-                      supportingContent = {
-                          SText(item.toString())
-                      }
-                  )
-              }*/
 
             LaunchedEffect(isActive) {
                 scrollBehavior.state.heightOffset = if (isActive) -1000f else 0f
             }
-
 
             Column {
                 SearchBar(
@@ -105,23 +83,14 @@ class JobScreen : Screen {
                         )
                     }
                 )
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    contentPadding = PaddingValues(10.dp)
-                ) {
-                    item {
 
-                    }
-                    items(10) {
-                        JobItem(
-                            job = sampleJobs.first()
-                        ) {
-                            navigateToDetail(sampleJobs.first())
-                        }
-                    }
+                PagingListUI(
+                    modifier = Modifier.padding(10.sdp),
+                    data = data
+                ) { item ->
+                    JobItem(job = item) { navigateToDetail(item) }
                 }
             }
-
         }
     }
 
@@ -164,22 +133,3 @@ class JobScreen : Screen {
         )
     }
 }
-
-val sampleJobs = listOf(
-    Job(
-        id = "1",
-        title = "Android Developer",
-        company = "Google",
-        location = "Mountain View, CA",
-        salary = "$120K - $150K",
-        jobType = JobType.FullTime,
-        description = "Looking for an experienced Android Developer...",
-        requirements = listOf("3+ years of experience", "Kotlin, Jetpack Compose"),
-        benefits = listOf("Health Insurance", "401(k) Matching"),
-        postedDate = "2025-02-22T12:00:00",
-        applyLink = "https://careers.google.com",
-        companyLogo = "https://logo.clearbit.com/google.com",
-        skills = listOf("Kotlin", "Jetpack Compose", "MVVM"),
-        category = ""
-    )
-)

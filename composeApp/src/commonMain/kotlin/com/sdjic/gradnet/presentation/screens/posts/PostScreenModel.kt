@@ -37,11 +37,7 @@ class PostScreenModel(
     val showFilterSheet = _showFilterSheet.asStateFlow()
 
     private val _posts = MutableStateFlow<PagingData<Post>>(PagingData.empty())
-    val posts = _posts.stateIn(
-        scope = screenModelScope,
-        started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = PagingData.empty()
-    )
+    val posts = _posts.asStateFlow()
 
     init {
         toggleSelectAll()
@@ -55,7 +51,7 @@ class PostScreenModel(
     }
 
     fun toggleLike(post: Post) {
-        val newPost =  post.copy(
+        val newPost = post.copy(
             liked = !post.liked,
             likesCount = if (post.liked) post.likesCount - 1 else post.likesCount + 1
         )

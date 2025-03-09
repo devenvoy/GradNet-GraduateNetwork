@@ -7,6 +7,7 @@ import com.sdjic.gradnet.data.local.room.UserDataSourceImpl
 import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.CryptoRepository
 import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
+import com.sdjic.gradnet.data.network.repo.JobsRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.PostRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.UserRepositoryImpl
 import com.sdjic.gradnet.di.platform_di.getDatabaseBuilder
@@ -15,10 +16,12 @@ import com.sdjic.gradnet.di.platform_di.platformModule
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import com.sdjic.gradnet.domain.repo.EventRepository
+import com.sdjic.gradnet.domain.repo.JobsRepository
 import com.sdjic.gradnet.domain.repo.PostRepository
 import com.sdjic.gradnet.domain.repo.TestRepository
 import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
+import com.sdjic.gradnet.domain.useCases.GetJobsUseCase
 import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
 import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
@@ -48,21 +51,24 @@ val screenModelsModule = module {
     factory { ChangePasswordScreenModel(get(),get()) }
     factory { UserVerificationScreenModel(get(),get()) }
 
+    // home , profile , post , jobs
     factory { HomeScreenViewModel(get()) }
     factory { ProfileScreenModel(get(),get(),get()) }
     factory { SetUpAccountViewModel(get(),get(),get()) }
 
     factory { PostScreenModel(get(),get(),get()) }
     factory { AddPostScreenModel(get(),get()) }
-    factory { JobScreenModel() }
+    factory { JobScreenModel(get()) }
     factory { EventScreenModel(get()) }
 
+    // testing only
     factory { TestViewModel(testRepository = get()) }
 }
 
 val userCases = module {
     single { GetPostsUseCase(get(),get()) }
     single { LikePostUseCase(get()) }
+    single { GetJobsUseCase(get()) }
 }
 
 val repositoryModule = module {
@@ -72,8 +78,9 @@ val repositoryModule = module {
     single<UserDataSource> { UserDataSourceImpl(get()) }
     single<EventRepository> { EventRepositoryImpl(get()) }
     single<PostRepository> { PostRepositoryImpl(get()) }
+    single<JobsRepository> { JobsRepositoryImpl(get()) }
 
-    // trying only
+    // testing only
     single<TestRepository> { TestRepositoryImpl(testDao = get()) }
     single<CryptoRepository> { CryptoRepository(httpClient = get()) }
 }

@@ -94,7 +94,7 @@ fun JobItem(job: Job, onClick: () -> Unit) {
                     color = Color.Gray
                 )
                 Text(
-                    text = "${job.location} • ${job.jobType.type}",
+                    text = "${job.location} • ${job.jobType?.type}",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.DarkGray
                 )

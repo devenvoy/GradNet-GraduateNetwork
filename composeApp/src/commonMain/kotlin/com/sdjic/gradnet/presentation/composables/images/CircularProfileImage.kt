@@ -35,7 +35,7 @@ fun CircularProfileImage(
     backgroundColor: Color = Color.LightGray
 ) {
     val context = LocalPlatformContext.current
-    val placeholderUrl = "https://ui-avatars.com/api/?name=$placeHolderName&background=random"
+    val placeholderUrl = "https://ui-avatars.com/api/?name=$placeHolderName&background=ECEFF1"
     val placeholderPainter = rememberAsyncImagePainter(placeholderUrl)
 
     Box(

@@ -1,10 +1,12 @@
 package com.sdjic.gradnet.presentation.core.model
 
+import com.maxkeppeker.sheets.core.utils.JvmSerializable
+
 data class Job(
     val id: String,    // Unique identifier for the job
     val title: String,  //
     val company: String, //
-    val jobType: JobType, // Sealed class for job types
+    val jobType: JobType?, // Sealed class for job types
     val location: String,  //
     val description: String,
     val salary: String?, // Nullable if salary is not mentioned
@@ -15,7 +17,7 @@ data class Job(
     val companyLogo: String?, // URL of company logo
     val category: String, // industry
     val skills: List<String> // Required skills
-)
+) : JvmSerializable
 
 
 /*

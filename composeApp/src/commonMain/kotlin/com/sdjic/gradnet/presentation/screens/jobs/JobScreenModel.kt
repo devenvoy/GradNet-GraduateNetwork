@@ -1,21 +1,24 @@
 package com.sdjic.gradnet.presentation.screens.jobs
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.paging.PagingData
+import app.cash.paging.cachedIn
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.domain.useCases.GetJobsUseCase
 import com.sdjic.gradnet.presentation.core.model.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class JobScreenModel : ScreenModel {
+class JobScreenModel(
+    private val getJobsUseCase: GetJobsUseCase
+) : ScreenModel {
 
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
 
-    private val _jobs = MutableStateFlow<List<Job>>(emptyList())
+    private val _jobs = MutableStateFlow<PagingData<Job>>(PagingData.empty())
     val jobs = _jobs.asStateFlow()
 
     private val _searchActive = MutableStateFlow(false)
@@ -33,6 +36,7 @@ class JobScreenModel : ScreenModel {
                 "Work", "Hobby", "Personal", "Office", "Workout"
             )
         }
+        screenModelScope.launch { fetchJobs() }
     }
 
     fun onQueryChange(q: String) {
@@ -51,5 +55,9 @@ class JobScreenModel : ScreenModel {
         _savedTopics.update { strings }
     }
 
-
+   suspend fun fetchJobs(){
+       getJobsUseCase.invoke(5)
+           .cachedIn(screenModelScope)
+           .collect { pagingData -> _jobs.update { pagingData } }
+    }
 }

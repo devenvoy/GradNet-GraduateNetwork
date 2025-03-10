@@ -23,7 +23,7 @@ data class UserProfile(
     val gender: String? = null,
     val skills: List<String>? = emptyList(),
     val languages: List<String>? = emptyList(),
-    val educations: List<EducationModel>? = emptyList(),
+    val educations: List<EducationModel> = emptyList(),
 
     // Same for all user roles
     val name: String = "",
@@ -34,7 +34,7 @@ data class UserProfile(
     val showPersonalDetails: Boolean = false,
     val address: String? = null,
     val socialUrls: SocialUrls? = null,
-    val experiences: List<ExperienceModel>? = emptyList(),
+    val experiences: List<ExperienceModel> = emptyList(),
 
     // Newly added fields
     val website: String? = null,

@@ -59,7 +59,7 @@ class UserVerificationScreenModel(
     fun verifyOtp() {
         screenModelScope.launch {
             _verificationState.update { UiState.Loading }
-            if(!isConnected){
+            if (!isConnected) {
                 delay(500)
                 _verificationState.update { UiState.Error("No internet connection") }
                 return@launch
@@ -89,23 +89,21 @@ class UserVerificationScreenModel(
     fun resendOtp() {
         screenModelScope.launch {
             _verificationState.update { UiState.Loading }
-            if(!isConnected){
+            if (!isConnected) {
                 delay(500)
                 _verificationState.update { UiState.Error("No internet connection") }
                 return@launch
             }
             onOtpFieldValueChange("")
             userRepository.sendOtp(_verificationField.value)
-                .apply {
-                    onSuccess { r ->
-                        _verificationState.update { UiState.Success(r.status) }
-                        _otpEmailField.update { r.value?.email ?: "" }
-                        _showOtpBottomSheet.update { true }
-                    }
-                    onError { e ->
-                        _verificationState.update { UiState.Error(e.detail) }
-                        _showOtpBottomSheet.update { false }
-                    }
+                .onSuccess { r ->
+                    _verificationState.update { UiState.Success(r.status) }
+                    _otpEmailField.update { r.value?.email ?: "" }
+                    _showOtpBottomSheet.update { true }
+                }
+                .onError { e ->
+                    _verificationState.update { UiState.Error(e.detail) }
+                    _showOtpBottomSheet.update { false }
                 }
         }
     }

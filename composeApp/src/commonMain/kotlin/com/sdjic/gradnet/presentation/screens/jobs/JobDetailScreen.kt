@@ -67,7 +67,7 @@ class JobDetailScreen(private val job: Job) : Screen {
                 TopAppBar(
                     title = {},
                     navigationIcon = {
-                        BackButton(navigator::pop)
+                        BackButton(onBackPressed = navigator::pop)
                     },
                     actions = {
                         var mIsOptionMenuExpanded by remember { mutableStateOf(false) }

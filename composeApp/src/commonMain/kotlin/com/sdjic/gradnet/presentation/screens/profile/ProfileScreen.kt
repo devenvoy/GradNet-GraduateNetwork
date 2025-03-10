@@ -28,11 +28,15 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Monitor
 import androidx.compose.material.icons.outlined.RememberMe
 import androidx.compose.material.icons.outlined.Translate
+import androidx.compose.material.icons.outlined.WorkOutline
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -57,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil3.compose.LocalPlatformContext
@@ -75,6 +80,8 @@ import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
+import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationItem
+import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ExperienceItem
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
@@ -249,6 +256,36 @@ fun UserDetailsContent(userProfile: UserProfile) {
     Column {
         AboutMeSection(userProfile.about)
         InterestsSection(icon = Icons.Outlined.Monitor, title = "Skills", data = userProfile.skills)
+        if (userProfile.educations.isNotEmpty()) {
+            SectionTitle(icon = Icons.AutoMirrored.Outlined.LibraryBooks, title = "Education")
+            Card(
+                modifier = Modifier.padding(10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(1.dp)
+            ) {
+                userProfile.educations.fastForEachIndexed{ idx , it ->
+                    EducationItem(it)
+                }
+            }
+        }
+
+        if (userProfile.experiences.isNotEmpty()) {
+            SectionTitle(icon = Icons.Outlined.WorkOutline, title = "Experience")
+            Card(
+                modifier = Modifier.padding(10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(1.dp)
+            ) {
+                userProfile.experiences.fastForEachIndexed{ idx , it ->
+                   ExperienceItem(it)
+                }
+            }
+        }
+
         InterestsSection(
             icon = Icons.Outlined.Translate,
             title = "Languages",

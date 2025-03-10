@@ -1,6 +1,7 @@
 package com.sdjic.gradnet.presentation.screens.verification
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import cafe.adriel.voyager.core.screen.Screen
@@ -72,15 +76,39 @@ class UserVerificationScreen : Screen {
             modifier = Modifier.imePadding(),
             topBar = {
                 TopAppBar(
-                    title = { Title(text = "User Verification") },
-                    navigationIcon = { BackButton { navigator.pop() } }
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    title = {
+                        Title(
+                            text = "User Verification",
+                            size = 14.ssp,
+                            textColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    },
+                    navigationIcon = {
+                        BackButton(
+                            iconColor = MaterialTheme.colorScheme.onPrimary
+                        ) { navigator.pop() }
+                    }
                 )
             }
         ) { ip ->
             Box(modifier = Modifier.padding(ip)) {
 
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .height(30.sdp)
+                        .clip(RoundedCornerShape(bottomEnd = 12.sdp, bottomStart = 12.sdp))
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                )
 
-                Column(modifier = Modifier.fillMaxSize().padding(12.sdp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 30.sdp)
+                        .padding(12.sdp)
+                ) {
 
                     Column {
                         Title(

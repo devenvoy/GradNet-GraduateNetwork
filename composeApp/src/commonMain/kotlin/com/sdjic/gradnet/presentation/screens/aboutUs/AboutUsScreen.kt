@@ -86,7 +86,7 @@ class AboutUsScreen : Screen {
                         Label("About Developers", fontWeight = W500, size = 18.sp)
                     },
                     navigationIcon = {
-                        BackButton(onNavigateBack)
+                        BackButton(onBackPressed = onNavigateBack)
                     }
                 )
             }

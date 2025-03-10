@@ -188,7 +188,7 @@ class SignUpScreen(
                 )
             }, navigationIcon = {
                 if (showNavigatorIcon) {
-                    BackButton(onBackPressed)
+                    BackButton(onBackPressed = onBackPressed)
                 }
             })
         }) { padding ->

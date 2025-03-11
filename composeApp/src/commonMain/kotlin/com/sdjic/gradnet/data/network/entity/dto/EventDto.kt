@@ -10,7 +10,7 @@ data class EventDto(
     @SerialName("contact_us") val contactUs: String?,
     @SerialName("date") val date: String?,
     @SerialName("description") val description: String?,
-    @SerialName("event_name") val eventName: String?,
+    @SerialName("event_name") val eventName: String,
     @SerialName("event_pic") val eventPic: String?,
     @SerialName("event_title") val eventTitle: String?,
     @SerialName("for_whom") val forWhom: String?,

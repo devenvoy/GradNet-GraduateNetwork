@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 
 @Composable
 fun Label(
@@ -22,6 +23,7 @@ fun Label(
         text = text,
         color = textColor,
         fontSize = size,
-        fontWeight = fontWeight
+        fontWeight = fontWeight,
+        fontFamily = displayFontFamily()
     )
 }

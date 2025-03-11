@@ -45,19 +45,21 @@ fun SectionTitle(
 
 @Composable
 fun SectionTitle(
-    icon: Painter,
+    icon: Painter?,
     title: String,
 ) {
     Row(
         modifier = Modifier.padding(start = 6.sdp, top = 10.sdp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            modifier = Modifier.size(16.dp),
-            painter = icon,
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.width(4.sdp))
+        icon?.let {
+            Icon(
+                modifier = Modifier.size(16.dp),
+                painter = icon,
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(4.sdp))
+        }
         SText(
             text = title,
             fontSize = 14.ssp,

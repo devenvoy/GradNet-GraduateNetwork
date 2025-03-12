@@ -2,7 +2,6 @@ package com.sdjic.gradnet.presentation.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -10,9 +9,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,27 +25,48 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdjic.gradnet.presentation.composables.animatedlist.AnimatedInfiniteLazyRow
-import com.sdjic.gradnet.presentation.helper.DateTimeUtils.getCalendarDates
+import com.sdjic.gradnet.presentation.core.model.CalendarDate
+import com.sdjic.gradnet.presentation.helper.DateTimeUtils
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 import kotlinx.datetime.Month
 
+@OptIn(FlowPreview::class)
 @Composable
 fun AnimatedCalendar(
     year: Int,
-    month: Month,
-    selectedDay: Int,
-    onDaySelected: (Int) -> Unit
+    month: Month? = null,
+    selectedDay: CalendarDate? = null,
+    onDaySelected: (CalendarDate) -> Unit
+
 ) {
 
-    val daysList by remember {
+    val daysList by remember(year, month) {
         derivedStateOf {
-            getCalendarDates(year, month)
+            month?.let { DateTimeUtils.getCalendarDays(year, it) }
+                ?: run { DateTimeUtils.getCalendarDays(year) }
         }
     }
 
-    val initialSelectedIndex = remember(selectedDay) {
-        val selectedDate = daysList.first { it.day == selectedDay }
-        daysList.indexOf(selectedDate)
+    val initialSelectedIndex by remember(year, month, selectedDay, daysList) {
+        derivedStateOf {
+            val selectedDate = daysList.firstOrNull {
+                it.day == selectedDay?.day && it.month == selectedDay.month
+            }
+            daysList.indexOf(selectedDate).coerceAtLeast(0)
+        }
     }
+
+    var selectedIndex by remember { mutableStateOf(initialSelectedIndex) }
+
+    LaunchedEffect(selectedIndex) {
+        snapshotFlow { selectedIndex }
+            .debounce(300)
+            .collect { index ->
+                daysList.getOrNull(index)?.let { onDaySelected(it) }
+            }
+    }
+
 
     AnimatedInfiniteLazyRow(
         items = daysList,
@@ -53,10 +77,13 @@ fun AnimatedCalendar(
         itemScaleRange = 1, // Scaling range
         activeColor = Color.White,
         inactiveColor = Color.Gray,
-        initialFirstVisibleIndex = initialSelectedIndex - 2
+        initialFirstVisibleIndex = initialSelectedIndex - 2,
     ) { animationProgress, index, date, size, lazyListState ->
 
-        val isSelected = index == animationProgress.itemIndex
+        if (index == animationProgress.itemIndex) {
+            selectedIndex = index
+        }
+
         Box(
             modifier = Modifier
                 .width(size)
@@ -66,12 +93,16 @@ fun AnimatedCalendar(
                     scaleY = animationProgress.scale
                 }
                 .clip(RoundedCornerShape(16.dp))
-                .background(if (isSelected) Color.Blue else Color.Transparent)
-                .border(2.dp, animationProgress.color, RoundedCornerShape(16.dp))
-                .clickable { onDaySelected(date.day) },
+                .background(if (index == selectedIndex) Color.Blue else Color.Transparent)
+                .border(2.dp, animationProgress.color, RoundedCornerShape(16.dp)),
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = date.dayOfWeek.substring(0..<3).uppercase(),
+                    fontSize = 14.sp,
+                    color = animationProgress.color
+                )
                 Text(
                     text = date.day.toString(),
                     fontSize = 18.sp,
@@ -79,8 +110,8 @@ fun AnimatedCalendar(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = date.dayOfWeek.substring(0..<3).uppercase(),
-                    fontSize = 14.sp,
+                    text = date.month.name.lowercase().replaceFirstChar { it.uppercase() },
+                    fontSize = 10.sp,
                     color = animationProgress.color
                 )
             }

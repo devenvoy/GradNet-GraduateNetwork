@@ -31,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,21 +39,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
+import co.touchlab.kermit.Logger
 import com.sdjic.gradnet.data.network.entity.dto.EventDto
 import com.sdjic.gradnet.presentation.composables.AnimatedCalendar
 import com.sdjic.gradnet.presentation.composables.images.BannerWidget
+import com.sdjic.gradnet.presentation.composables.text.Label
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
+import com.sdjic.gradnet.presentation.core.model.CalendarDate
 import com.sdjic.gradnet.presentation.helper.AutoSwipePagerEffect
+import com.sdjic.gradnet.presentation.helper.DateTimeUtils
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.helper.shimmerLoadingAnimation
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
-import kotlinx.datetime.Month
 import network.chaintech.sdpcomposemultiplatform.ssp
 
 class EventScreen : Screen {
@@ -98,13 +101,31 @@ class EventScreen : Screen {
                     }
                 }
 
-                var selectedDay by remember { mutableStateOf(1) }
+                val todayDate by remember { mutableStateOf(DateTimeUtils.now()) }
+
+                val selectedDay by remember(todayDate) {
+                    mutableStateOf(
+                        CalendarDate(
+                            day = todayDate.dayOfMonth,
+                            dayOfWeek = todayDate.date.dayOfWeek.name,
+                            month = todayDate.date.month
+                        )
+                    )
+                }
+
+                Label(
+                    size = 22.sp,
+                    text = "Upcoming Events",
+                    modifier = Modifier.padding(12.dp),
+                    textColor = MaterialTheme.colorScheme.secondary
+                )
 
                 AnimatedCalendar(
-                    year = 2025,
-                    month = Month.MARCH,
+                    year = todayDate.year,
                     selectedDay = selectedDay,
-                    onDaySelected = { selectedDay = it }
+                    onDaySelected = { date ->
+                        Logger.e("$date", null, tag = "TAG111")
+                    }
                 )
             }
         }

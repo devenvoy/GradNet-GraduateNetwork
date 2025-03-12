@@ -56,7 +56,7 @@ class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(h
         newPassword: String
     ): Result<ServerResponse<JsonElement>, ServerError> {
         return tryToExecute {
-            post(BuildConfig.BASE_URL + "/") {
+            post(BuildConfig.BASE_URL + "/change-password/") {
                 contentType(ContentType.Application.Json)
                 header("Authorization", "Bearer $accessToken")
                 setBody(

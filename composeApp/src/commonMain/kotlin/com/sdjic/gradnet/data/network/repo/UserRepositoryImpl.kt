@@ -143,7 +143,9 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
     }
 
     override suspend fun checkUpdateToken(oldToken: String): Result<ServerResponse<Map<String,String>>, ServerError> {
-        return tryToExecute {
+        return if (oldToken.isNullOrEmpty())
+            Result.Error(ServerError(500, null, "Invalid Token"))
+        else tryToExecute {
             post(BuildConfig.BASE_URL + "/refresh-token/"){
                 header(HttpHeaders.Authorization, "Bearer $oldToken")
                 contentType(ContentType.Application.Json)

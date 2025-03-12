@@ -33,11 +33,25 @@ object DateTimeUtils {
         }
     }
 
+    fun getDaysInYear(year: Int): Int {
+        return if (isLeapYear(year)) 366 else 365
+    }
+
+    fun getCalendarDays(year: Int): List<CalendarDate> {
+        val months = Month.entries
+        val calendarDays = mutableListOf<CalendarDate>()
+
+        for (month in months) {
+            calendarDays.addAll(getCalendarDays(year, month))
+        }
+        return calendarDays
+    }
+
     fun isLeapYear(year: Int): Boolean {
         return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
     }
 
-    fun getCalendarDates(year: Int, month: Month): List<CalendarDate> {
+    fun getCalendarDays(year: Int, month: Month): List<CalendarDate> {
         val timeZone = TimeZone.currentSystemDefault()
         val daysInMonth = getDaysInMonth(year, month)
 
@@ -46,7 +60,7 @@ object DateTimeUtils {
             val dateTime = localDate.atStartOfDayIn(timeZone).toLocalDateTime(timeZone)
             val dayOfWeek = dateTime.date.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
 
-            CalendarDate(day, dayOfWeek)
+            CalendarDate(day, dayOfWeek, month)
         }
     }
 

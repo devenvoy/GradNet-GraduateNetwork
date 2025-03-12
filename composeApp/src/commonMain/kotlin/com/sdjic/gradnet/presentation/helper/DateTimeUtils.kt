@@ -1,11 +1,15 @@
 package com.sdjic.gradnet.presentation.helper
 
+import com.sdjic.gradnet.presentation.core.model.CalendarDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
@@ -19,6 +23,32 @@ object DateTimeUtils {
         return dateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
     }
 
+
+    fun getDaysInMonth(year: Int, month: Month): Int {
+        return when (month) {
+            Month.JANUARY, Month.MARCH, Month.MAY, Month.JULY, Month.AUGUST, Month.OCTOBER, Month.DECEMBER -> 31
+            Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
+            Month.FEBRUARY -> if (isLeapYear(year)) 29 else 28
+            else -> 30
+        }
+    }
+
+    fun isLeapYear(year: Int): Boolean {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
+    }
+
+    fun getCalendarDates(year: Int, month: Month): List<CalendarDate> {
+        val timeZone = TimeZone.currentSystemDefault()
+        val daysInMonth = getDaysInMonth(year, month)
+
+        return (1..daysInMonth).map { day ->
+            val localDate = LocalDate(year, month, day) // Create LocalDate directly
+            val dateTime = localDate.atStartOfDayIn(timeZone).toLocalDateTime(timeZone)
+            val dayOfWeek = dateTime.date.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+
+            CalendarDate(day, dayOfWeek)
+        }
+    }
 
     suspend fun getTimeAgoAsync(postedTimestamp: Long): String = withContext(Dispatchers.Default) {
     val now = toEpochMillis(now())

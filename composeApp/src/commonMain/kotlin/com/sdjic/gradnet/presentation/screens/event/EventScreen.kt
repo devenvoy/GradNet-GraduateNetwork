@@ -29,6 +29,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import com.sdjic.gradnet.data.network.entity.dto.EventDto
+import com.sdjic.gradnet.presentation.composables.AnimatedCalendar
 import com.sdjic.gradnet.presentation.composables.images.BannerWidget
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
@@ -50,6 +54,7 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.helper.shimmerLoadingAnimation
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
+import kotlinx.datetime.Month
 import network.chaintech.sdpcomposemultiplatform.ssp
 
 class EventScreen : Screen {
@@ -92,6 +97,15 @@ class EventScreen : Screen {
                         navigator.push(EventDetailScreen(it))
                     }
                 }
+
+                var selectedDay by remember { mutableStateOf(1) }
+
+                AnimatedCalendar(
+                    year = 2025,
+                    month = Month.MARCH,
+                    selectedDay = selectedDay,
+                    onDaySelected = { selectedDay = it }
+                )
             }
         }
     }

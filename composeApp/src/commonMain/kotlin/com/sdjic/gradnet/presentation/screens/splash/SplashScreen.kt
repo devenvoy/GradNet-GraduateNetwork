@@ -58,6 +58,7 @@ class SplashScreen : Screen {
         LaunchedEffect(navigateNext) {
             if (navigateNext) {
                 navigateToNextScreen(navigator, viewModel)
+                viewModel.resetNavigation()
             }
         }
 

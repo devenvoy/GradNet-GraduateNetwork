@@ -6,7 +6,7 @@ data class Job(
     val id: String,    // Unique identifier for the job
     val title: String,  //
     val company: String, //
-    val jobType: JobType?, // Sealed class for job types
+    val jobType: String?, // Sealed class for job types
     val location: String,  //
     val description: String,
     val salary: String?, // Nullable if salary is not mentioned

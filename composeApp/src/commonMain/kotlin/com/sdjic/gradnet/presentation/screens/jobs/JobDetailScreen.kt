@@ -179,7 +179,7 @@ class JobDetailScreen(private val job: Job) : Screen {
                 job.jobType?.let {
                     ChipItem(
                         modifier = Modifier,
-                        topic = job.jobType.type,
+                        topic = job.jobType,
                         textColor = MaterialTheme.colorScheme.onSecondary
                     )
                 }

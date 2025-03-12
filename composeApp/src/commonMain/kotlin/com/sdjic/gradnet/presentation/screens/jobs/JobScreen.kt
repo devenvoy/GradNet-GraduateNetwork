@@ -1,6 +1,7 @@
 package com.sdjic.gradnet.presentation.screens.jobs
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -24,13 +25,11 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.presentation.composables.filter.FilterChipDropdown
 import com.sdjic.gradnet.presentation.core.model.Job
-import com.sdjic.gradnet.presentation.core.model.JobType
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
-import network.chaintech.sdpcomposemultiplatform.sdp
 
 class JobScreen : Screen {
     @Composable
@@ -85,7 +84,7 @@ class JobScreen : Screen {
                 )
 
                 PagingListUI(
-                    modifier = Modifier.padding(10.sdp),
+                    contentPadding = PaddingValues(10.dp),
                     data = data
                 ) { item ->
                     JobItem(job = item) { navigateToDetail(item) }

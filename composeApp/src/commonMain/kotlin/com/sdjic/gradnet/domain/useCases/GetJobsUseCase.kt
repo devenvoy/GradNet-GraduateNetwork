@@ -8,7 +8,6 @@ import com.sdjic.gradnet.data.network.utils.map
 import com.sdjic.gradnet.domain.ResultPagingSource
 import com.sdjic.gradnet.domain.repo.JobsRepository
 import com.sdjic.gradnet.presentation.core.model.Job
-import com.sdjic.gradnet.presentation.core.model.JobType
 import kotlinx.coroutines.flow.Flow
 
 class GetJobsUseCase(private val jobsRepository: JobsRepository) {
@@ -34,7 +33,7 @@ class GetJobsUseCase(private val jobsRepository: JobsRepository) {
             id = it.jobId.toString(),
             title = it.jobTitle.orEmpty(),
             company = it.companyName.orEmpty(),
-            jobType = JobType.fromString(it.workMode ?: ""),
+            jobType = it.workMode?.lowercase()?.replaceFirstChar { char -> char.uppercase() },
             location = it.jobLocation.orEmpty(),
             description = it.jobOverview.orEmpty(),
             salary = it.salary,

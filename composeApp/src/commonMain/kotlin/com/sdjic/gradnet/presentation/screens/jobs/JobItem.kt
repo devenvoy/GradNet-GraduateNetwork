@@ -54,6 +54,7 @@ fun JobItem(job: Job, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(vertical = 4.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
@@ -94,7 +95,7 @@ fun JobItem(job: Job, onClick: () -> Unit) {
                     color = Color.Gray
                 )
                 Text(
-                    text = "${job.location} • ${job.jobType?.type}",
+                    text = "${job.location} • ${job.jobType}",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.DarkGray
                 )

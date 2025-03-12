@@ -1,5 +1,5 @@
 package com.sdjic.gradnet.presentation.core.model
-
+/*
 import com.maxkeppeker.sheets.core.utils.JvmSerializable
 
 sealed class JobType(val type: String) : JvmSerializable{
@@ -24,3 +24,5 @@ sealed class JobType(val type: String) : JvmSerializable{
         }
     }
 }
+
+*/

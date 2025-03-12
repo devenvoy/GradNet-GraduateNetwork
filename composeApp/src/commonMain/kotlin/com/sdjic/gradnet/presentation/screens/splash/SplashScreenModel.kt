@@ -17,7 +17,9 @@ class SplashScreenModel(
 
     var isLoading = mutableStateOf(false)
     var showNoInternetDialog = mutableStateOf(false)
+
     private var stopCurrentFlow = mutableStateOf(false)
+
     var navigateNext = mutableStateOf(false)
 
 
@@ -33,6 +35,14 @@ class SplashScreenModel(
         }
     }
 
+    fun triggerNavigation() {
+        navigateNext.value = true
+    }
+
+    fun resetNavigation() {
+        navigateNext.value = false
+    }
+
     private fun startAuthFlow() {
         isLoading.value = true
 
@@ -46,7 +56,7 @@ class SplashScreenModel(
                 stopCurrentFlow.value = true
             }
 
-            navigateNext.value = true
+            triggerNavigation()
         }
     }
 

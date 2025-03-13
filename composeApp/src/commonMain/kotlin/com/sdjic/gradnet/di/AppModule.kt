@@ -49,8 +49,8 @@ val screenModelsModule = module {
     // auth
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
+    factory { ForgotPasswordScreenModel(get()) }
     factory { ChangePasswordScreenModel(get(), get()) }
-    factory { ForgotPasswordScreenModel(get(), get()) }
     factory { UserVerificationScreenModel(get(), get()) }
 
     // home , profile , post , jobs

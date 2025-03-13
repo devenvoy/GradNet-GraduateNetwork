@@ -23,7 +23,7 @@ import network.chaintech.sdpcomposemultiplatform.ssp
 
 @Composable
 fun CustomInputField(
-    fieldTitle: String?= null,
+    fieldTitle: String? = null,
     textFieldValue: String,
     onValueChange: (String) -> Unit,
     singleLine: Boolean = true,
@@ -32,6 +32,7 @@ fun CustomInputField(
     suffix: @Composable() (() -> Unit)? = null,
     prefix: @Composable() (() -> Unit)? = null,
     supportingText: @Composable() (() -> Unit)? = null,
+    imeAction: ImeAction = ImeAction.Next,
     isEnable: Boolean = true,
     keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
     readOnly: Boolean = false
@@ -63,9 +64,7 @@ fun CustomInputField(
             suffix = suffix,
             prefix = prefix,
             singleLine = singleLine,
-            keyboardOptions = keyboardOption.copy(
-                imeAction = ImeAction.Next
-            ),
+            keyboardOptions = keyboardOption.copy(imeAction = imeAction),
             supportingText = supportingText,
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 12.ssp,

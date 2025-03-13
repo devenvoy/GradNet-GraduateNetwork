@@ -45,11 +45,11 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
 
     val googleUser = mutableStateOf<GoogleUser?>(null)
 
-    private val _selectedUserRole = MutableStateFlow<UserRole?>(null)
+    private val _selectedUserRole = MutableStateFlow<Int>(0)
     val selectedUserRole = _selectedUserRole.asStateFlow()
 
-    fun onUserRoleSelected(userRole: UserRole) {
-        _selectedUserRole.value = userRole
+    fun onUserRoleSelected(value: Int) {
+        _selectedUserRole.value = value
     }
 
     fun onNameChange(newValue: String) {
@@ -82,7 +82,7 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
                         username = _name.value,
                         email = _email.value,
                         password = _password.value.text,
-                        userType = _selectedUserRole.value!!.name
+                        userType = getUserRoles()[_selectedUserRole.value].name
                     )
                 )
                 result.onSuccess {
@@ -103,29 +103,25 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         screenModelScope.launch {
             _signUpState.value = UiState.Loading
             if (googleUser.value != null) {
-                if (_selectedUserRole.value != null) {
-                    if (ConnectivityManager.isConnected) {
-                        val result = authRepository.signUp(
-                            SignUpRequest(
-                                username = googleUser.value!!.displayName,
-                                email = googleUser.value!!.email,
-                                password = googleUser.value!!.email!!.reversed(),
-                                userType = _selectedUserRole.value!!.name
-                            )
+                if (ConnectivityManager.isConnected) {
+                    val result = authRepository.signUp(
+                        SignUpRequest(
+                            username = googleUser.value!!.displayName,
+                            email = googleUser.value!!.email,
+                            password = googleUser.value!!.email!!.reversed(),
+                            userType = getUserRoles()[_selectedUserRole.value].name
                         )
-                        result.onSuccess {
-                            it.value?.let { res ->
-                                updateRegisterPref(res)
-                                _signUpState.value = UiState.Success(res.user?.isVerified == true)
-                            }
-                        }.onError {
-                            _signUpState.value = UiState.Error(it.detail)
+                    )
+                    result.onSuccess {
+                        it.value?.let { res ->
+                            updateRegisterPref(res)
+                            _signUpState.value = UiState.Success(res.user?.isVerified == true)
                         }
-                    } else {
-                        _signUpState.value = UiState.Error("Not Connected to Internet")
+                    }.onError {
+                        _signUpState.value = UiState.Error(it.detail)
                     }
                 } else {
-                    showErrorState("Please select your account type")
+                    _signUpState.value = UiState.Error("Not Connected to Internet")
                 }
             } else {
                 showErrorState("Google Sign up Failed")
@@ -147,7 +143,7 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         prefs.accessToken = loginResponse.accessToken.toString()
         prefs.userId = loginResponse.user?.userId.toString()
         prefs.isVerified = loginResponse.user?.isVerified == true
-        prefs.userRole =  loginResponse.user?.userType?.let { UserRole.getUserRole(it)?.name } ?: ""
+        prefs.userRole = loginResponse.user?.userType?.let { UserRole.getUserRole(it)?.name } ?: ""
     }
 
     private fun validateInputs(): List<String>? {
@@ -167,10 +163,6 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             errors.add("Please Enter a password")
         } else if (_password.value.text.length < 6) {
             errors.add("Password must be at least 6 characters long.")
-        }
-
-        if (_selectedUserRole.value == null) {
-            errors.add("Please select a your account type.")
         }
 
         return if (errors.isEmpty()) null else errors

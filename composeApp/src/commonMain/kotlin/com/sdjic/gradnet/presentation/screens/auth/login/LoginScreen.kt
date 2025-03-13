@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,8 +28,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -47,6 +48,7 @@ import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputPasswordField
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.screens.auth.password.ForgotPasswordScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreen
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
 import com.sdjic.gradnet.presentation.screens.verification.UserVerificationScreen
@@ -76,7 +78,9 @@ class LoginScreen : Screen {
                 navigator.replace(if (it) HomeScreen() else UserVerificationScreen())
             },
             navigateToSignUp = { navigator.replace(SignUpScreen(true)) },
-            navigateToForgotPasswordScreen = {}
+            navigateToForgotPasswordScreen = {
+                navigator.push(ForgotPasswordScreen())
+            }
         )
     }
 
@@ -123,108 +127,113 @@ class LoginScreen : Screen {
         navigateToSignUp: () -> Unit,
         navigateToForgotPasswordScreen: () -> Unit
     ) {
-        Column(
-            modifier = Modifier
-                .padding(top = 180.sdp)
-                .fillMaxSize()
-                .clip(RoundedCornerShape(topStart = 32.sdp, topEnd = 32.sdp))
-                .shadow(1.dp)
-                .padding(top = 10.sdp)
-                .padding(10.sdp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(10.sdp)
+        Surface(
+            modifier = Modifier.padding(top = 180.sdp)
+                .fillMaxSize(), shadowElevation = 12.dp,
+            shape = RoundedCornerShape(topStart = 32.sdp, topEnd = 32.sdp)
         ) {
-            Title(
-                text = "Welcome Back",
-                size = 22.ssp,
-                textColor = MaterialTheme.colorScheme.onSurface,
-            )
-            CustomInputField(
-                fieldTitle = "Email",
-                textFieldValue = viewModel.email.value.text,
-                onValueChange = { viewModel.email.value = viewModel.email.value.copy(it) },
-                placeholder = { Text("Enter email") },
-                trailingIcon = {
-                    Icon(
-                        modifier = Modifier.size(20.sdp),
-                        painter = painterResource(Res.drawable.alternate_email),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = "Email icon",
-                    )
-                },
-            )
-            CustomInputPasswordField(
-                fieldTitle = "Password",
-                textFieldValue = viewModel.password.value,
-                onValueChange = { viewModel.password.value = it },
-                placeholder = { Text("Password") },
-                isPasswordField = true
-            )
-            TextButton(
-                modifier = Modifier.align(Alignment.End),
-                onClick = { navigateToForgotPasswordScreen() }) {
-                SText(
-                    text = "Forgot Password? Click here",
-                    textColor = Color(0xFFB6B6B6),
-                    fontSize = 12.ssp
-                )
-            }
-            PrimaryButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { viewModel.login() },
-            ) {
-                SText(
-                    text = "Sign In",
-                    fontWeight = FontWeight.SemiBold,
-                    textColor = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 16.ssp
-                )
-            }
-
-            GoogleButtonUiContainer(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onGoogleSignInResult = { googleUser ->
-                    if (googleUser != null) {
-                        viewModel.loginWithGoogle(googleUser)
-                    } else {
-                        viewModel.showErrorState("Login Failed")
-                    }
-                }) {
-                GoogleSignInButton(onClick = { this.onClick() })
-            }
-
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .fillMaxSize()
+                    .imePadding()
+                    .padding(top = 10.sdp)
+                    .padding(10.sdp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(10.sdp)
             ) {
-                Spacer(modifier = Modifier.height(20.sdp))
-                Text(
-                    modifier = Modifier.clickable(onClick = { navigateToSignUp() }),
-                    text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.colorScheme.onBackground,
-                                fontSize = 12.ssp,
-                                fontWeight = FontWeight.W400,
-                                fontFamily = displayFontFamily()
-                            )
-                        ) {
-                            append("Don't have an account yet?")
-                        }
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 12.ssp,
-                                fontWeight = FontWeight.W400,
-                                fontFamily = displayFontFamily(),
-                                textDecoration = TextDecoration.Underline,
-                            )
-                        ) {
-                            append(stringResource(Res.string.create_account))
-                        }
-                    }
+                Title(
+                    text = "Welcome Back",
+                    size = 26.sp,
+                    textColor = MaterialTheme.colorScheme.onSurface,
                 )
-                Spacer(modifier = Modifier.height(20.sdp))
+                CustomInputField(
+                    fieldTitle = "Email",
+                    textFieldValue = viewModel.email.value.text,
+                    onValueChange = { viewModel.email.value = viewModel.email.value.copy(it) },
+                    placeholder = { Text("Enter email") },
+                    trailingIcon = {
+                        Icon(
+                            modifier = Modifier.size(20.sdp),
+                            painter = painterResource(Res.drawable.alternate_email),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = "Email icon",
+                        )
+                    },
+                )
+                CustomInputPasswordField(
+                    fieldTitle = "Password",
+                    textFieldValue = viewModel.password.value,
+                    onValueChange = { viewModel.password.value = it },
+                    placeholder = { Text("Password") },
+                    isPasswordField = true
+                )
+                TextButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = navigateToForgotPasswordScreen
+                ) {
+                    SText(
+                        text = "Forgot Password? Click here",
+                        textColor = Color(0xFFB8B8B8),
+                        fontSize = 11.ssp
+                    )
+                }
+                PrimaryButton(
+                    modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
+                    onClick = { viewModel.login() },
+                ) {
+                    SText(
+                        text = "Sign In",
+                        fontWeight = FontWeight.SemiBold,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 12.ssp
+                    )
+                }
+
+                GoogleButtonUiContainer(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    onGoogleSignInResult = { googleUser ->
+                        if (googleUser != null) {
+                            viewModel.loginWithGoogle(googleUser)
+                        } else {
+                            viewModel.showErrorState("Login Failed")
+                        }
+                    }) {
+                    GoogleSignInButton(onClick = { this.onClick() })
+                }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(20.sdp))
+                    Text(
+                        modifier = Modifier.clickable(onClick = { navigateToSignUp() }),
+                        text = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    fontSize = 12.ssp,
+                                    fontWeight = FontWeight.W400,
+                                    fontFamily = displayFontFamily()
+                                )
+                            ) {
+                                append("Don't have an account yet?")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontSize = 12.ssp,
+                                    fontWeight = FontWeight.W400,
+                                    fontFamily = displayFontFamily(),
+                                    textDecoration = TextDecoration.Underline,
+                                )
+                            ) {
+                                append(stringResource(Res.string.create_account))
+                            }
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(20.sdp))
+                }
             }
         }
     }

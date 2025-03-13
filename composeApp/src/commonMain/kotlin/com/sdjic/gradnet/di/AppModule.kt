@@ -27,6 +27,7 @@ import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.password.ChangePasswordScreenModel
+import com.sdjic.gradnet.presentation.screens.auth.password.ForgotPasswordScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
 import com.sdjic.gradnet.presentation.screens.demo.TestViewModel
 import com.sdjic.gradnet.presentation.screens.event.EventScreenModel
@@ -43,21 +44,22 @@ import org.koin.dsl.module
 
 val screenModelsModule = module {
 
-    factory { SplashScreenModel(get(),get()) }
+    factory { SplashScreenModel(get(), get()) }
 
     // auth
     factory { LoginScreenModel(get()) }
     factory { SignUpScreenModel(get()) }
-    factory { ChangePasswordScreenModel(get(),get()) }
-    factory { UserVerificationScreenModel(get(),get()) }
+    factory { ChangePasswordScreenModel(get(), get()) }
+    factory { ForgotPasswordScreenModel(get(), get()) }
+    factory { UserVerificationScreenModel(get(), get()) }
 
     // home , profile , post , jobs
     factory { HomeScreenViewModel(get()) }
-    factory { ProfileScreenModel(get(),get(),get()) }
-    factory { SetUpAccountViewModel(get(),get(),get()) }
+    factory { ProfileScreenModel(get(), get(), get()) }
+    factory { SetUpAccountViewModel(get(), get(), get()) }
 
-    factory { PostScreenModel(get(),get(),get()) }
-    factory { AddPostScreenModel(get(),get()) }
+    factory { PostScreenModel(get(), get(), get()) }
+    factory { AddPostScreenModel(get(), get()) }
     factory { JobScreenModel(get()) }
     factory { EventScreenModel(get()) }
 
@@ -66,7 +68,7 @@ val screenModelsModule = module {
 }
 
 val userCases = module {
-    single { GetPostsUseCase(get(),get()) }
+    single { GetPostsUseCase(get(), get()) }
     single { LikePostUseCase(get()) }
     single { GetJobsUseCase(get()) }
 }

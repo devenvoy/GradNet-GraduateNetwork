@@ -24,8 +24,7 @@ fun PrimaryButton(
     shape: Shape = RoundedCornerShape(8.sdp),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         contentColor = Color.White,
-        containerColor = MaterialTheme.colorScheme.primary,
-
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
         ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(
         defaultElevation = 1.sdp

@@ -10,20 +10,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -34,15 +33,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.W400
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
@@ -54,7 +54,8 @@ import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.button.SecondaryOutlinedButton
 import com.sdjic.gradnet.presentation.composables.filter.RoleSelectionItem
-import com.sdjic.gradnet.presentation.composables.images.BackButton
+import com.sdjic.gradnet.presentation.composables.images.LongBackButton
+import com.sdjic.gradnet.presentation.composables.tabs.FancyIndicator
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
@@ -97,11 +98,12 @@ class SignUpScreen(
                 onBackPressed = { navigator.replace(LoginScreen()) },
                 showNavigatorIcon = showNavigatorIcon
             )
-            UiStateHandler(uiState = signUpScreenModel.signUpState.collectAsState().value,
+            UiStateHandler(
+                uiState = signUpScreenModel.signUpState.collectAsState().value,
                 onErrorShowed = {},
                 content = {
                     LaunchedEffect(Unit) {
-                        navigator.replace(if (it) HomeScreen() else  UserVerificationScreen())
+                        navigator.replace(if (it) HomeScreen() else UserVerificationScreen())
                     }
                 })
         }
@@ -124,12 +126,13 @@ class SignUpScreen(
 
         // user selection dialog
         if (dialogState) {
-            BasicAlertDialog(properties = DialogProperties(
-                usePlatformDefaultWidth = false, dismissOnClickOutside = false
-            ), onDismissRequest = {
-                viewModel.googleUser.value = null
-                viewModel.changeGoogleDialogState(false)
-            }) {
+            BasicAlertDialog(
+                properties = DialogProperties(
+                    usePlatformDefaultWidth = false, dismissOnClickOutside = false
+                ), onDismissRequest = {
+                    viewModel.googleUser.value = null
+                    viewModel.changeGoogleDialogState(false)
+                }) {
                 Surface(
                     modifier = Modifier.padding(10.sdp), shape = MaterialTheme.shapes.medium
                 ) {
@@ -178,25 +181,32 @@ class SignUpScreen(
         }
 
         Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
-            LargeTopAppBar(colors = TopAppBarDefaults.largeTopAppBarColors(
-                scrolledContainerColor = MaterialTheme.colorScheme.background,
-                containerColor = MaterialTheme.colorScheme.background
-            ), scrollBehavior = scrollBehavior, title = {
-                Title(
-                    text = "Create account",
-                    size = if (scrollBehavior.state.collapsedFraction == 1f) 16.ssp else 22.ssp
-                )
-            }, navigationIcon = {
-                if (showNavigatorIcon) {
-                    BackButton(onBackPressed = onBackPressed)
-                }
-            })
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                ), scrollBehavior = scrollBehavior, title = {
+                    Title(
+                        textColor = Color.White, text = "Create account", size = 14.ssp
+                    )
+                }, navigationIcon = {
+                    if (showNavigatorIcon) {
+                        LongBackButton(
+                            modifier = Modifier.padding(start = 8.dp),
+                            iconColor = Color.White,
+                            onBackPressed = onBackPressed
+                        )
+                    }
+                })
         }) { padding ->
             Column(
-                modifier = Modifier.padding(padding).fillMaxSize()
+                modifier = Modifier.padding(padding).imePadding().fillMaxSize()
                     .verticalScroll(rememberScrollState()).padding(horizontal = 10.sdp),
                 verticalArrangement = Arrangement.spacedBy(10.sdp)
             ) {
+
+                Spacer(modifier = Modifier.height(20.sdp))
 
                 CustomInputField(
                     fieldTitle = "Full Name",
@@ -205,7 +215,7 @@ class SignUpScreen(
                     placeholder = { Text("Enter Name") },
                     trailingIcon = {
                         Icon(
-                            modifier = Modifier.size(20.sdp),
+                            modifier = Modifier.size(18.sdp),
                             imageVector = FontAwesomeIcons.Solid.User,
                             contentDescription = "Name icon",
                         )
@@ -263,74 +273,78 @@ class SignUpScreen(
                 )
 
                 PrimaryButton(
-                    modifier = Modifier.fillMaxWidth().padding(top = 20.sdp),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)
+                        .fillMaxWidth(),
                     onClick = {
                         keyboardController?.hide()
                         viewModel.signUp()
                     },
                 ) {
-                    Text(
-                        text = "Register", style = TextStyle(
-                            fontWeight = FontWeight.SemiBold, fontSize = 16.ssp
-                        )
+                    SText(
+                        text = "Register",
+                        fontWeight = FontWeight.SemiBold,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 12.ssp
                     )
                 }
 
-                GoogleButtonUiContainer(modifier = Modifier.padding(vertical = 10.sdp)
-                    .align(Alignment.CenterHorizontally), onGoogleSignInResult = { googleUser ->
-                    viewModel.googleUser.value = googleUser
-                    viewModel.changeGoogleDialogState(true)
-                }) {
+                GoogleButtonUiContainer(
+                    modifier = Modifier.padding(vertical = 10.sdp)
+                        .align(Alignment.CenterHorizontally), onGoogleSignInResult = { googleUser ->
+                        googleUser?.let {
+                            viewModel.googleUser.value = googleUser
+                            viewModel.changeGoogleDialogState(true)
+                        }
+                    }) {
                     GoogleSignInButton(onClick = { this.onClick() }, text = "Sign up with google")
                 }
 
-                Text(modifier = Modifier.padding(8.sdp).align(Alignment.End)
-                    .clickable(onClick = { onBackPressed() }), text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            color = MaterialTheme.colorScheme.onBackground,
-                            fontSize = 12.ssp,
-                            fontWeight = W400,
-                            fontFamily = displayFontFamily()
-                        )
-                    ) {
-                        append("Already have an account?")
-                    }
-                    withStyle(
-                        style = SpanStyle(
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = 12.ssp,
-                            fontWeight = W400,
-                            fontFamily = displayFontFamily(),
-                            textDecoration = TextDecoration.Underline,
-                        )
-                    ) {
-                        append("Sign In")
-                    }
-                })
+                Text(
+                    modifier = Modifier.padding(8.sdp).align(Alignment.End)
+                        .clickable(onClick = { onBackPressed() }), text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 12.ssp,
+                                fontWeight = W400,
+                                fontFamily = displayFontFamily()
+                            )
+                        ) {
+                            append("Already have an account?")
+                        }
+                        withStyle(
+                            style = SpanStyle(
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 12.ssp,
+                                fontWeight = W400,
+                                fontFamily = displayFontFamily(),
+                                textDecoration = TextDecoration.Underline,
+                            )
+                        ) {
+                            append("Sign In")
+                        }
+                    })
                 Spacer(modifier = Modifier.height(20.sdp))
             }
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun RoleSelectionGrid(
-        userRoles: List<UserRole>,
-        onClick: (UserRole) -> Unit,
-        selectedUserRole: UserRole?,
+        userRoles: List<UserRole>, onClick: (Int) -> Unit, selectedUserRole: Int
     ) {
-        LazyVerticalGrid(
-            modifier = Modifier.heightIn(max = 100.sdp),
-            columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(8.sdp),
-            horizontalArrangement = Arrangement.spacedBy(8.sdp)
-        ) {
-
-            items(userRoles) { userrole ->
+        SecondaryTabRow(modifier = Modifier.heightIn(max = 100.sdp), indicator = {
+            FancyIndicator(
+                MaterialTheme.colorScheme.secondaryContainer,
+                Modifier.tabIndicatorOffset(selectedUserRole)
+            )
+        }, selectedTabIndex = selectedUserRole, divider = { }) {
+            userRoles.forEachIndexed { index, userRole ->
                 RoleSelectionItem(
-                    isSelected = selectedUserRole == userrole,
-                    onClick = { onClick(userrole) },
-                    userRole = userrole
+                    isSelected = selectedUserRole == index,
+                    onClick = { onClick(index) },
+                    userRole = userRole
                 )
             }
         }

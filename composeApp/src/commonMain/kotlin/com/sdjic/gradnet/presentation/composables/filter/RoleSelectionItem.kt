@@ -44,34 +44,12 @@ fun RoleSelectionItem(
     userRole: UserRole,
     modifier: Modifier = Modifier
 ) {
-
-    val transition = updateTransition(targetState = isSelected, label = "BoxTransition")
-
-    val backgroundColor by transition.animateColor(
-        transitionSpec = { tween(durationMillis = 500) },
-        label = "BoxColorAnimation"
-    ) { visible ->
-        if (visible) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.background
-    }
-
-    val translationX by animateFloatAsState(
-        targetValue = if (isSelected) 0f else 1500f,
-        animationSpec = spring(DampingRatioMediumBouncy),
-        label = "BoxTranslation"
-    )
-
     Box(
         modifier = modifier
             .aspectRatio(1f)
             .noRippleEffect(onClick)
     ) {
-        Box(
-            modifier = Modifier
-                .graphicsLayer(translationX = translationX) // Smoothly translate horizontally
-                .fillMaxSize()
-                .clip(RoundedCornerShape(10.sdp))
-                .background(backgroundColor)
-        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

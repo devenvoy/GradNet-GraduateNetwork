@@ -107,7 +107,7 @@ fun OnBoardingScreenContent(
                         text = "Login",
                         fontWeight = W600,
                         fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                        textColor = MaterialTheme.colorScheme.secondary
+                        textColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 }
             }

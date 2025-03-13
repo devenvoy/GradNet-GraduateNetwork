@@ -31,11 +31,11 @@ fun SecondaryOutlinedButton(
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(8.sdp),
     colors: ButtonColors = ButtonDefaults.outlinedButtonColors(
-        contentColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.primaryContainer,
         containerColor = MaterialTheme.colorScheme.background
     ),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(defaultElevation = 1.dp),
-    border: BorderStroke? = BorderStroke(1.sdp, MaterialTheme.colorScheme.primary),
+    border: BorderStroke? = BorderStroke(1.sdp, MaterialTheme.colorScheme.primaryContainer),
     contentPadding: PaddingValues = PaddingValues(vertical = 10.sdp),
     interactionSource: MutableInteractionSource? = null,
     content: @Composable RowScope.() -> Unit = {

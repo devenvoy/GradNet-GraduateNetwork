@@ -1,14 +1,20 @@
 package com.sdjic.gradnet.domain
 
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
+import app.cash.paging.PagingSource
+import app.cash.paging.PagingState
 import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.utils.Result
 
-open class ResultPagingSource<T : Any>(private val fetch: suspend (page: Int, pageSize: Int) -> Result<List<T>,ServerError>) :
+open class ResultPagingSource<T : Any>(private val fetch: suspend (page: Int, pageSize: Int) -> Result<List<T>, ServerError>) :
     PagingSource<Int, T>() {
 
-    override fun getRefreshKey(state: PagingState<Int, T>): Int? = null
+    override fun getRefreshKey(state: PagingState<Int, T>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
+    }
+
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> =
         (params.key ?: 1).let { _page ->

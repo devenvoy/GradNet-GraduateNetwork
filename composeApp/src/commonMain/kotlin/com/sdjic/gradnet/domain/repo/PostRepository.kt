@@ -5,11 +5,15 @@ import com.sdjic.gradnet.data.network.entity.response.PostResponse
 import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.utils.Result
+import com.sdjic.gradnet.presentation.core.model.Filter
 import io.ktor.client.content.ProgressListener
 import kotlinx.serialization.json.JsonElement
 
 interface PostRepository {
-    suspend fun getPosts(accessToken: String,page: Int, perPage: Int): Result<ServerResponse<PostResponse>, ServerError>
+    suspend fun getPosts(
+        accessToken: String, page: Int, perPage: Int,
+        selectedFilters: List<Filter>
+    ): Result<ServerResponse<PostResponse>, ServerError>
 
     suspend fun getPostByUserId(userId: String): Result<ServerResponse<List<PostDto>>, ServerError>
 
@@ -23,5 +27,8 @@ interface PostRepository {
         listener: ProgressListener?
     ): Result<ServerResponse<JsonElement>, ServerError>
 
-    suspend fun sendLikePostCall(accessToken: String, postId: String): Result<ServerResponse<JsonElement>, ServerError>
+    suspend fun sendLikePostCall(
+        accessToken: String,
+        postId: String
+    ): Result<ServerResponse<JsonElement>, ServerError>
 }

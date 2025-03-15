@@ -15,11 +15,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,12 +28,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -52,6 +54,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,6 +65,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -80,7 +84,6 @@ import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.alorma.compose.settings.ui.SettingsCheckbox
 import com.sdjic.gradnet.di.platform_di.getContactsUtil
 import com.sdjic.gradnet.presentation.composables.LoadingAnimation
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
@@ -99,6 +102,7 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.onboarding.DotIndicator
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.app_name
 import gradnet_graduatenetwork.composeapp.generated.resources.heart
@@ -257,6 +261,9 @@ class PostScreen : Screen {
         onDismiss: () -> Unit,
         postScreenModel: PostScreenModel
     ) {
+
+        val filters by postScreenModel.userTypeFilters.collectAsState()
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -276,34 +283,70 @@ class PostScreen : Screen {
                 modifier = Modifier.padding(vertical = 8.sdp).align(Alignment.CenterHorizontally)
             )
 
-            SettingsCheckbox(
+            CustomSettingsCheckbox(
                 state = postScreenModel.selectAllUserTypes.value,
-                title = { Text(text = "Select All", fontWeight = FontWeight.W600) },
+                title = {
+                    Text(
+                        text = "Select All",
+                        fontWeight = FontWeight.W600,
+                        fontFamily = displayFontFamily(),
+                        modifier = Modifier.weight(1f)
+                    )
+                },
                 enabled = true,
                 onCheckedChange = { postScreenModel.onAction(PostScreenAction.OnToggleSelectAll) },
+                modifier = Modifier
             )
 
-            postScreenModel.userTypeFilters.collectAsState().value
-                .forEachIndexed { ixd, filter ->
-                    SettingsCheckbox(
-                        modifier = Modifier.padding(start = 10.dp)
-                            .offset(y = (-20 * (ixd + 1)).dp),
-                        state = filter.value,
-                        title = {
-                            Text(
-                                text = filter.key.lowercase()
-                                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() })
-                        },
-                        enabled = true,
-                        onCheckedChange = {
-                            postScreenModel.onAction(
-                                PostScreenAction.OnFilterChange(
-                                    filter.copy(value = !filter.value)
-                                )
+            filters.forEachIndexed { ixd, filter ->
+                CustomSettingsCheckbox(
+                    modifier = Modifier.padding(start = 10.dp),
+                    state = filter.value,
+                    title = {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            fontFamily = displayFontFamily(),
+                            text = filter.key.lowercase()
+                                .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() })
+                    },
+                    enabled = true,
+                    onCheckedChange = {
+                        postScreenModel.onAction(
+                            PostScreenAction.OnFilterChange(
+                                filter.copy(value = !filter.value)
                             )
-                        },
-                    )
-                }
+                        )
+                    },
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun CustomSettingsCheckbox(
+        state: Boolean,
+        title: @Composable RowScope.() -> Unit,
+        enabled: Boolean,
+        onCheckedChange: (Boolean) -> Unit,
+        modifier: Modifier,
+    ) {
+        val update: (Boolean) -> Unit = { boolean -> onCheckedChange(boolean) }
+        Row(
+            modifier = Modifier.toggleable(
+                enabled = enabled,
+                value = state,
+                role = Role.Switch,
+                onValueChange = { update(!state) },
+            ).then(modifier),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            title()
+            Checkbox(
+                checked = state,
+                onCheckedChange = update,
+                enabled = enabled,
+                modifier = Modifier.padding(end = 8.dp)
+            )
         }
     }
 

@@ -51,6 +51,7 @@ fun <T : Any> PagingListUI(
     val composition by rememberLottieComposition {
         LottieCompositionSpec.DotLottie(Res.readBytes("files/loading.lottie"))
     }
+
     LazyColumn(
         modifier = modifier,
         state = state,

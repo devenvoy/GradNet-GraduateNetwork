@@ -8,6 +8,7 @@ import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.utils.BaseGateway
 import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.domain.repo.PostRepository
+import com.sdjic.gradnet.presentation.core.model.Filter
 import io.ktor.client.HttpClient
 import io.ktor.client.content.ProgressListener
 import io.ktor.client.plugins.onUpload
@@ -30,13 +31,18 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
     override suspend fun getPosts(
         accessToken: String,
         page: Int,
-        perPage: Int
+        perPage: Int,
+        selectedFilters: List<Filter>
     ): Result<ServerResponse<PostResponse>, ServerError> {
         return tryToExecute<ServerResponse<PostResponse>> {
             get("$baseUrl/posts") {
                 header("Authorization", "Bearer $accessToken")
                 parameter("page", "$page")
                 parameter("per_page", "$perPage")
+
+                selectedFilters.filter { it.value }.forEach { filter ->
+                    parameter("role", filter.key)
+                }
             }
         }
     }

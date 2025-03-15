@@ -1,6 +1,6 @@
 package com.sdjic.gradnet.presentation.screens.posts
 
-import androidx.paging.PagingData
+import app.cash.paging.PagingData
 import app.cash.paging.cachedIn
 import app.cash.paging.map
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -12,9 +12,13 @@ import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.core.model.Filter
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.screens.auth.register.model.getUserRoles
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,11 +30,11 @@ class PostScreenModel(
 ) : ScreenModel {
 
     private val _userTypeFilters = MutableStateFlow(
-        getUserRoles().map { Filter(it.name, false) }
+        getUserRoles().map { Filter(it.name, true) }
     )
     val userTypeFilters = _userTypeFilters.asStateFlow()
 
-    private val _selectAllUserTypes = MutableStateFlow(false)
+    private val _selectAllUserTypes = MutableStateFlow(true)
     val selectAllUserTypes = _selectAllUserTypes.asStateFlow()
 
     private val _showFilterSheet = MutableStateFlow(false)
@@ -40,15 +44,28 @@ class PostScreenModel(
     val posts = _posts.asStateFlow()
 
     init {
-        toggleSelectAll()
         screenModelScope.launch { refreshPosts() }
     }
 
     suspend fun refreshPosts() {
-        getPostsUseCase(5)
+
+        _posts.update { PagingData.empty() } // Clear the previous data
+
+        val selectedFilters = if (_selectAllUserTypes.value) {
+            _userTypeFilters.value
+        } else {
+            _userTypeFilters.value.filter { it.value }
+        }
+
+        getPostsUseCase(5, selectedFilters)
             .cachedIn(screenModelScope)
-            .collect { pagingData -> _posts.update { pagingData } }
+            .distinctUntilChanged()
+            .collectLatest { pagingData ->
+                println("TAG111 New paging data received")
+                _posts.value = pagingData
+            }
     }
+
 
     fun toggleLike(post: Post) {
         val newPost = post.copy(
@@ -71,10 +88,19 @@ class PostScreenModel(
 
     fun onAction(action: PostScreenAction) = screenModelScope.launch {
         when (action) {
-            is PostScreenAction.OnFilterChange -> updateFilter(action.filter)
-            is PostScreenAction.OnFilterSheetStateChange -> _showFilterSheet.value = action.show
-            PostScreenAction.OnToggleSelectAll -> toggleSelectAll()
-            PostScreenAction.OnUpdateFilter -> refreshPosts()
+            is PostScreenAction.OnFilterChange -> {
+                updateFilter(action.filter)
+            }
+
+            is PostScreenAction.OnFilterSheetStateChange -> _showFilterSheet.update { action.show }
+
+            PostScreenAction.OnToggleSelectAll -> {
+                toggleSelectAll()
+            }
+
+            PostScreenAction.OnUpdateFilter -> {
+                refreshPosts()
+            }
         }
     }
 
@@ -91,10 +117,9 @@ class PostScreenModel(
         }
     }
 
-    fun toggleSelectAll() {
-        val allSelected = _userTypeFilters.value.all { it.value }
-        _selectAllUserTypes.value = allSelected
+    private fun toggleSelectAll() {
+        val allSelected = _userTypeFilters.value.all { !it.value }
+        _selectAllUserTypes.update { allSelected }
         _userTypeFilters.update { filters -> filters.map { it.copy(value = allSelected) } }
-
     }
 }

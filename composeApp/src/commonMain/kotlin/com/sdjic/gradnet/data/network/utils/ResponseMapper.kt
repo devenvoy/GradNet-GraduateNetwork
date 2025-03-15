@@ -5,12 +5,15 @@ import com.sdjic.gradnet.data.local.entity.ExperienceTable
 import com.sdjic.gradnet.data.local.entity.UrlTable
 import com.sdjic.gradnet.data.network.entity.dto.EducationDto
 import com.sdjic.gradnet.data.network.entity.dto.ExperienceDto
+import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.entity.dto.URLDto
 import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
 import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.core.model.ExperienceModel
+import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.core.model.SocialUrls
 import com.sdjic.gradnet.presentation.core.model.UserProfile
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 
 
 fun EducationDto.toEducationModel(): EducationModel {
@@ -87,6 +90,7 @@ fun UserProfileResponse.toUserProfile(): UserProfile {
         department = this.department,
         designation = this.designation,
         employee = this.employee,
+        course = this.course
     )
 }
 
@@ -146,3 +150,19 @@ fun ExperienceTable.toExperienceModel(): ExperienceModel {
     )
 }
 
+
+fun postDtoToPost(postDto: PostDto?) = postDto?.let {
+    Post(
+        postId = it.postId,
+        userId = it.userId.orEmpty(),
+        userName = it.userName.orEmpty(),
+        userImage = it.userProfilePic.orEmpty(),
+        userRole = UserRole.getUserRole(it.userRole ?: "") ?: UserRole.Alumni,
+        content = it.description,
+        likesCount = it.likes,
+        liked = it.isLiked,
+        images = it.photos?.filterNotNull() ?: emptyList(),
+        location = it.location.orEmpty(),
+        createdAt = it.createdAt
+    )
+}

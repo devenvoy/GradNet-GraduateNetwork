@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.utils.map
+import com.sdjic.gradnet.data.network.utils.postDtoToPost
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.ResultPagingSource
 import com.sdjic.gradnet.domain.repo.PostRepository
@@ -31,21 +32,5 @@ class GetPostsUseCase(
                 }
             }
         ).flow
-    }
-
-    private fun postDtoToPost(postDto: PostDto?) = postDto?.let {
-        Post(
-            postId = it.postId,
-            userId = it.userId.orEmpty(),
-            userName = it.userName.orEmpty(),
-            userImage = it.userProfilePic.orEmpty(),
-            userRole = UserRole.getUserRole(it.userRole ?: "") ?: UserRole.Alumni,
-            content = it.description,
-            likesCount = it.likes,
-            liked = it.isLiked,
-            images = it.photos?.filterNotNull() ?: emptyList(),
-            location = it.location.orEmpty(),
-            createdAt = it.createdAt
-        )
     }
 }

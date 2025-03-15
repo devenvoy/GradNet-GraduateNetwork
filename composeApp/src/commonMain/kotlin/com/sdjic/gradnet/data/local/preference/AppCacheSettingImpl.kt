@@ -68,6 +68,7 @@ class AppCacheSettingImpl : AppCacheSetting {
         settings[SettingStorageKeys.DEPARTMENT.key] = userProfile.department
         settings[SettingStorageKeys.DESIGNATION.key] = userProfile.designation
         settings[SettingStorageKeys.EMPLOYEE.key] = userProfile.employee
+        settings[SettingStorageKeys.COURSE.key] = userProfile.course
         settings[SettingStorageKeys.LANGUAGES.key] = userProfile.languages?.joinToString("|")
         settings[SettingStorageKeys.SKILLS.key] = userProfile.skills?.joinToString("|")
     }
@@ -96,6 +97,7 @@ class AppCacheSettingImpl : AppCacheSetting {
             website = settings[SettingStorageKeys.WEBSITE.key],
             about = settings[SettingStorageKeys.ABOUT_SELF.key] ?: "",
             verificationId = settings[SettingStorageKeys.VERIFIED_ID.key] ?: "",
+            course = settings[SettingStorageKeys.COURSE.key],
             languages = (settings[SettingStorageKeys.LANGUAGES.key] ?: "").split("|")
                 .filter { it.isNotEmpty() },
             skills = (settings[SettingStorageKeys.SKILLS.key] ?: "").split("|")

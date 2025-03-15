@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,21 +16,21 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,14 +41,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import co.touchlab.kermit.Logger
 import com.sdjic.gradnet.data.network.entity.dto.EventDto
 import com.sdjic.gradnet.presentation.composables.AnimatedCalendar
 import com.sdjic.gradnet.presentation.composables.images.BannerWidget
+import com.sdjic.gradnet.presentation.composables.text.ExpandableText
 import com.sdjic.gradnet.presentation.composables.text.Label
-import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.model.CalendarDate
@@ -58,6 +58,7 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.helper.shimmerLoadingAnimation
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
+import kotlinx.datetime.number
 import network.chaintech.sdpcomposemultiplatform.ssp
 
 class EventScreen : Screen {
@@ -70,7 +71,16 @@ class EventScreen : Screen {
     fun EventScreenContent() {
         val eventScreenModel = koinScreenModel<EventScreenModel>()
         val navigator = LocalRootNavigator.current
-        val list by eventScreenModel.eventList.collectAsStateWithLifecycle()
+        val trendingEventItems by eventScreenModel.trendingEventList.collectAsState()
+        val selectedDateEvents by eventScreenModel.selectedDateEventsList.collectAsState()
+        val todayDate by eventScreenModel.todayDate.collectAsState()
+        val selectedDay by eventScreenModel.selectedDay.collectAsState()
+
+        val daysList by remember {
+            derivedStateOf {
+                todayDate.month.let { DateTimeUtils.getCalendarDays(todayDate.year, it) }
+            }
+        }
 
         Scaffold { pVal ->
             Column(
@@ -80,56 +90,168 @@ class EventScreen : Screen {
                 if (eventScreenModel.isEventLoading.value) {
                     EventLoadingShimmer()
                 } else {
-                    if (list.isNotEmpty())
+                    if (trendingEventItems.isNotEmpty())
                         Row(
                             modifier = Modifier.padding(12.dp).fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Title("Trending Events")
-                            TextButton(onClick = {}) {
+                            Label(
+                                size = 18.sp,
+                                text = "Trending Events",
+                                modifier = Modifier.padding(12.dp).weight(1f),
+                                textColor = MaterialTheme.colorScheme.secondary
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            /*TextButton(onClick = {}) {
                                 SText("View more")
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                                     contentDescription = null,
                                     modifier = Modifier.size(20.dp)
                                 )
-                            }
+                            }*/
                         }
-                    BannerCarouselWidget(list) {
+                    BannerCarouselWidget(trendingEventItems) {
                         navigator.push(EventDetailScreen(it))
                     }
                 }
 
-                val todayDate by remember { mutableStateOf(DateTimeUtils.now()) }
 
-                val selectedDay by remember(todayDate) {
-                    mutableStateOf(
-                        CalendarDate(
-                            day = todayDate.dayOfMonth,
-                            dayOfWeek = todayDate.date.dayOfWeek.name,
-                            month = todayDate.date.month
-                        )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Label(
+                        size = 22.sp,
+                        text = "Upcoming Events",
+                        modifier = Modifier.padding(12.dp).weight(1f),
+                        textColor = MaterialTheme.colorScheme.secondary
                     )
+                    /* if (selectedDay.day != todayDate.dayOfMonth && selectedDay.month == todayDate.date.month) {
+                         TextButton(onClick = {
+                             eventScreenModel.refreshTodayDate()
+                         }) {
+                             SText("Today")
+                         }
+                     }*/
                 }
 
-                Label(
-                    size = 22.sp,
-                    text = "Upcoming Events",
-                    modifier = Modifier.padding(12.dp),
-                    textColor = MaterialTheme.colorScheme.secondary
-                )
-
                 AnimatedCalendar(
-                    year = todayDate.year,
+                    daysList = daysList,
                     selectedDay = selectedDay,
                     onDaySelected = { date ->
-                        Logger.e("$date", null, tag = "TAG111")
+                        Logger.e(
+                            "${todayDate.year}-${date.month.number}-${date.day}",
+                            null,
+                            tag = "TAG111"
+                        )
+                        eventScreenModel.updateSelectedDay(date)
+                        eventScreenModel.getEventsByDate("${todayDate.year}-${date.month.number}-${date.day}")
                     }
                 )
+
+                LazyColumn(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
+                    if (selectedDateEvents.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier.padding(top = 100.dp).fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Title(
+                                    "No events found"
+                                )
+                            }
+                        }
+                    }
+
+                    // example
+                    /* item {
+                         MiniEventItemCard(
+                             modifier = Modifier,
+                             eventDto = EventDto(
+                                 eventTitle = "Independence day",
+                                 description = "this is independece day ",
+                                 type = "miniEvent",
+                                 eventName = "Independence day"
+                             ),
+                             calendarDate = selectedDay
+                         )
+                     }*/
+
+                    items(selectedDateEvents) { event ->
+                        when (event.type.lowercase()) {
+                            "casual", "trending", "normal", "default" -> {
+                                EventItemCard(
+                                    modifier = Modifier.height(220.dp),
+                                    eventDto = event,
+                                    onBannerClick = {
+                                        navigator.push(EventDetailScreen(it))
+                                    }
+                                )
+                            }
+
+                            "miniEvent".lowercase() -> {
+                                MiniEventItemCard(
+                                    modifier = Modifier,
+                                    eventDto = event,
+                                    calendarDate = selectedDay
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+
+    @Composable
+    fun MiniEventItemCard(
+        modifier: Modifier = Modifier,
+        eventDto: EventDto,
+        calendarDate: CalendarDate
+    ) {
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            shape = RoundedCornerShape(8.dp),
+            elevation = CardDefaults.cardElevation(2.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Calendar Day Number
+                Text(
+                    text = calendarDate.day.toString(),
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+
+                Column(modifier = Modifier.weight(1f)) {
+                    // Event Title
+                    Text(
+                        text = eventDto.eventTitle,
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    // Event Description if available
+                    eventDto.description?.let {
+                        if (it.isNotEmpty()) {
+                            ExpandableText(
+                                text = it,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     @Composable
     private fun EventLoadingShimmer() {
@@ -144,11 +266,11 @@ class EventScreen : Screen {
                     .background(CardDefaults.cardColors().containerColor)
                     .shimmerLoadingAnimation()
             )
-            Box(
+            /*Box(
                 modifier = Modifier.width(100.dp).height(40.dp)
                     .background(CardDefaults.cardColors().containerColor)
                     .shimmerLoadingAnimation()
-            )
+            )*/
         }
         Box(
             modifier = Modifier
@@ -178,46 +300,16 @@ class EventScreen : Screen {
                 pageSpacing = 8.dp,
                 verticalAlignment = Alignment.Top,
             ) { page ->
-                Card(
+                EventItemCard(
                     modifier = Modifier.height(if (pagerState.currentPage == page) 220.dp else 190.dp)
-                        .offset(y = if (pagerState.currentPage == page) (-10).dp else 0.dp)
-                        .shadow(
-                            20.dp,
-                            CardDefaults.shape,
-                            ambientColor = MaterialTheme.colorScheme.onBackground,
-                            spotColor = MaterialTheme.colorScheme.onBackground
-                        )
-                ) {
-                    Box(
-                        contentAlignment = Alignment.BottomStart
-                    ) {
-                        BannerWidget(
-                            imageUrl = banners[page].eventPic ?: DummyBgImage,
-                            contentDescription = banners[page].eventTitle,
-                            modifier = Modifier.fillMaxHeight()
-                                .clickable(enabled = page == pagerState.currentPage) {
-                                    onBannerClick(banners[page])
-                                }
-                        )
-                        Column(
-                            modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                        ) {
-                            Title(
-                                text = banners[page].eventTitle ?: "",
-                                textColor = Color.White
-                            )
-                            Text(
-                                text = banners[page].description ?: "",
-                                color = Color.White.copy(.7f),
-                                fontFamily = displayFontFamily(),
-                                fontSize = 10.ssp,
-                                lineHeight = TextUnit.Unspecified,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 2
-                            )
+                        .offset(y = if (pagerState.currentPage == page) (-10).dp else 0.dp),
+                    eventDto = banners[page],
+                    onBannerClick = {
+                        if (page == pagerState.currentPage) {
+                            onBannerClick(it)
                         }
                     }
-                }
+                )
             }
             Row(
                 Modifier
@@ -234,6 +326,51 @@ class EventScreen : Screen {
                             .clip(CircleShape)
                             .background(color)
                             .size(8.dp)
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun EventItemCard(
+        eventDto: EventDto,
+        onBannerClick: (EventDto) -> Unit,
+        modifier: Modifier = Modifier
+    ) {
+        Card(
+            modifier = modifier
+                .shadow(
+                    20.dp,
+                    CardDefaults.shape,
+                    ambientColor = MaterialTheme.colorScheme.onBackground,
+                    spotColor = MaterialTheme.colorScheme.onBackground
+                )
+        ) {
+            Box(
+                contentAlignment = Alignment.BottomStart
+            ) {
+                BannerWidget(
+                    imageUrl = eventDto.eventPic ?: DummyBgImage,
+                    contentDescription = eventDto.eventTitle,
+                    modifier = Modifier.fillMaxHeight()
+                        .clickable { onBannerClick(eventDto) }
+                )
+                Column(
+                    modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                ) {
+                    Title(
+                        text = eventDto.eventTitle ?: "",
+                        textColor = Color.White
+                    )
+                    Text(
+                        text = eventDto.description ?: "",
+                        color = Color.White.copy(.7f),
+                        fontFamily = displayFontFamily(),
+                        fontSize = 10.ssp,
+                        lineHeight = TextUnit.Unspecified,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2
                     )
                 }
             }

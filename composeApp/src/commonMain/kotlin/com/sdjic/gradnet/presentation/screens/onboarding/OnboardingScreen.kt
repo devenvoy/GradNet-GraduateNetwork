@@ -77,7 +77,7 @@ fun OnBoardingScreenContent(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     onboardingList.forEachIndexed { index, _ ->
-                        OnboardingPagerSlide(
+                        DotIndicator(
                             isSelected = index == pagerState.currentPage,
                             selectedColor = MaterialTheme.colorScheme.primary,
                             unselectedColor = Color.Gray,

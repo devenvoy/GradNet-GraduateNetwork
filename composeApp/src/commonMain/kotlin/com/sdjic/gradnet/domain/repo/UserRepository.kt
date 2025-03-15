@@ -1,6 +1,7 @@
 package com.sdjic.gradnet.domain.repo
 
 import androidx.compose.ui.graphics.ImageBitmap
+import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.entity.dto.VerifyUserResponse
 import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.entity.response.ServerResponse
@@ -40,4 +41,6 @@ interface UserRepository {
     suspend fun checkUpdateToken(
         oldToken: String
     ): Result<ServerResponse<Map<String,String>>, ServerError>
+
+    suspend fun fetchUserPosts(userId:String) : Result<ServerResponse<List<PostDto>>,ServerError>
 }

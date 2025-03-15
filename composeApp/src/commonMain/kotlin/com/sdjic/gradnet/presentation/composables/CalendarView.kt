@@ -34,21 +34,12 @@ import kotlinx.datetime.Month
 @OptIn(FlowPreview::class)
 @Composable
 fun AnimatedCalendar(
-    year: Int,
-    month: Month? = null,
+    daysList:List<CalendarDate>,
     selectedDay: CalendarDate? = null,
     onDaySelected: (CalendarDate) -> Unit
-
 ) {
 
-    val daysList by remember(year, month) {
-        derivedStateOf {
-            month?.let { DateTimeUtils.getCalendarDays(year, it) }
-                ?: run { DateTimeUtils.getCalendarDays(year) }
-        }
-    }
-
-    val initialSelectedIndex by remember(year, month, selectedDay, daysList) {
+    val initialSelectedIndex by remember(selectedDay) {
         derivedStateOf {
             val selectedDate = daysList.firstOrNull {
                 it.day == selectedDay?.day && it.month == selectedDay.month
@@ -87,7 +78,7 @@ fun AnimatedCalendar(
         Box(
             modifier = Modifier
                 .width(size)
-                .height(size*1.3f)
+                .height(size * 1.3f)
                 .graphicsLayer {
                     scaleX = animationProgress.scale
                     scaleY = animationProgress.scale

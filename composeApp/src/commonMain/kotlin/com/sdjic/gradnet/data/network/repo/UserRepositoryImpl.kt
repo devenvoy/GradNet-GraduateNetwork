@@ -4,6 +4,7 @@ import GradNet_GraduateNetwork.composeApp.BuildConfig
 import androidx.compose.ui.graphics.ImageBitmap
 import co.touchlab.kermit.Logger
 import com.sdjic.gradnet.data.network.entity.UserProfileRequest
+import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.entity.dto.URLDto
 import com.sdjic.gradnet.data.network.entity.dto.VerifyUserResponse
 import com.sdjic.gradnet.data.network.entity.response.ServerError
@@ -149,6 +150,16 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
             post(BuildConfig.BASE_URL + "/refresh-token/"){
                 header(HttpHeaders.Authorization, "Bearer $oldToken")
                 contentType(ContentType.Application.Json)
+            }
+        }
+    }
+
+    override suspend fun fetchUserPosts(userId: String): Result<ServerResponse<List<PostDto>>, ServerError> {
+        return if (userId.isEmpty())
+            Result.Error(ServerError(500, null, "Invalid userId"))
+        else tryToExecute {
+            // 75ed0707-e5e7-45cf-9013-c6cbe79ceb49
+            get(BuildConfig.BASE_URL + "/posts/user?user_id=$userId"){
             }
         }
     }

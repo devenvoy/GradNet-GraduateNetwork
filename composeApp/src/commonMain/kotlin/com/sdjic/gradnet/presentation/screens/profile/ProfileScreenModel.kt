@@ -1,10 +1,13 @@
 package com.sdjic.gradnet.presentation.screens.profile
 
+import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
+import com.sdjic.gradnet.data.network.utils.postDtoToPost
 import com.sdjic.gradnet.data.network.utils.toEducationModel
 import com.sdjic.gradnet.data.network.utils.toEducationTable
 import com.sdjic.gradnet.data.network.utils.toExperienceModel
@@ -16,7 +19,9 @@ import com.sdjic.gradnet.data.network.utils.toUserProfile
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
+import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.helper.UiState
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -34,14 +39,35 @@ class ProfileScreenModel(
     private val _isReadOnlyMode = MutableStateFlow(false)
     val isReadOnlyMode = _isReadOnlyMode.asStateFlow()
 
+    private val _userPosts = MutableStateFlow<List<Post>>(emptyList())
+    val userPosts = _userPosts.asStateFlow()
+
+    var isFetchingPost = mutableStateOf(false)
+        private set
+
+    val userRole = UserRole.getUserRole(prefs.userRole)
+
     fun updateEditMode(value: Boolean) {
         _isReadOnlyMode.update { value }
     }
+
 
     fun loadUserProfile() {
         screenModelScope.launch {
             try {
                 var result = prefs.getUserProfile()
+                screenModelScope.launch {
+                    isFetchingPost.value = true
+                    userRepository.fetchUserPosts(result.userId)
+                        .onSuccess { r ->
+                            _userPosts.update {
+                                r.value?.mapNotNull { pd -> postDtoToPost(pd) } ?: emptyList()
+                            }
+                        }.onError {
+                            _userPosts.update { emptyList() }
+                        }
+                    isFetchingPost.value = false
+                }
                 _profileState.update { UiState.Success(result) }
                 if (!prefs.firstInitialized) {
                     userRepository.fetchProfile(prefs.accessToken).onSuccess {
@@ -88,13 +114,13 @@ class ProfileScreenModel(
         screenModelScope.launch {
             _profileState.update { UiState.Loading }
             try {
-                userRepository.fetchUser(userId).onSuccess { r->
+                userRepository.fetchUser(userId).onSuccess { r ->
                     r.value?.let {
-                    _profileState.update { UiState.Success(r.value.toUserProfile()) }
+                        _profileState.update { UiState.Success(r.value.toUserProfile()) }
                     } ?: run {
                         _profileState.update { UiState.Error("User not found") }
                     }
-                }.onError { e->
+                }.onError { e ->
                     _profileState.update { UiState.Error(e.detail) }
                 }
             } catch (e: Exception) {

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.Dp
 import network.chaintech.sdpcomposemultiplatform.sdp
 
 @Composable
-fun OnboardingPagerSlide(
+fun DotIndicator(
         isSelected: Boolean,
         spacer: Int,
         size: Int,

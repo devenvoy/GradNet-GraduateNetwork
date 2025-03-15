@@ -96,7 +96,7 @@ import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.isScrollingUp
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
-import com.sdjic.gradnet.presentation.screens.onboarding.OnboardingPagerSlide
+import com.sdjic.gradnet.presentation.screens.onboarding.DotIndicator
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
@@ -181,7 +181,8 @@ class PostScreen : Screen {
 
         Scaffold(
             topBar = {
-                AnimatedVisibility(listState.isScrollingUp(),
+                AnimatedVisibility(
+                    listState.isScrollingUp(),
                     enter = fadeIn() + slideInVertically { -1 },
                     exit = fadeOut() + slideOutVertically { -1 }
                 ) {
@@ -288,8 +289,11 @@ class PostScreen : Screen {
                         modifier = Modifier.padding(start = 10.dp)
                             .offset(y = (-20 * (ixd + 1)).dp),
                         state = filter.value,
-                        title = { Text(text = filter.key.lowercase()
-                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }) },
+                        title = {
+                            Text(
+                                text = filter.key.lowercase()
+                                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() })
+                        },
                         enabled = true,
                         onCheckedChange = {
                             postScreenModel.onAction(
@@ -331,10 +335,10 @@ class PostScreen : Screen {
     @Composable
     fun PostItem(
         post: Post,
-        checkProfileEnable : Boolean,
+        checkProfileEnable: Boolean,
         modifier: Modifier = Modifier,
         onLikeClicked: () -> Unit = {},
-        onShareClick: () -> Unit= {},
+        onShareClick: () -> Unit = {},
         onProfileClick: () -> Unit = {}
     ) {
         var postedAgo by remember { mutableStateOf("Loading...") }
@@ -349,7 +353,10 @@ class PostScreen : Screen {
 
             Row {
                 CircularProfileImage(
-                    modifier = Modifier.clickable(enabled = checkProfileEnable, onClick = onProfileClick),
+                    modifier = Modifier.clickable(
+                        enabled = checkProfileEnable,
+                        onClick = onProfileClick
+                    ),
                     placeHolderName = post.userName,
                     data = post.userImage,
                     imageSize = 36.dp,
@@ -358,7 +365,10 @@ class PostScreen : Screen {
                 Column(modifier = Modifier.padding(horizontal = 6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SText(
-                            modifier = Modifier.clickable(enabled = checkProfileEnable, onClick = onProfileClick),
+                            modifier = Modifier.clickable(
+                                enabled = checkProfileEnable,
+                                onClick = onProfileClick
+                            ),
                             text = post.userName,
                             fontSize = 16.sp,
                             fontWeight = FontWeight(800)
@@ -401,89 +411,90 @@ class PostScreen : Screen {
             }
         }
     }
+}
 
-    @Composable
-    fun PostImages(
-        images: List<String>,
-        onLikeClicked: () -> Unit
-    ) {
-        val pagerState = rememberPagerState(initialPage = 0, pageCount = { images.size })
-        Box {
-            HorizontalPager(
-                state = pagerState,
-                beyondViewportPageCount = 2,
-                modifier = Modifier.fillMaxWidth().heightIn(min = 300.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(Color.Black, RoundedCornerShape(6.dp))
-            ) { page ->
+@Composable
+fun PostImages(
+    images: List<String>,
+    onLikeClicked: () -> Unit
+) {
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { images.size })
+    Box {
+        HorizontalPager(
+            state = pagerState,
+            beyondViewportPageCount = 2,
+            modifier = Modifier.fillMaxWidth().heightIn(min = 300.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(Color.Black, RoundedCornerShape(6.dp))
+        ) { page ->
 
-                val painterReq = rememberAsyncImagePainter(
-                    model = ImageRequest.Builder(LocalPlatformContext.current)
-                        .data(images[page])
-                        .crossfade(true)
-                        .crossfade(300)
-                        .build()
-                )
+            val painterReq = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalPlatformContext.current)
+                    .data(images[page])
+                    .crossfade(true)
+                    .crossfade(300)
+                    .build()
+            )
 
-                when (painterReq.state.collectAsState().value) {
-                    is AsyncImagePainter.State.Success -> {
+            when (painterReq.state.collectAsState().value) {
+                is AsyncImagePainter.State.Success -> {
 
-                        Image(
-                            painter = painterReq,
+                    Image(
+                        painter = painterReq,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .heightIn(max = 400.dp)
+                            .snapBackZoomable(
+                                rememberZoomState(),
+                                onDoubleTap = { onLikeClicked() },
+                                onLongPress = { /* todo */ }
+                            ),
+                        contentScale = ContentScale.Fit,
+                    )
+                }
+
+                AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .heightIn(max = 400.dp)
-                                .snapBackZoomable(rememberZoomState(),
-                                    onDoubleTap = { onLikeClicked() },
-                                    onLongPress = { /* todo */ }
-                                ),
-                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.size(40.dp).noRippleEffect {
+                                painterReq.restart()
+                            }
                         )
                     }
+                }
 
-                    AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Error -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                        ) {
-
-                            Icon(
-                                imageVector = Icons.Default.Refresh,
-                                contentDescription = null,
-                                modifier = Modifier.size(40.dp).noRippleEffect {
-                                    painterReq.restart()
-                                }
-                            )
-                        }
-                    }
-
-                    is AsyncImagePainter.State.Loading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                        ) {
-                            LoadingAnimation()
-                        }
+                is AsyncImagePainter.State.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+                        LoadingAnimation()
                     }
                 }
             }
-            if (images.size > 1) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
-                        .padding(bottom = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    images.forEachIndexed { index, _ ->
-                        OnboardingPagerSlide(
-                            isSelected = index == pagerState.currentPage,
-                            selectedColor = MaterialTheme.colorScheme.primary,
-                            unselectedColor = Color(0xFFD9D9D9),
-                            size = if (index == pagerState.currentPage) 6 else 4,
-                            spacer = 4,
-                            selectedLength = 6
-                        )
-                    }
+        }
+        if (images.size > 1) {
+            Row(
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+                    .padding(bottom = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                images.forEachIndexed { index, _ ->
+                    DotIndicator(
+                        isSelected = index == pagerState.currentPage,
+                        selectedColor = MaterialTheme.colorScheme.primary,
+                        unselectedColor = Color(0xFFD9D9D9),
+                        size = if (index == pagerState.currentPage) 6 else 4,
+                        spacer = 4,
+                        selectedLength = 6
+                    )
                 }
             }
         }

@@ -41,6 +41,7 @@ data class UserProfile(
     val industryType: String? = null,
     val department: String? = null,
     val designation: String? = null,
+    val course: String? = null,
     val employee: String? = null,
 )
 

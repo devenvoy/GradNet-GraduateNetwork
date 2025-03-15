@@ -146,6 +146,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+//            resValue("string", "PORT_NUMBER", "8088")
+        }
        release {
            isMinifyEnabled = false
        }

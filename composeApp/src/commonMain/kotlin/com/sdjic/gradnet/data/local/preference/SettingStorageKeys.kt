@@ -25,6 +25,7 @@ enum class SettingStorageKeys {
     IS_ACTIVE,
     LANGUAGES,
     SKILLS,
+    COURSE,
     CREATED_AT,
     UPDATED_AT;
 

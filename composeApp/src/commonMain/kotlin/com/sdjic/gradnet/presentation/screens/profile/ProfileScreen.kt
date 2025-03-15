@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -54,6 +55,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
@@ -65,9 +67,12 @@ import androidx.compose.ui.util.fastForEachIndexed
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil3.compose.LocalPlatformContext
+import com.sdjic.gradnet.di.platform_di.getContactsUtil
 import com.sdjic.gradnet.di.platform_di.getScreenHeight
 import com.sdjic.gradnet.presentation.composables.InterestsSection
+import com.sdjic.gradnet.presentation.composables.LoadingAnimation
 import com.sdjic.gradnet.presentation.composables.SectionTitle
+import com.sdjic.gradnet.presentation.composables.filter.UserRoleChip
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.tabs.FancyIndicator
@@ -82,6 +87,7 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationItem
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ExperienceItem
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
@@ -100,12 +106,12 @@ class ProfileScreen(val userId: String? = null) : Screen {
     @Composable
     override fun Content() {
         val parentNavigator = runCatching { LocalRootNavigator.current }.getOrNull()
+        val drawerState = runCatching { LocalDrawerController.current }.getOrNull()
         val localNavigator = LocalNavigator.current
         val profileScreenModel = koinScreenModel<ProfileScreenModel>()
+
         val state by profileScreenModel.profileState.collectAsState()
         val isReadOnlyMode by profileScreenModel.isReadOnlyMode.collectAsState()
-
-        val drawerState = runCatching { LocalDrawerController.current }.getOrNull()
 
         LaunchedEffect(userId) {
             if (userId == null) {
@@ -123,6 +129,7 @@ class ProfileScreen(val userId: String? = null) : Screen {
                 },
                 content = {
                     ProfileScreenContent(
+                        viewModel = profileScreenModel,
                         userProfile = it,
                         isReadOnlyMode = isReadOnlyMode,
                         drawerState = drawerState,
@@ -139,11 +146,13 @@ fun ProfileScreenContent(
     userProfile: UserProfile,
     onEditClick: () -> Unit = {},
     isReadOnlyMode: Boolean = false,
-    drawerState: DrawerState? = null
+    drawerState: DrawerState? = null,
+    viewModel: ProfileScreenModel,
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
     val pagerState = rememberPagerState(1, pageCount = { 2 })
+    val userRole = viewModel.userRole
 
 
     val headerOffset by remember {
@@ -175,39 +184,44 @@ fun ProfileScreenContent(
                 item {
                     Spacer(modifier = Modifier.height(120.dp))
                     TopScrollingContent(
-                        userProfile = userProfile,
+                        profilePic = userProfile.profilePic ?: "",
+                        profileName = userProfile.userName,
+                        userRole = userRole,
                         listState = scrollState
                     )
                 }
 
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(8.sdp)
+                    Row(
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        SText(
-                            text = userProfile.name,
-                            fontSize = 14.ssp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 2.sdp)
-                        )
-                        SText(
-                            text = userProfile.email,
-                            fontSize = 10.ssp,
-                            fontWeight = FontWeight(400)
-                        )
-                        userProfile.designation?.let { desgn ->
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.sdp)
+                        ) {
                             SText(
-                                text = desgn,
+                                text = userProfile.name,
+                                fontSize = 14.ssp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 2.sdp)
+                            )
+                            SText(
+                                text = userProfile.designation ?: (userProfile.course
+                                    ?: userProfile.email),
                                 fontSize = 10.ssp,
                                 fontWeight = FontWeight(400)
                             )
                         }
-                        if (isReadOnlyMode.not()) {
-                            EditButtonRow(onEditClick = onEditClick, onShareClick = {})
+                        userRole?.let {
+                            UserRoleChip(
+                                modifier = Modifier.padding(horizontal = 16.dp), userRole = userRole
+                            )
                         }
+                    }
+                    if (isReadOnlyMode.not()) {
+                        EditButtonRow(onEditClick = onEditClick, onShareClick = {})
                     }
                 }
 
@@ -241,7 +255,7 @@ fun ProfileScreenContent(
                             .background(MaterialTheme.colorScheme.background)
                     ) { page ->
                         when (page) {
-                            0 -> UserPostsContent()
+                            0 -> UserPostsContent(viewModel)
                             1 -> UserDetailsContent(userProfile)
                         }
                     }
@@ -265,7 +279,7 @@ fun UserDetailsContent(userProfile: UserProfile) {
                 ),
                 elevation = CardDefaults.cardElevation(1.dp)
             ) {
-                userProfile.educations.fastForEachIndexed{ idx , it ->
+                userProfile.educations.fastForEachIndexed { idx, it ->
                     EducationItem(it)
                 }
             }
@@ -280,8 +294,8 @@ fun UserDetailsContent(userProfile: UserProfile) {
                 ),
                 elevation = CardDefaults.cardElevation(1.dp)
             ) {
-                userProfile.experiences.fastForEachIndexed{ idx , it ->
-                   ExperienceItem(it)
+                userProfile.experiences.fastForEachIndexed { idx, it ->
+                    ExperienceItem(it)
                 }
             }
         }
@@ -302,8 +316,32 @@ fun UserDetailsContent(userProfile: UserProfile) {
 }
 
 @Composable
-fun UserPostsContent() {
-    Spacer(modifier = Modifier.height(getScreenHeight() / 2))
+fun UserPostsContent(viewModel: ProfileScreenModel) {
+    val isFetchingPost by viewModel.isFetchingPost
+    val userPosts by viewModel.userPosts.collectAsState()
+
+    if (isFetchingPost) {
+        Box(modifier = Modifier.height(getScreenHeight() / 1.2f)) {
+            LoadingAnimation()
+        }
+    } else {
+        if (userPosts.isEmpty()) {
+            Box(modifier = Modifier.height(getScreenHeight() / 1.2f)) {
+                SText("No Posts Found")
+            }
+        } else {
+            LazyColumn(modifier = Modifier.height(getScreenHeight() / 1.2f)) {
+                items(userPosts) { post ->
+                    ProfilePostItem(
+                        post = post,
+                        onShareClick = {
+                            getContactsUtil().sharePost(post)
+                        }
+                    )
+                }
+            }
+        }
+    }
 }
 
 
@@ -390,9 +428,9 @@ private fun TopBackground(backGroundPic: String) {
 @Composable
 fun EditButtonRow(onEditClick: () -> Unit, onShareClick: () -> Unit) {
 
-    Spacer(modifier = Modifier.height(10.dp))
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface)
+            .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.sdp)
     ) {
         OutlinedButton(
@@ -425,7 +463,9 @@ fun EditButtonRow(onEditClick: () -> Unit, onShareClick: () -> Unit) {
 
 @Composable
 fun TopScrollingContent(
-    userProfile: UserProfile,
+    profilePic: String,
+    profileName: String,
+    userRole: UserRole?,
     listState: LazyListState
 ) {
     val scrollOffset = listState.firstVisibleItemScrollOffset * 2
@@ -439,16 +479,17 @@ fun TopScrollingContent(
             modifier = Modifier
                 .padding(start = 12.sdp)
                 .size(animateDpAsState(Dp(dynamicAnimationSizeValue)).value),
-            placeHolderName = userProfile.name,
-            data = userProfile.profilePic,
+            placeHolderName = profileName,
+            data = profilePic,
             imageSize = 120.dp
         )
         Column(
             modifier = Modifier
-                .padding(start = 8.sdp, top = 16.sdp)
+                .fillMaxWidth()
+                .align(Alignment.CenterVertically)
                 .alpha(animateFloatAsState(if (visibilityChangeFloat) 0f else 1f).value)
         ) {
-            // TODO: Show badges here
+//            Spacer(modifier = Modifier.height(60.dp))
         }
     }
 }

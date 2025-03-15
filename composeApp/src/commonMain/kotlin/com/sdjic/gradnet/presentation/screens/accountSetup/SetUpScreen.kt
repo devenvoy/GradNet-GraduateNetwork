@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -43,6 +45,8 @@ import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.rememberToasterState
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
+import com.sdjic.gradnet.presentation.composables.tabs.FancyAnimatedIndicatorWithModifier
+import com.sdjic.gradnet.presentation.composables.tabs.FancyIndicator
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
@@ -52,6 +56,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSe
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionSetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.screens.home.HomeScreen
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -124,7 +129,8 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                         val pagerState = rememberPagerState(pageCount = { setUpScreenTabs.size })
 
                         Column {
-                            Tabs(tabs = setUpScreenTabs,
+                            Tabs(
+                                tabs = setUpScreenTabs,
                                 pagerState = pagerState,
                                 onClick = { scope.launch { pagerState.animateScrollToPage(it) } })
                             TabsContent(
@@ -221,15 +227,22 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
         SecondaryTabRow(
             selectedTabIndex = pagerState.currentPage,
             containerColor = MaterialTheme.colorScheme.background,
-//            indicator = { FancyAnimatedIndicatorWithModifier(state) }
+            indicator = {
+                FancyIndicator(
+                    MaterialTheme.colorScheme.surfaceVariant,
+                    Modifier.tabIndicatorOffset(pagerState.currentPage)
+                )
+            }
         ) {
             tabs.forEachIndexed { index, tab ->
                 Tab(
                     selected = pagerState.currentPage == index,
+                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                    unselectedContentColor = Color.Gray,
                     onClick = { onClick(index) },
                     modifier = Modifier.padding(12.dp)
                 ) {
-                    SText(text = tab.title)
+                    Text(tab.title, fontFamily = displayFontFamily())
                 }
             }
         }
@@ -240,7 +253,8 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
         var title: String,
         var screen: @Composable (SetUpAccountViewModel, UserRole) -> Unit
     ) {
-        data object Basic : TabItem(0, "Basic",
+        data object Basic : TabItem(
+            0, "Basic",
             { viewModel, role ->
                 BasicSetUpScreen(
                     isVerified = viewModel.isVerified.collectAsState().value,

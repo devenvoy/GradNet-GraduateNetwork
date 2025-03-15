@@ -56,18 +56,7 @@ class ProfileScreenModel(
         screenModelScope.launch {
             try {
                 var result = prefs.getUserProfile()
-                screenModelScope.launch {
-                    isFetchingPost.value = true
-                    userRepository.fetchUserPosts(result.userId)
-                        .onSuccess { r ->
-                            _userPosts.update {
-                                r.value?.mapNotNull { pd -> postDtoToPost(pd) } ?: emptyList()
-                            }
-                        }.onError {
-                            _userPosts.update { emptyList() }
-                        }
-                    isFetchingPost.value = false
-                }
+                fetchUserPosts(result.userId)
                 _profileState.update { UiState.Success(result) }
                 if (!prefs.firstInitialized) {
                     userRepository.fetchProfile(prefs.accessToken).onSuccess {
@@ -116,6 +105,7 @@ class ProfileScreenModel(
             try {
                 userRepository.fetchUser(userId).onSuccess { r ->
                     r.value?.let {
+                        fetchUserPosts(r.value.id)
                         _profileState.update { UiState.Success(r.value.toUserProfile()) }
                     } ?: run {
                         _profileState.update { UiState.Error("User not found") }
@@ -126,6 +116,21 @@ class ProfileScreenModel(
             } catch (e: Exception) {
                 _profileState.update { UiState.Error("${e.message}") }
             }
+        }
+    }
+
+    private fun fetchUserPosts(userId: String) {
+        screenModelScope.launch {
+            isFetchingPost.value = true
+            userRepository.fetchUserPosts(userId)
+                .onSuccess { r ->
+                    _userPosts.update {
+                        r.value?.mapNotNull { pd -> postDtoToPost(pd) } ?: emptyList()
+                    }
+                }.onError {
+                    _userPosts.update { emptyList() }
+                }
+            isFetchingPost.value = false
         }
     }
 }

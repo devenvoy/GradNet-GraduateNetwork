@@ -19,7 +19,7 @@ class GetPostsUseCase(
 ) {
     operator fun invoke(limit: Int): Flow<PagingData<Post>> {
         return Pager(
-            config = PagingConfig(pageSize = limit),
+            config = PagingConfig(pageSize = limit, initialLoadSize = limit),
             pagingSourceFactory = {
                 ResultPagingSource { page, pageSize ->
                     postRepository.getPosts(

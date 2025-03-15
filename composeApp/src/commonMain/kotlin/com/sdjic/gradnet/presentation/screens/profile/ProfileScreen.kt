@@ -30,6 +30,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Monitor
 import androidx.compose.material.icons.outlined.RememberMe
@@ -75,8 +76,10 @@ import com.sdjic.gradnet.presentation.composables.SectionTitle
 import com.sdjic.gradnet.presentation.composables.filter.UserRoleChip
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
+import com.sdjic.gradnet.presentation.composables.images.LongBackButton
 import com.sdjic.gradnet.presentation.composables.tabs.FancyIndicator
 import com.sdjic.gradnet.presentation.composables.text.SText
+import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.DummyBgImage
 import com.sdjic.gradnet.presentation.core.model.UserProfile
 import com.sdjic.gradnet.presentation.helper.LocalDrawerController
@@ -134,6 +137,7 @@ class ProfileScreen(val userId: String? = null) : Screen {
                         isReadOnlyMode = isReadOnlyMode,
                         drawerState = drawerState,
                         onEditClick = { parentNavigator?.push(SetUpScreen(true)) },
+                        onBackPress = { localNavigator?.pop() }
                     )
                 }
             )
@@ -144,10 +148,11 @@ class ProfileScreen(val userId: String? = null) : Screen {
 @Composable
 fun ProfileScreenContent(
     userProfile: UserProfile,
-    onEditClick: () -> Unit = {},
-    isReadOnlyMode: Boolean = false,
-    drawerState: DrawerState? = null,
     viewModel: ProfileScreenModel,
+    onEditClick: () -> Unit = {},
+    onBackPress: () -> Unit = {},
+    isReadOnlyMode: Boolean = false,
+    drawerState: DrawerState? = null
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
@@ -168,9 +173,11 @@ fun ProfileScreenContent(
     Scaffold(
         topBar = {
             TopAppBarView(
-                userProfile = userProfile,
                 isVisible = isStickyHeaderNearTop,
-                onMenuClick = { scope.launch { drawerState?.open() } }
+                onMenuClick = { scope.launch { drawerState?.open() } },
+                userProfile = userProfile,
+                isReadOnlyMode = isReadOnlyMode,
+                onBackPress = onBackPress
             )
         }
     ) { paddingValues ->
@@ -178,17 +185,45 @@ fun ProfileScreenContent(
             TopBackground(userProfile.backgroundPic ?: "")
 
             LazyColumn(
-                modifier = Modifier.padding(paddingValues),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
                 state = scrollState
             ) {
                 item {
-                    Spacer(modifier = Modifier.height(120.dp))
-                    TopScrollingContent(
-                        profilePic = userProfile.profilePic ?: "",
-                        profileName = userProfile.userName,
-                        userRole = userRole,
-                        listState = scrollState
-                    )
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.height(30.dp))
+                        if (isReadOnlyMode) {
+                            LongBackButton(
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp)
+                                    .align(Alignment.Start),
+                                onBackPressed = onBackPress,
+                                iconColor = Color.White
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp)
+                                    .size(28.dp)
+                                    .align(Alignment.End)
+                                    .clickable(
+                                        enabled = !isReadOnlyMode,
+                                        onClick = { scope.launch { drawerState?.open() } }
+                                    )
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(80.dp))
+                        TopScrollingContent(
+                            profilePic = userProfile.profilePic ?: "",
+                            profileName = userProfile.userName,
+                            userRole = userRole,
+                            listState = scrollState
+                        )
+                    }
                 }
 
                 item {
@@ -311,7 +346,8 @@ fun UserDetailsContent(userProfile: UserProfile) {
             socialUrls = userProfile.socialUrls
         )
 
-        Spacer(modifier = Modifier.height(getScreenHeight() / 2))
+//        Spacer(modifier = Modifier.height(getScreenHeight() / 2))
+        Spacer(modifier = Modifier.height(100.dp))
     }
 }
 
@@ -326,11 +362,14 @@ fun UserPostsContent(viewModel: ProfileScreenModel) {
         }
     } else {
         if (userPosts.isEmpty()) {
-            Box(modifier = Modifier.height(getScreenHeight() / 1.2f)) {
-                SText("No Posts Found")
+            Box(
+                modifier = Modifier.height(getScreenHeight() / 1.2f),
+                contentAlignment = Alignment.Center
+            ) {
+                Title("No Posts Found")
             }
         } else {
-            LazyColumn(modifier = Modifier.height(getScreenHeight() / 1.2f)) {
+            LazyColumn(modifier = Modifier.height(getScreenHeight())) {
                 items(userPosts) { post ->
                     ProfilePostItem(
                         post = post,
@@ -362,7 +401,13 @@ fun AboutMeSection(about: String) {
 }
 
 @Composable
-fun TopAppBarView(isVisible: Boolean, onMenuClick: () -> Unit, userProfile: UserProfile) {
+fun TopAppBarView(
+    isVisible: Boolean,
+    onMenuClick: () -> Unit,
+    userProfile: UserProfile,
+    isReadOnlyMode: Boolean,
+    onBackPress: () -> Unit
+) {
 
     AnimatedVisibility(
         visible = isVisible,
@@ -382,14 +427,21 @@ fun TopAppBarView(isVisible: Boolean, onMenuClick: () -> Unit, userProfile: User
                 )
             },
             actions = {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = null,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                        .clickable(
-                            onClick = onMenuClick
-                        )
-                )
+                if (isReadOnlyMode) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                            .clickable(onClick = onBackPress)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = null,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                            .clickable(onClick = onMenuClick)
+                    )
+                }
             }
         )
     }

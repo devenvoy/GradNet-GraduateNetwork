@@ -1,4 +1,4 @@
-package com.sdjic.gradnet.data.local.room
+package com.sdjic.gradnet.data.local.room.dao
 
 import androidx.room.Dao
 import androidx.room.Query

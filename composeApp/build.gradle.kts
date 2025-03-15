@@ -94,7 +94,7 @@ kotlin {
             implementation(libs.bundles.ktor)
             implementation(libs.bundles.coil)
             api(libs.bundles.moko.permissions)
-            implementation(libs.bundles.paging)
+//            implementation(libs.bundles.paging)
             implementation(libs.bundles.voyager)
             implementation(libs.bundles.compottie)
             implementation(libs.bundles.connectivity)
@@ -120,6 +120,9 @@ kotlin {
             implementation (libs.zoomable)
 
             api(libs.kmpNotifier)
+
+            implementation("app.cash.paging:paging-common:3.3.0-alpha02-0.5.1")
+            implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
         }
 
         iosMain.dependencies {

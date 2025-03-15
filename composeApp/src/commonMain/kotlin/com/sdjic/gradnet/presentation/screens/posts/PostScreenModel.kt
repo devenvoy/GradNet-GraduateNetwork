@@ -12,14 +12,10 @@ import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.core.model.Filter
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.screens.auth.register.model.getUserRoles
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -52,9 +48,9 @@ class PostScreenModel(
         _posts.update { PagingData.empty() } // Clear the previous data
 
         val selectedFilters = if (_selectAllUserTypes.value) {
-            _userTypeFilters.value
+            getUserRoles().map { Filter(it.name, true) }
         } else {
-            _userTypeFilters.value.filter { it.value }
+            _userTypeFilters.value
         }
 
         getPostsUseCase(5, selectedFilters)

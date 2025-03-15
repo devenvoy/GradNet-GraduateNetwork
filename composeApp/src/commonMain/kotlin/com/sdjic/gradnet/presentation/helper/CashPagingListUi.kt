@@ -1,67 +1,61 @@
 package com.sdjic.gradnet.presentation.helper
 
-import androidx.compose.foundation.Image
+
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.compose.LazyPagingItems
-import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import io.github.alexzhirkevich.compottie.Compottie
-import io.github.alexzhirkevich.compottie.DotLottie
-import io.github.alexzhirkevich.compottie.LottieCompositionSpec
-import io.github.alexzhirkevich.compottie.rememberLottieComposition
-import io.github.alexzhirkevich.compottie.rememberLottiePainter
-import network.chaintech.sdpcomposemultiplatform.sdp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun <T : Any> PagingListUI(
+fun <T : Any> CashPagingListUi(
     modifier: Modifier = Modifier,
     data: LazyPagingItems<T>,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-    state: LazyListState = rememberLazyListState(),
-    content: @Composable LazyItemScope.(T) -> Unit
+    state: LazyListState,
+    paddingValues: PaddingValues = PaddingValues(16.dp),
+    verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(8.dp),
+    optionalContent: @Composable (T) -> Unit = {},
+    bottomPadding: PaddingValues = PaddingValues(0.dp),
+    content: @Composable LazyItemScope.(T? ,Modifier) -> Unit,
 ) {
-    val composition by rememberLottieComposition {
-        LottieCompositionSpec.DotLottie(Res.readBytes("files/loading.lottie"))
-    }
-
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         state = state,
-        contentPadding = contentPadding,
+        verticalArrangement = verticalArrangement,
         horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = paddingValues
     ) {
+
 
         items(data.itemCount) { index ->
             val item = data[index]
-            item?.let { content(it) }
+            // Check if this is the last index
+            if (index == data.itemCount - 1) {
+                // This is the last index, you can add padding or any other logic here
+                content(item,Modifier.padding(bottomPadding))
+            }else{
+                content(item,Modifier)
+            }
         }
 
         data.loadState.apply {
@@ -87,13 +81,9 @@ fun <T : Any> PagingListUI(
                             modifier = Modifier.fillParentMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Image(
-                                modifier = Modifier.size(80.sdp),
-                                painter = rememberLottiePainter(
-                                    composition = composition,
-                                    iterations = Compottie.IterateForever
-                                ),
-                                contentDescription = "loader"
+                            CircularProgressIndicator(
+                                modifier.align(Alignment.Center),
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -113,7 +103,7 @@ fun <T : Any> PagingListUI(
                 refresh is LoadStateError -> {
                     item {
                         ErrorView(
-                            message = "No Internet Connection.",
+                            message = "No Internet Connection",
                             onClickRetry = { data.retry() },
                             modifier = Modifier.fillParentMaxSize()
                         )
@@ -133,54 +123,3 @@ fun <T : Any> PagingListUI(
     }
 }
 
-@Composable
-fun ErrorItem(
-    message: String,
-    modifier: Modifier = Modifier,
-    onClickRetry: () -> Unit
-) {
-    Row(
-        modifier = modifier.padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = message,
-            maxLines = 1,
-            modifier = Modifier.weight(1f),
-            color = Color.Red
-        )
-        OutlinedButton(onClick = onClickRetry) {
-            Text(text = "Try again")
-        }
-    }
-}
-
-@Composable
-fun ErrorView(
-    message: String,
-    modifier: Modifier = Modifier,
-    onClickRetry: () -> Unit
-) {
-    Column(
-        modifier = modifier.padding(16.dp).onPlaced { _ ->
-        },
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = message,
-            maxLines = 1,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            color = Color.Red
-        )
-        OutlinedButton(
-            onClick = onClickRetry, modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .wrapContentWidth(Alignment.CenterHorizontally)
-        ) {
-            Text(text = "Try again")
-        }
-    }
-}

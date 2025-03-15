@@ -1,6 +1,7 @@
-package com.sdjic.gradnet.data.local.room
+package com.sdjic.gradnet.data.local.room.repo
 
 import com.sdjic.gradnet.data.local.entity.Test
+import com.sdjic.gradnet.data.local.room.dao.TestDao
 import com.sdjic.gradnet.domain.repo.TestRepository
 import kotlinx.coroutines.flow.Flow
 

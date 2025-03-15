@@ -54,7 +54,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -91,12 +90,12 @@ import com.sdjic.gradnet.presentation.composables.text.ExpandableRichText
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.core.model.Post
+import com.sdjic.gradnet.presentation.helper.CashPagingListUi
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils.parseDateAsync
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils.toEpochMillis
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
-import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.isScrollingUp
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.onboarding.DotIndicator
@@ -231,26 +230,28 @@ class PostScreen : Screen {
                 state = pullToRefreshState,
                 onRefresh = { data.refresh() }
             ) {
-                PagingListUI(
-                    contentPadding = PaddingValues(bottom = pVal.calculateBottomPadding()),
+                CashPagingListUi(
+                    paddingValues = PaddingValues(bottom = pVal.calculateBottomPadding()),
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     data = data,
                     state = listState,
-                ) { item ->
-                    PostItem(
-                        modifier = Modifier.animateItem(
-                            fadeInSpec = null, fadeOutSpec = null, placementSpec = tween(500)
-                        ),
-                        post = item,
-                        onLikeClicked = {
-                            postScreenModel.toggleLike(item)
-                        },
-                        onShareClick = { getContactsUtil().sharePost(item) },
-                        onProfileClick = {
-                            rootNavigator.push(ProfileScreen(item.userId))
-                        },
-                        checkProfileEnable = true
-                    )
+                ) { item, modifier ->
+                    item?.let {
+                        PostItem(
+                            modifier = modifier.animateItem(
+                                fadeInSpec = null, fadeOutSpec = null, placementSpec = tween(500)
+                            ),
+                            post = item,
+                            onLikeClicked = {
+                                postScreenModel.toggleLike(item)
+                            },
+                            onShareClick = { getContactsUtil().sharePost(item) },
+                            onProfileClick = {
+                                rootNavigator.push(ProfileScreen(item.userId))
+                            },
+                            checkProfileEnable = true
+                        )
+                    }
                 }
             }
         }

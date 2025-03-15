@@ -1,8 +1,9 @@
-package com.sdjic.gradnet.data.local.room
+package com.sdjic.gradnet.data.local.room.repo
 
 import com.sdjic.gradnet.data.local.entity.EducationTable
 import com.sdjic.gradnet.data.local.entity.ExperienceTable
 import com.sdjic.gradnet.data.local.entity.UrlTable
+import com.sdjic.gradnet.data.local.room.dao.UserDao
 import com.sdjic.gradnet.domain.repo.UserDataSource
 
 class UserDataSourceImpl(private val userDao: UserDao) : UserDataSource {

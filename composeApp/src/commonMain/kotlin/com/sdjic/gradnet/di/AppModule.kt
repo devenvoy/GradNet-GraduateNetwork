@@ -2,8 +2,8 @@ package com.sdjic.gradnet.di
 
 import com.sdjic.gradnet.data.local.preference.AppCacheSettingImpl
 import com.sdjic.gradnet.data.local.room.GradNetDB
-import com.sdjic.gradnet.data.local.room.TestRepositoryImpl
-import com.sdjic.gradnet.data.local.room.UserDataSourceImpl
+import com.sdjic.gradnet.data.local.room.repo.TestRepositoryImpl
+import com.sdjic.gradnet.data.local.room.repo.UserDataSourceImpl
 import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.CryptoRepository
 import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
@@ -82,6 +82,8 @@ val repositoryModule = module {
     single<PostRepository> { PostRepositoryImpl(get()) }
     single<JobsRepository> { JobsRepositoryImpl(get()) }
 
+//    single<PostPagingSource> { PostPagingSource(get(),get()) }
+
     // testing only
     single<TestRepository> { TestRepositoryImpl(testDao = get()) }
     single<CryptoRepository> { CryptoRepository(httpClient = get()) }
@@ -101,6 +103,8 @@ val dataModule = module {
     }
     single { get<GradNetDB>().testDao }
     single { get<GradNetDB>().userDao }
+    single { get<GradNetDB>().postDao }
+    single { get<GradNetDB>().postRemoteKeysDao }
     single<AppCacheSetting> { AppCacheSettingImpl() }
 }
 

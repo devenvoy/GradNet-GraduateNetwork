@@ -5,11 +5,13 @@ import com.sdjic.gradnet.data.local.entity.ExperienceTable
 import com.sdjic.gradnet.data.local.entity.UrlTable
 import com.sdjic.gradnet.data.network.entity.dto.EducationDto
 import com.sdjic.gradnet.data.network.entity.dto.ExperienceDto
+import com.sdjic.gradnet.data.network.entity.dto.JobDto
 import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.entity.dto.URLDto
 import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
 import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.core.model.ExperienceModel
+import com.sdjic.gradnet.presentation.core.model.Job
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.core.model.SocialUrls
 import com.sdjic.gradnet.presentation.core.model.UserProfile
@@ -164,5 +166,25 @@ fun postDtoToPost(postDto: PostDto?) = postDto?.let {
         images = it.photos?.filterNotNull() ?: emptyList(),
         location = it.location.orEmpty(),
         createdAt = it.createdAt
+    )
+}
+
+
+fun jobDtoToJob(jobDto: JobDto?) = jobDto?.let {
+    Job(
+        id = it.jobId.toString(),
+        title = it.jobTitle.orEmpty(),
+        company = it.companyName.orEmpty(),
+        jobType = it.workMode?.lowercase()?.replaceFirstChar { char -> char.uppercase() },
+        location = it.jobLocation.orEmpty(),
+        description = it.jobOverview.orEmpty(),
+        salary = it.salary,
+        requirements = it.requirements.orEmpty(),
+        benefits = it.benefits.orEmpty(),
+        postedDate = it.createdAt.toString(),
+        applyLink = it.applylink.orEmpty(),
+        companyLogo = it.companyLogo,
+        category = it.industry.orEmpty(),
+        skills = it.skills.orEmpty()
     )
 }

@@ -102,19 +102,28 @@ class PostScreenModel(
 
     private fun updateFilter(filter: Filter) {
         _userTypeFilters.update { list ->
-            list.map {
+            val updatedList = list.map {
                 if (it.key == filter.key) {
                     it.copy(value = filter.value)
                 } else it
             }
+
+            // Ensure at least one filter remains selected
+            if (updatedList.count { it.value } == 0) {
+                return@update list
+            }
+
+            updatedList
         }
+
         _selectAllUserTypes.update {
             userTypeFilters.value.all { it.value }
         }
     }
 
+
     private fun toggleSelectAll() {
-        val allSelected = _userTypeFilters.value.all { !it.value }
+        val allSelected = _userTypeFilters.value.all { true }
         _selectAllUserTypes.update { allSelected }
         _userTypeFilters.update { filters -> filters.map { it.copy(value = allSelected) } }
     }

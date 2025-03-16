@@ -33,7 +33,7 @@ class JobScreenModel(
     init {
         _savedTopics.update {
             setOf(
-                "Work", "Hobby", "Personal", "Office", "Workout"
+                "Work", "Hobby", "Personal", "Office", "Workout","Fulltime","Parttime","Remote","Internship","Contract","Hybrid"
             )
         }
         screenModelScope.launch { fetchJobs() }
@@ -56,7 +56,7 @@ class JobScreenModel(
     }
 
    suspend fun fetchJobs(){
-       getJobsUseCase.invoke(5)
+       getJobsUseCase.invoke(20,_selectedTopics.value.toList())
            .cachedIn(screenModelScope)
            .collect { pagingData -> _jobs.update { pagingData } }
     }

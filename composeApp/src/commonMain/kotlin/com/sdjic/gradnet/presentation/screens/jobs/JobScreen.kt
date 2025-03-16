@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -17,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
@@ -25,10 +28,13 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.presentation.composables.filter.FilterChipDropdown
 import com.sdjic.gradnet.presentation.core.model.Job
+import com.sdjic.gradnet.presentation.helper.CashPagingListUi
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.theme.AppTheme
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonNull.content
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 
 class JobScreen : Screen {
@@ -44,6 +50,7 @@ class JobScreen : Screen {
     private fun JobScreenContent() {
         val navigator = LocalNavigator.currentOrThrow
 
+        val scope = rememberCoroutineScope()
         val navigateToDetail: (Job) -> Unit = { navigator.push(JobDetailScreen(it)) }
         val viewModel = koinScreenModel<JobScreenModel>()
         val scrollBehavior = LocalScrollBehavior.current
@@ -65,10 +72,17 @@ class JobScreen : Screen {
             Column {
                 SearchBar(
                     inputField = {
-                        SearchBarField(query, viewModel, isActive)
+                        SearchBarField(query = query, viewModel = viewModel, isActive = isActive) {
+                            scope.launch { viewModel.fetchJobs() }
+                        }
                     },
                     expanded = isActive,
-                    onExpandedChange = { viewModel.onSearchActiveChange(it) },
+                    onExpandedChange = {
+                        if(!it){
+                            scope.launch { viewModel.fetchJobs() }
+                        }
+                        viewModel.onSearchActiveChange(it)
+                    },
                     modifier = Modifier
                         .padding(horizontal = if (isActive) 0.dp else 10.dp)
                         .fillMaxWidth(),
@@ -83,11 +97,12 @@ class JobScreen : Screen {
                     }
                 )
 
-                PagingListUI(
-                    contentPadding = PaddingValues(10.dp),
-                    data = data
-                ) { item ->
-                    JobItem(job = item) { navigateToDetail(item) }
+                CashPagingListUi(
+                    paddingValues = PaddingValues(10.dp),
+                    data = data,
+                    state = rememberLazyListState()
+                ) { item, modifier ->
+                    item?.let { JobItem(job = item) { navigateToDetail(item) } }
                 }
             }
         }
@@ -96,14 +111,16 @@ class JobScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun SearchBarField(
-        query: String,
         viewModel: JobScreenModel,
-        isActive: Boolean
+        query: String,
+        isActive: Boolean,
+        onSearch: () -> Unit
     ) {
         SearchBarDefaults.InputField(
             query = query,
             onQueryChange = viewModel::onQueryChange,
             onSearch = {
+                onSearch()
                 viewModel.onSearchActiveChange(false)
             },
             expanded = isActive,

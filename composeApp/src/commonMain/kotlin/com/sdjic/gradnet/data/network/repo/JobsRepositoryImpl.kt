@@ -11,17 +11,21 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-class JobsRepositoryImpl(httpClient: HttpClient): JobsRepository , BaseGateway(httpClient) {
+class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(httpClient) {
 
     override suspend fun getJobs(
         query: String,
         page: Int,
-        pageSize: Int
+        pageSize: Int,
+        filter: List<String>
     ): Result<ServerResponse<JobsResponse>, ServerError> {
         return tryToExecute<ServerResponse<JobsResponse>> {
             get("${BuildConfig.BASE_URL}/jobs") {
                 parameter("page", "$page")
                 parameter("per_page", "$pageSize")
+                filter.forEach {
+                    parameter("work_mode", it.uppercase())
+                }
             }
         }
     }

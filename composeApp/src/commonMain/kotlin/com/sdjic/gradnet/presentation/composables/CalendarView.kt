@@ -26,16 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdjic.gradnet.presentation.composables.animatedlist.AnimatedInfiniteLazyRow
 import com.sdjic.gradnet.presentation.core.model.CalendarDate
-import com.sdjic.gradnet.presentation.helper.DateTimeUtils
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
-import kotlinx.datetime.Month
 
 @OptIn(FlowPreview::class)
 @Composable
 fun AnimatedCalendar(
     daysList:List<CalendarDate>,
     selectedDay: CalendarDate? = null,
+    debounceTime: Long = 500L,
     onDaySelected: (CalendarDate) -> Unit
 ) {
 
@@ -52,7 +51,7 @@ fun AnimatedCalendar(
 
     LaunchedEffect(selectedIndex) {
         snapshotFlow { selectedIndex }
-            .debounce(300)
+            .debounce(debounceTime)
             .collect { index ->
                 daysList.getOrNull(index)?.let { onDaySelected(it) }
             }

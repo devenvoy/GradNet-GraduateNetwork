@@ -60,7 +60,7 @@ object DateTimeUtils {
             val dateTime = localDate.atStartOfDayIn(timeZone).toLocalDateTime(timeZone)
             val dayOfWeek = dateTime.date.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
 
-            CalendarDate(day, dayOfWeek, month)
+            CalendarDate(day, dayOfWeek, month,localDate)
         }
     }
 

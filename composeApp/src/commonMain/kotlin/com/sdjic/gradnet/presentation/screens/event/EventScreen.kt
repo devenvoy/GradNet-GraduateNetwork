@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -78,7 +79,7 @@ class EventScreen : Screen {
 
         val daysList by remember {
             derivedStateOf {
-                todayDate.month.let { DateTimeUtils.getCalendarDays(todayDate.year, it) }
+                todayDate.month.let { DateTimeUtils.getCalendarDays(todayDate.year) }
             }
         }
 
@@ -142,12 +143,12 @@ class EventScreen : Screen {
                     selectedDay = selectedDay,
                     onDaySelected = { date ->
                         Logger.e(
-                            "${todayDate.year}-${date.month.number}-${date.day}",
+                            "${date.localDate}",
                             null,
                             tag = "TAG111"
                         )
                         eventScreenModel.updateSelectedDay(date)
-                        eventScreenModel.getEventsByDate("${todayDate.year}-${date.month.number}-${date.day}")
+                        eventScreenModel.getEventsByDate("${date.localDate}")
                     }
                 )
 
@@ -183,7 +184,7 @@ class EventScreen : Screen {
                         when (event.type.lowercase()) {
                             "casual", "trending", "normal", "default" -> {
                                 EventItemCard(
-                                    modifier = Modifier.height(220.dp),
+                                    modifier = Modifier.height(220.dp).padding(12.dp),
                                     eventDto = event,
                                     onBannerClick = {
                                         navigator.push(EventDetailScreen(it))
@@ -193,7 +194,7 @@ class EventScreen : Screen {
 
                             "miniEvent".lowercase() -> {
                                 MiniEventItemCard(
-                                    modifier = Modifier,
+                                    modifier = Modifier.padding(12.dp),
                                     eventDto = event,
                                     calendarDate = selectedDay
                                 )
@@ -212,10 +213,11 @@ class EventScreen : Screen {
         calendarDate: CalendarDate
     ) {
         Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            ),
             elevation = CardDefaults.cardElevation(2.dp)
         ) {
             Row(
@@ -227,7 +229,8 @@ class EventScreen : Screen {
                 Text(
                     text = calendarDate.day.toString(),
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(end = 8.dp)
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 12.dp)
                 )
 
                 Column(modifier = Modifier.weight(1f)) {
@@ -235,6 +238,8 @@ class EventScreen : Screen {
                     Text(
                         text = eventDto.eventTitle,
                         style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 18.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -243,7 +248,8 @@ class EventScreen : Screen {
                         if (it.isNotEmpty()) {
                             ExpandableText(
                                 text = it,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                style = TextStyle(MaterialTheme.colorScheme.onSurfaceVariant)
                             )
                         }
                     }
@@ -302,7 +308,13 @@ class EventScreen : Screen {
             ) { page ->
                 EventItemCard(
                     modifier = Modifier.height(if (pagerState.currentPage == page) 220.dp else 190.dp)
-                        .offset(y = if (pagerState.currentPage == page) (-10).dp else 0.dp),
+                        .offset(y = if (pagerState.currentPage == page) (-10).dp else 0.dp)
+                        .shadow(
+                            20.dp,
+                            CardDefaults.shape,
+                            ambientColor = MaterialTheme.colorScheme.onBackground,
+                            spotColor = MaterialTheme.colorScheme.onBackground
+                        ),
                     eventDto = banners[page],
                     onBannerClick = {
                         if (page == pagerState.currentPage) {
@@ -340,12 +352,6 @@ class EventScreen : Screen {
     ) {
         Card(
             modifier = modifier
-                .shadow(
-                    20.dp,
-                    CardDefaults.shape,
-                    ambientColor = MaterialTheme.colorScheme.onBackground,
-                    spotColor = MaterialTheme.colorScheme.onBackground
-                )
         ) {
             Box(
                 contentAlignment = Alignment.BottomStart

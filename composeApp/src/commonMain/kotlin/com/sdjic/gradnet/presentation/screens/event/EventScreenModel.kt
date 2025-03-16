@@ -35,7 +35,8 @@ class EventScreenModel(
         CalendarDate(
             day = _todayDate.value.dayOfMonth,
             dayOfWeek = _todayDate.value.date.dayOfWeek.name,
-            month = _todayDate.value.date.month
+            month = _todayDate.value.date.month,
+            localDate = _todayDate.value.date
         )
     )
     val selectedDay: StateFlow<CalendarDate> = _selectedDay
@@ -53,7 +54,8 @@ class EventScreenModel(
             CalendarDate(
                 day = newDate.dayOfMonth,
                 dayOfWeek = newDate.date.dayOfWeek.name,
-                month = newDate.date.month
+                month = newDate.date.month,
+                localDate = newDate.date
             )
         }
     }
@@ -64,17 +66,9 @@ class EventScreenModel(
 
     private fun getEvents() = screenModelScope.launch {
         isEventLoading.value = true
-        val result = eventRepository.getEvents(
-            limit = 6,
-            offset = 0,
-            eventTitle = null,
-            venue = null,
-            startDate = null,
-            endDate = null
-        )
-        result.onSuccess { r ->
+        eventRepository.getEvents(eventType = "trending").onSuccess { r ->
             isEventLoading.value = false
-            _trendingEventList.update { r.value?.eventDtos ?: it }
+            _trendingEventList.update { r.value ?: it }
         }.onError {
             isEventLoading.value = false
         }
@@ -83,7 +77,6 @@ class EventScreenModel(
     fun getEventsByDate(date: String) {
         screenModelScope.launch {
             screenModelScope.launch {
-                _selectedDateEventsList.update { emptyList() }
                 val result = eventRepository.getEventsByDate(date)
                 result.onSuccess { r ->
                     _selectedDateEventsList.update { r.value ?: emptyList() }

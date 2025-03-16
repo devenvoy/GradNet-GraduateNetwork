@@ -12,14 +12,14 @@ data class UserProfileResponse(
     @SerialName("name") var name: String = "",
     @SerialName("email") var email: String = "",
     @SerialName("phone_no") var phoneNo: Long? = null,
-    @SerialName("verify_id") var verifyId: Int? = null,
+    @SerialName("verify_id") var verifyId: String? = null,
     @SerialName("profile_pic") var profilePic: String? = "",
     @SerialName("background_pic") var backgroundPic: String? = "",
     @SerialName("verified") var verified: Boolean = false,
     @SerialName("plus_member") var plusMember: Boolean = false,
     @SerialName("about_self") var aboutSelf: String? = "",
 
-    @SerialName("college_name") var collegeName: String? = "",
+    @SerialName("collage_name") var collegeName: String? = "",
     @SerialName("course") var course: String? = "",
     @SerialName("role") var role: String,
 
@@ -39,6 +39,7 @@ data class UserProfileResponse(
     @SerialName("experience") var experience: List<ExperienceDto> = emptyList(),
     @SerialName("urls") var urls: List<URLDto> = emptyList(),
 
+    @SerialName("is_private") var isPrivate: Boolean? = false,
     @SerialName("is_active") var isActive: Boolean = false,
     @SerialName("created_at") var createdAt: String = "",
     @SerialName("updated_at") var updatedAt: String = ""

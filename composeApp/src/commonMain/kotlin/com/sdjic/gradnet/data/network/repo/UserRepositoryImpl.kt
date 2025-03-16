@@ -82,15 +82,16 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
         return UserProfileRequest(
             role = userRole,
             name = basicState.nameField,
-            about_self = basicState.aboutField,
+            aboutSelf = basicState.aboutField,
             address = basicState.addressField,
             languages = educationState.languages,
             skills = educationState.skills,
-            industry_type = "",
+            industryType = "",
             employee = 0,
             website = "",
             department = "",
             designation = "",
+            isPrivate = basicState.showContactsToOthers,
             education = educationState.eductionList,
             experience = professionState.experienceList,
             urls = listOf(

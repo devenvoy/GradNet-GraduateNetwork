@@ -83,7 +83,7 @@ fun UserProfileResponse.toUserProfile(): UserProfile {
         profilePic = this.profilePic,
         about = this.aboutSelf ?: "",
         phoneNumber = this.phoneNo.toString(),
-        showPersonalDetails = false,
+        isPrivate = this.isPrivate ?: false,
         address = this.address,
         socialUrls = this.urls.takeIf { it.isNotEmpty() }?.toSocialUrls(),
         experiences = this.experience.map { it.toExperienceModel() },

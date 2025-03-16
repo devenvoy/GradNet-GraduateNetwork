@@ -27,6 +27,7 @@ enum class SettingStorageKeys {
     SKILLS,
     COURSE,
     CREATED_AT,
+    IS_PRIVATE,
     UPDATED_AT;
 
     val key get() = this.name

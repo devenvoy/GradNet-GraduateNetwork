@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import com.sdjic.gradnet.di.platform_di.getContactsUtil
 import com.sdjic.gradnet.presentation.composables.SectionTitle
 import com.sdjic.gradnet.presentation.composables.button.ContactIconButton
-import com.sdjic.gradnet.presentation.core.model.SocialUrls
+import com.sdjic.gradnet.presentation.core.model.UserProfile
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.github
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_contacts
@@ -25,11 +25,15 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun MoreInfoSection(phoneNumber: String, email: String, socialUrls: SocialUrls?) {
+fun MoreInfoSection(
+    isReadOnlyMode: Boolean,
+    userProfile: UserProfile
+) {
 
     SectionTitle(icon = painterResource(Res.drawable.ic_contacts), title = "Contacts")
 
     val contactsUtil by remember { mutableStateOf(getContactsUtil()) }
+    val socialUrls = userProfile.socialUrls
 
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
@@ -38,19 +42,36 @@ fun MoreInfoSection(phoneNumber: String, email: String, socialUrls: SocialUrls?)
     ) {
 
         // Phone
-        ContactIconButton(
-            icon = painterResource(Res.drawable.phone),
-            onClick = {
-                contactsUtil.dialPhoneNumber(phoneNumber)
+        if(isReadOnlyMode.not()){
+            ContactIconButton(
+                icon = painterResource(Res.drawable.phone),
+                onClick = {
+                    contactsUtil.dialPhoneNumber(userProfile.phoneNumber)
+                }
+            )
+            ContactIconButton(
+                icon = painterResource(Res.drawable.mail_outline),
+                onClick = {
+                    contactsUtil.sendEmail(userProfile.email, "", "")
+                }
+            )
+        }else{
+            if(userProfile.isPrivate.not()){
+                ContactIconButton(
+                    icon = painterResource(Res.drawable.phone),
+                    onClick = {
+                        contactsUtil.dialPhoneNumber(userProfile.phoneNumber)
+                    }
+                )
+                ContactIconButton(
+                    icon = painterResource(Res.drawable.mail_outline),
+                    onClick = {
+                        contactsUtil.sendEmail(userProfile.email, "", "")
+                    }
+                )
             }
-        )
+        }
 
-        ContactIconButton(
-            icon = painterResource(Res.drawable.mail_outline),
-            onClick = {
-                contactsUtil.sendEmail(email, "", "")
-            }
-        )
 
         socialUrls?.github?.let {
             ContactIconButton(

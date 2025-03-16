@@ -15,9 +15,11 @@ data class UserProfile(
     val isVerified: Boolean = false,
     val userRole: UserRole = UserRole.Alumni,
 
-    val isPlusMember: Boolean = false,
     val isActive: Boolean = true,
     val isDeleted: Boolean = false,
+    val isPrivate: Boolean = false,
+    val isPlusMember: Boolean = false,
+
     val createdAt: String? = null,
     val updatedAt: String? = null,
 
@@ -34,7 +36,6 @@ data class UserProfile(
     val profilePic: String? = null,
     val about: String = "",
     val phoneNumber: String = "",
-    val showPersonalDetails: Boolean = false,
     val address: String? = null,
     val socialUrls: SocialUrls? = null,
     val experiences: List<ExperienceModel> = emptyList(),
@@ -58,7 +59,7 @@ fun UserProfile.toBasicState(): BasicState {
         verificationField = this.verificationId,
         emailField = this.email,
         contactField = this.phoneNumber,
-        showContactsToOthers = this.showPersonalDetails,
+        showContactsToOthers = this.isPrivate,
         openBackGroundImagePicker = false,
         openProfileImagePicker = false
     )

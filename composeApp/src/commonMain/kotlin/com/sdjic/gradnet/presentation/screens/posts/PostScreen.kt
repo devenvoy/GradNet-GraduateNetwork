@@ -147,13 +147,6 @@ class PostScreen : Screen {
             }
         }
 
-        // Auto refresh every 5 minutes
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(5 * 60 * 1000) // 5 minutes
-                data.refresh()
-            }
-        }
 
         // Refresh on resume
         DisposableEffect(lifecycleOwner) {

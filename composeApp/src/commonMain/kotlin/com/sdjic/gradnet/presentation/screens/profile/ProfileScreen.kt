@@ -216,7 +216,7 @@ fun ProfileScreenContent(
                                     )
                             )
                         }
-                        Spacer(modifier = Modifier.height(80.dp))
+                        Spacer(modifier = Modifier.height(70.dp))
                         TopScrollingContent(
                             profilePic = userProfile.profilePic,
                             profileName = userProfile.userName,
@@ -291,7 +291,7 @@ fun ProfileScreenContent(
                     ) { page ->
                         when (page) {
                             0 -> UserPostsContent(viewModel)
-                            1 -> UserDetailsContent(userProfile)
+                            1 -> UserDetailsContent(isReadOnlyMode, userProfile)
                         }
                     }
                 }
@@ -301,7 +301,10 @@ fun ProfileScreenContent(
 }
 
 @Composable
-fun UserDetailsContent(userProfile: UserProfile) {
+fun UserDetailsContent(
+    isReadOnlyMode: Boolean,
+    userProfile: UserProfile
+) {
     Column {
         AboutMeSection(userProfile.about)
         InterestsSection(icon = Icons.Outlined.Monitor, title = "Skills", data = userProfile.skills)
@@ -341,9 +344,8 @@ fun UserDetailsContent(userProfile: UserProfile) {
             data = userProfile.languages
         )
         MoreInfoSection(
-            phoneNumber = userProfile.phoneNumber,
-            email = userProfile.email,
-            socialUrls = userProfile.socialUrls
+            isReadOnlyMode = isReadOnlyMode,
+            userProfile = userProfile
         )
 
 //        Spacer(modifier = Modifier.height(getScreenHeight() / 2))

@@ -1,6 +1,9 @@
 package com.sdjic.gradnet.presentation.core.model
 
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.ic_bookmark
+import gradnet_graduatenetwork.composeapp.generated.resources.ic_favorites
+import gradnet_graduatenetwork.composeapp.generated.resources.ic_link
 import gradnet_graduatenetwork.composeapp.generated.resources.info_outline
 import gradnet_graduatenetwork.composeapp.generated.resources.logout
 import gradnet_graduatenetwork.composeapp.generated.resources.person
@@ -14,6 +17,14 @@ enum class NavigationItem(
     Profile(
         icon = Res.drawable.person,
         title = "Profile"
+    ),
+    LikedPosts(
+        icon = Res.drawable.ic_favorites,
+        title = "Liked Posts"
+    ),
+    SavedJobs(
+        icon = Res.drawable.ic_bookmark,
+        title = "Saved Jobs"
     ),
     Settings(
         icon = Res.drawable.settings,

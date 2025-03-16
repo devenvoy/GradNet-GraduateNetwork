@@ -60,6 +60,8 @@ import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.PostTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.ProfileTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
+import com.sdjic.gradnet.presentation.screens.jobs.SavedJobScreen
+import com.sdjic.gradnet.presentation.screens.posts.LikedPostScreen
 import com.sdjic.gradnet.presentation.screens.setting.SettingScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
@@ -178,6 +180,7 @@ class HomeScreen : Screen {
                             NavigationItem.Settings -> {
                                 navigator.push(SettingScreen())
                             }
+
                             NavigationItem.AboutUs -> {
                                 navigator.push(AboutUsScreen())
                             }
@@ -185,6 +188,14 @@ class HomeScreen : Screen {
                             NavigationItem.Logout -> {
                                 pref.logout { }
                                 navigator.replaceAll(SplashScreen())
+                            }
+
+                            NavigationItem.LikedPosts -> {
+                                navigator.push(LikedPostScreen())
+                            }
+
+                            NavigationItem.SavedJobs -> {
+                                navigator.push(SavedJobScreen())
                             }
                         }
                     }

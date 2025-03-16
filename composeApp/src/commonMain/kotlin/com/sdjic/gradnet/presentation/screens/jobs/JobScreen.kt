@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -30,11 +29,8 @@ import com.sdjic.gradnet.presentation.composables.filter.FilterChipDropdown
 import com.sdjic.gradnet.presentation.core.model.Job
 import com.sdjic.gradnet.presentation.helper.CashPagingListUi
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
-import com.sdjic.gradnet.presentation.helper.PagingListUI
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.theme.AppTheme
-import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonNull.content
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 
 class JobScreen : Screen {

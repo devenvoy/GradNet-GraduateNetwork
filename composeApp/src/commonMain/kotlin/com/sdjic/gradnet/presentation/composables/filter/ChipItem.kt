@@ -16,7 +16,8 @@ import androidx.compose.ui.text.style.TextOverflow
 fun ChipItem(
     modifier: Modifier = Modifier,
     topic: String,
-    textColor: Color? = null
+    textColor: Color? = null,
+    chipColor: Color? = null
 ) {
 
     FilterChip(
@@ -24,7 +25,9 @@ fun ChipItem(
         selected = true,
         onClick = {},
         shape = MaterialTheme.shapes.large,
-        colors = FilterChipDefaults.filterChipColors(),
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = chipColor ?: Color.Unspecified,
+        ),
         label = {
             Text(
                 text = topic,

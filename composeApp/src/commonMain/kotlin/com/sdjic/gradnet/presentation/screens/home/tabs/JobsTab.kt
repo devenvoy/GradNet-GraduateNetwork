@@ -7,6 +7,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.MyTabOptions
 import com.sdjic.gradnet.presentation.screens.jobs.JobScreen
+import com.sdjic.gradnet.presentation.theme.AppTheme
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
 import gradnet_graduatenetwork.composeapp.generated.resources.work
 import gradnet_graduatenetwork.composeapp.generated.resources.work_outline
@@ -34,7 +35,9 @@ object JobsTab : MyTab {
 
     @Composable
     override fun Content() {
-        Navigator(JobScreen())
+        AppTheme {
+            Navigator(JobScreen())
+        }
     }
 }
 

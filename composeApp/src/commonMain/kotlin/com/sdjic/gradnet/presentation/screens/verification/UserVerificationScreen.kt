@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.KeyboardType
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -143,6 +145,7 @@ class UserVerificationScreen : Screen {
                         textFieldValue = verificationField,
                         onValueChange = viewModel::onVerificationFieldValueChange,
                         placeholder = { SText("Enter your $fieldTitle") },
+                        keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Number),
                         supportingText = if (isUserVerified) null else ({
                             SText("Required", textColor = Color.Red)
                         }),

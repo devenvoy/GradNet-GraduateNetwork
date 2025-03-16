@@ -3,6 +3,7 @@ package com.sdjic.gradnet.presentation.core.model
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicState
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationState
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionState
+import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 
 data class UserProfile(
 
@@ -12,6 +13,8 @@ data class UserProfile(
     val userId: String = "",
     val verificationId: String = "",
     val isVerified: Boolean = false,
+    val userRole: UserRole = UserRole.Alumni,
+
     val isPlusMember: Boolean = false,
     val isActive: Boolean = true,
     val isDeleted: Boolean = false,

@@ -95,7 +95,7 @@ class UserVerificationScreenModel(
                 return@launch
             }
             onOtpFieldValueChange("")
-            userRepository.sendOtp(_verificationField.value)
+            userRepository.sendOtp(_verificationField.value,prefs.accessToken)
                 .onSuccess { r ->
                     _verificationState.update { UiState.Success(r.status) }
                     _otpEmailField.update { r.value?.email ?: "" }

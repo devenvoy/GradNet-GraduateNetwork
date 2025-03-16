@@ -21,6 +21,7 @@ data class UserProfileResponse(
 
     @SerialName("college_name") var collegeName: String? = "",
     @SerialName("course") var course: String? = "",
+    @SerialName("role") var role: String,
 
     @SerialName("address") var address: String? = "",
     @SerialName("dob") var dob: String? = "",

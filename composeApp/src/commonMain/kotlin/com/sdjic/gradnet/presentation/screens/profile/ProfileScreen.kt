@@ -218,9 +218,9 @@ fun ProfileScreenContent(
                         }
                         Spacer(modifier = Modifier.height(80.dp))
                         TopScrollingContent(
-                            profilePic = userProfile.profilePic ?: "",
+                            profilePic = userProfile.profilePic,
                             profileName = userProfile.userName,
-                            userRole = userRole,
+                            userRole = viewModel.userRole.value,
                             listState = scrollState
                         )
                     }
@@ -249,9 +249,9 @@ fun ProfileScreenContent(
                                 fontWeight = FontWeight(400)
                             )
                         }
-                        userRole?.let {
+                        userRole.value?.let {
                             UserRoleChip(
-                                modifier = Modifier.padding(horizontal = 16.dp), userRole = userRole
+                                modifier = Modifier.padding(horizontal = 16.dp), userRole = it
                             )
                         }
                     }
@@ -357,15 +357,20 @@ fun UserPostsContent(viewModel: ProfileScreenModel) {
     val userPosts by viewModel.userPosts.collectAsState()
 
     if (isFetchingPost) {
-        Box(modifier = Modifier.height(getScreenHeight() / 1.2f)) {
+        Column(
+            modifier = Modifier.fillMaxWidth().height(getScreenHeight() / 1.2f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(200.dp))
             LoadingAnimation()
         }
     } else {
         if (userPosts.isEmpty()) {
-            Box(
-                modifier = Modifier.height(getScreenHeight() / 1.2f),
-                contentAlignment = Alignment.Center
+            Column(
+                modifier = Modifier.fillMaxWidth().height(getScreenHeight() / 1.2f),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(200.dp))
                 Title("No Posts Found")
             }
         } else {
@@ -515,7 +520,7 @@ fun EditButtonRow(onEditClick: () -> Unit, onShareClick: () -> Unit) {
 
 @Composable
 fun TopScrollingContent(
-    profilePic: String,
+    profilePic: String?,
     profileName: String,
     userRole: UserRole?,
     listState: LazyListState

@@ -3,7 +3,6 @@ package com.sdjic.gradnet.presentation.screens.profile
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
@@ -45,7 +44,7 @@ class ProfileScreenModel(
     var isFetchingPost = mutableStateOf(false)
         private set
 
-    val userRole = UserRole.getUserRole(prefs.userRole)
+    val userRole = mutableStateOf(UserRole.getUserRole(prefs.userRole))
 
     fun updateEditMode(value: Boolean) {
         _isReadOnlyMode.update { value }
@@ -106,6 +105,7 @@ class ProfileScreenModel(
                 userRepository.fetchUser(userId).onSuccess { r ->
                     r.value?.let {
                         fetchUserPosts(r.value.id)
+                        userRole.value = UserRole.getUserRole(r.value.role)
                         _profileState.update { UiState.Success(r.value.toUserProfile()) }
                     } ?: run {
                         _profileState.update { UiState.Error("User not found") }

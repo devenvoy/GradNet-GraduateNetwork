@@ -12,7 +12,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSt
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionState
 
 interface UserRepository {
-    suspend fun sendOtp(verificationId: String): Result<ServerResponse<VerifyUserResponse>, ServerError>
+    suspend fun sendOtp(verificationId: String, token: String): Result<ServerResponse<VerifyUserResponse>, ServerError>
 
     suspend fun verifyOtp(
         verificationId: String,

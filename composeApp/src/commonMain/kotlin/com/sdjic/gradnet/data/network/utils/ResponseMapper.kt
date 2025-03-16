@@ -88,6 +88,7 @@ fun UserProfileResponse.toUserProfile(): UserProfile {
         socialUrls = this.urls.takeIf { it.isNotEmpty() }?.toSocialUrls(),
         experiences = this.experience.map { it.toExperienceModel() },
         website = this.website,
+        userRole = UserRole.getUserRole(this.role) ?: UserRole.Alumni,
         industryType = this.industryType,
         department = this.department,
         designation = this.designation,

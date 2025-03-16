@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -25,7 +26,8 @@ fun UserRoleChip(
         Text(
             text = userRole.name.lowercase().replaceFirstChar { it.uppercaseChar() },
             color = Color.White,
-            fontSize = 10.sp
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp
         )
     }
 }

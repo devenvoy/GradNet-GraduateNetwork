@@ -49,10 +49,13 @@ fun UserProfile.toBasicState(): BasicState {
     return BasicState(
         nameField = this.name,
         aboutField = this.about,
-        addressField = this.address ?: "",
+        addressField = this.address.orEmpty(),
         profileImageUrl = this.profilePic,
         backGroundImageUrl = this.backgroundPic,
         verificationField = this.verificationId,
+        emailField = this.email,
+        contactField = this.phoneNumber,
+        showContactsToOthers = this.showPersonalDetails,
         openBackGroundImagePicker = false,
         openProfileImagePicker = false
     )

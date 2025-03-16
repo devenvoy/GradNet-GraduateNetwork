@@ -167,6 +167,11 @@ class SetUpAccountViewModel(
                 _basicState.value =
                     _basicState.value.copy(nameField = basicScreenAction.value)
             }
+
+            is BasicScreenAction.OnShowContactsToOthersChange -> {
+                _basicState.value =
+                    _basicState.value.copy(showContactsToOthers = basicScreenAction.value)
+            }
         }
     }
 

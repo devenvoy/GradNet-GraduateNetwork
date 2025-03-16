@@ -72,15 +72,10 @@ class JobScreen : Screen {
             Column {
                 SearchBar(
                     inputField = {
-                        SearchBarField(query = query, viewModel = viewModel, isActive = isActive) {
-                            scope.launch { viewModel.fetchJobs() }
-                        }
+                        SearchBarField(query = query, viewModel = viewModel, isActive = isActive)
                     },
                     expanded = isActive,
                     onExpandedChange = {
-                        if(!it){
-                            scope.launch { viewModel.fetchJobs() }
-                        }
                         viewModel.onSearchActiveChange(it)
                     },
                     modifier = Modifier
@@ -113,14 +108,12 @@ class JobScreen : Screen {
     private fun SearchBarField(
         viewModel: JobScreenModel,
         query: String,
-        isActive: Boolean,
-        onSearch: () -> Unit
+        isActive: Boolean
     ) {
         SearchBarDefaults.InputField(
             query = query,
             onQueryChange = viewModel::onQueryChange,
             onSearch = {
-                onSearch()
                 viewModel.onSearchActiveChange(false)
             },
             expanded = isActive,

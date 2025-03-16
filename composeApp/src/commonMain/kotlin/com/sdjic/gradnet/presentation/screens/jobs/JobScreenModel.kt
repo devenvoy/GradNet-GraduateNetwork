@@ -33,7 +33,17 @@ class JobScreenModel(
     init {
         _savedTopics.update {
             setOf(
-                "Work", "Hobby", "Personal", "Office", "Workout","Fulltime","Parttime","Remote","Internship","Contract","Hybrid"
+                "Work",
+                "Hobby",
+                "Personal",
+                "Office",
+                "Workout",
+                "Fulltime",
+                "Parttime",
+                "Remote",
+                "Internship",
+                "Contract",
+                "Hybrid"
             )
         }
         screenModelScope.launch { fetchJobs() }
@@ -44,6 +54,9 @@ class JobScreenModel(
     }
 
     fun onSearchActiveChange(active: Boolean) {
+        if (!active) {
+            screenModelScope.launch { fetchJobs() }
+        }
         _searchActive.update { active }
     }
 
@@ -55,9 +68,9 @@ class JobScreenModel(
         _savedTopics.update { strings }
     }
 
-   suspend fun fetchJobs(){
-       getJobsUseCase.invoke(20,_selectedTopics.value.toList())
-           .cachedIn(screenModelScope)
-           .collect { pagingData -> _jobs.update { pagingData } }
+    suspend fun fetchJobs() {
+        getJobsUseCase.invoke(20, _selectedTopics.value.toList())
+            .cachedIn(screenModelScope)
+            .collect { pagingData -> _jobs.update { pagingData } }
     }
 }

@@ -5,6 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,17 +31,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil3.compose.LocalPlatformContext
+import com.alorma.compose.settings.ui.SettingsSwitch
+import com.sdjic.gradnet.di.platform_di.getContactsUtil
+import com.sdjic.gradnet.presentation.composables.SectionTitle
+import com.sdjic.gradnet.presentation.composables.filter.CustomImageChip
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputArea
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
+import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.ic_contacts
 import network.chaintech.cmpimagepickncrop.CMPImagePickNCropDialog
 import network.chaintech.cmpimagepickncrop.imagecropper.ImageAspectRatio
 import network.chaintech.cmpimagepickncrop.imagecropper.rememberImageCropper
+import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
+import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BasicSetUpScreen(
     isVerified: Boolean,
@@ -140,6 +154,48 @@ fun BasicSetUpScreen(
                         onAction(BasicScreenAction.OnAddressFieldValueChange(s))
                     },
                     placeholder = { SText("add address") },
+                )
+
+                SectionTitle(icon = painterResource(Res.drawable.ic_contacts), title = "Contacts")
+
+                FlowRow(modifier = Modifier, verticalArrangement = Arrangement.Top) {
+                    FlowRow(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+
+                        if (basicState.contactField.isNotEmpty())
+                            CustomImageChip(
+                                text = basicState.contactField,
+                                selected = true,
+                                showEndIcon = false,
+                                onCloseClick = {},
+                                modifier = Modifier.padding(2.dp)
+                            )
+
+                        if (basicState.emailField.isNotEmpty())
+                            CustomImageChip(
+                                text = basicState.emailField,
+                                selected = true,
+                                showEndIcon = false,
+                                onCloseClick = {},
+                                modifier = Modifier.padding(2.dp)
+                            )
+
+                    }
+                }
+
+                SettingsSwitch(
+                    state = basicState.showContactsToOthers,
+                    title = {
+                        Text("Let Others Reach You", fontFamily = displayFontFamily())
+                    },
+                    subtitle = {
+                        SText("Turn this on if you’d like others to see your contact details and connect with you.")
+                    },
+                    onCheckedChange = {
+                        onAction(BasicScreenAction.OnShowContactsToOthersChange(it))
+                    },
                 )
             }
         }

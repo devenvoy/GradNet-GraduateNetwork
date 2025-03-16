@@ -34,8 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -242,7 +245,11 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                     onClick = { onClick(index) },
                     modifier = Modifier.padding(12.dp)
                 ) {
-                    Text(tab.title, fontFamily = displayFontFamily())
+                    Text(
+                        text = tab.title,
+                        fontWeight = if (pagerState.currentPage == index) Bold else Normal,
+                        fontFamily = displayFontFamily(), fontSize = 14.sp
+                    )
                 }
             }
         }

@@ -16,8 +16,28 @@ data class Job(
     val applyLink: String, // URL to apply
     val companyLogo: String?, // URL of company logo
     val category: String, // industry
-    val skills: List<String> // Required skills
+    val skills: List<String>,// Required skills
+    val isSaved: Boolean
 ) : JvmSerializable
+
+
+fun emptyJob() = Job(
+    id = "",
+    title = "",
+    company = "",
+    jobType = null,
+    location = "",
+    description = "",
+    salary = null,
+    requirements = emptyList(),
+    benefits = emptyList(),
+    postedDate = "",
+    applyLink = "",
+    companyLogo = null,
+    category = "",
+    skills = emptyList(),
+    isSaved = false
+)
 
 
 /*

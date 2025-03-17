@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +32,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,23 +52,29 @@ import com.sdjic.gradnet.di.platform_di.getContactsUtil
 import com.sdjic.gradnet.presentation.composables.filter.ChipItem
 import com.sdjic.gradnet.presentation.composables.images.LongBackButton
 import com.sdjic.gradnet.presentation.core.model.Job
+import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
 
-class JobDetailScreen(private val job: Job) : Screen {
+class JobDetailScreen(private val jobDetail: Job) : Screen {
 
     @Composable
     override fun Content() {
+        val jobDetailScreenModel = koinScreenModel<JobDetailScreenModel>()
+        LaunchedEffect(jobDetail) {
+            jobDetailScreenModel.updateJobDetail(jobDetail)
+        }
         AppTheme {
-            JobDetailContent(job)
+            JobDetailContent(viewModel = jobDetailScreenModel)
         }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun JobDetailContent(job: Job) {
+    fun JobDetailContent(viewModel: JobDetailScreenModel) {
 
         val navigator = LocalNavigator.currentOrThrow
+        val job by viewModel.jobDetail.collectAsState()
 
         Scaffold(
             topBar = {
@@ -112,9 +122,9 @@ class JobDetailScreen(private val job: Job) : Screen {
                              }
                          )
                      }*/
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { viewModel.toggleSaveJob() }) {
                         Icon(
-                            imageVector = Icons.Outlined.BookmarkBorder,
+                            imageVector = if (job.isSaved) Icons.Outlined.Bookmark else Icons.Outlined.BookmarkBorder,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primaryContainer
                         )
@@ -159,7 +169,7 @@ class JobDetailScreen(private val job: Job) : Screen {
                 job.jobType?.let {
                     ChipItem(
                         modifier = Modifier,
-                        topic = job.jobType,
+                        topic = job.jobType!!,
                         textColor = MaterialTheme.colorScheme.primaryContainer
                     )
                 }

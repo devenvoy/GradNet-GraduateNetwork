@@ -48,7 +48,6 @@ import com.dokar.sonner.Toaster
 import com.dokar.sonner.ToasterDefaults
 import com.dokar.sonner.rememberToasterState
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
-import com.sdjic.gradnet.presentation.composables.tabs.FancyAnimatedIndicatorWithModifier
 import com.sdjic.gradnet.presentation.composables.tabs.FancyIndicator
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title

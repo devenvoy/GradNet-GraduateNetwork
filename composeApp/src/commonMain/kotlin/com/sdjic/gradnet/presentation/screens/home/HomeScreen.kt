@@ -1,9 +1,11 @@
 package com.sdjic.gradnet.presentation.screens.home
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
@@ -23,10 +25,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -46,6 +50,8 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.dokar.sonner.Toaster
+import com.dokar.sonner.rememberToasterState
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.composables.drawer.CustomDrawer
 import com.sdjic.gradnet.presentation.composables.text.SText
@@ -54,6 +60,7 @@ import com.sdjic.gradnet.presentation.helper.LocalDrawerController
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.MyTab
+import com.sdjic.gradnet.presentation.helper.ToastManager
 import com.sdjic.gradnet.presentation.screens.aboutUs.AboutUsScreen
 import com.sdjic.gradnet.presentation.screens.home.tabs.EventsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
@@ -104,6 +111,19 @@ class HomeScreen : Screen {
                 }
             }
         }
+        val toaster = rememberToasterState()
+
+        LaunchedEffect(Unit) {
+            ToastManager.messages.collect { message ->
+                scope.launch {
+                    toaster.show(
+                        message = message.message,
+                        duration = message.duration,
+                        type = message.type
+                    )
+                }
+            }
+        }
 
         TabNavigator(
             bottomTabList.last(),
@@ -134,22 +154,29 @@ class HomeScreen : Screen {
                 ) {
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                         AppTheme {
-                            Scaffold(
-                                bottomBar = {
-                                    BottomAppBar(
-                                        modifier = Modifier.shadow(16.dp),
-                                        scrollBehavior = scrollBehavior,
-                                        containerColor = MaterialTheme.colorScheme.background
-                                    ) {
-                                        bottomTabList.forEach { TabNavigationItem(it) }
-                                    }
-                                }) { pVal ->
+                            Scaffold(bottomBar = {
+                                BottomAppBar(
+                                    modifier = Modifier.shadow(16.dp),
+                                    scrollBehavior = scrollBehavior,
+                                    containerColor = MaterialTheme.colorScheme.background
+                                ) {
+                                    bottomTabList.forEach { TabNavigationItem(it) }
+                                }
+                            }) { pVal ->
                                 Box(
                                     modifier = Modifier
                                         .padding(bottom = pVal.calculateBottomPadding())
                                         .fillMaxSize()
                                 ) {
                                     CurrentTab()
+                                    Toaster(
+                                        modifier = Modifier.navigationBarsPadding(),
+                                        state = toaster,
+                                        richColors = true,
+                                        darkTheme = isSystemInDarkTheme(),
+                                        showCloseButton = true,
+                                        alignment = Alignment.BottomCenter,
+                                    )
                                 }
                             }
                         }

@@ -34,6 +34,7 @@ import com.sdjic.gradnet.presentation.screens.auth.register.SignUpScreenModel
 import com.sdjic.gradnet.presentation.screens.demo.TestViewModel
 import com.sdjic.gradnet.presentation.screens.event.EventScreenModel
 import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
+import com.sdjic.gradnet.presentation.screens.jobs.JobDetailScreenModel
 import com.sdjic.gradnet.presentation.screens.jobs.JobScreenModel
 import com.sdjic.gradnet.presentation.screens.jobs.SavedJobScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.AddPostScreenModel
@@ -64,6 +65,7 @@ val screenModelsModule = module {
 
     factory { JobScreenModel(get()) }
     factory { EventScreenModel(get()) }
+    factory { JobDetailScreenModel(get(),get()) }
     factory { AddPostScreenModel(get(), get()) }
     factory { PostScreenModel(get(), get(), get()) }
     factory { LikedPostScreenModel(get(), get(), get()) }

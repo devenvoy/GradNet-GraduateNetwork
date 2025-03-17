@@ -21,5 +21,6 @@ data class JobDto(
     @SerialName("salary") val salary: String?,
     @SerialName("skills") val skills: List<String>?,
     @SerialName("updated_at") val updatedAt: String?,
-    @SerialName("work_mode") val workMode: String?
+    @SerialName("work_mode") val workMode: String?,
+//    @SerialName("is_saved") val isSaved: Boolean?
 )

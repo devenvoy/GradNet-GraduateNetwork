@@ -8,9 +8,13 @@ import com.sdjic.gradnet.data.network.utils.BaseGateway
 import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.domain.repo.JobsRepository
 import io.ktor.client.HttpClient
+import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import kotlinx.serialization.json.JsonElement
 
 class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(httpClient) {
@@ -46,13 +50,18 @@ class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(h
         }
     }
 
-    override suspend fun saveJob(
+    override suspend fun toggleSavedJob(
         jobId: String,
         accessToken: String
     ): Result<ServerResponse<JsonElement>, ServerError> {
         return tryToExecute {
-            get("${BuildConfig.BASE_URL}/job/save") {
-            header("Authorization", "Bearer $accessToken")
+            post("${BuildConfig.BASE_URL}/job/save") {
+                headers {
+                    append("Authorization", "Bearer $accessToken")
+                    append("accept", "application/json")
+                    append("Content-Type", "application/json")
+                }
+                setBody(mapOf("job_id" to jobId))
             }
         }
     }

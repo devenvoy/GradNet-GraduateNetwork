@@ -20,7 +20,7 @@ interface JobsRepository {
         accessToken: String
     ): Result<ServerResponse<JobsResponse>, ServerError>
 
-    suspend fun saveJob(
+    suspend fun toggleSavedJob(
         jobId: String,
         accessToken: String
     ): Result<ServerResponse<JsonElement>, ServerError>

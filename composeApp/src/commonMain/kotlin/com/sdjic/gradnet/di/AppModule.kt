@@ -24,6 +24,7 @@ import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.domain.useCases.GetJobsUseCase
 import com.sdjic.gradnet.domain.useCases.GetLikedPostsUseCase
 import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
+import com.sdjic.gradnet.domain.useCases.GetSavedJobUseCase
 import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
 import com.sdjic.gradnet.presentation.screens.auth.login.LoginScreenModel
@@ -34,6 +35,7 @@ import com.sdjic.gradnet.presentation.screens.demo.TestViewModel
 import com.sdjic.gradnet.presentation.screens.event.EventScreenModel
 import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
 import com.sdjic.gradnet.presentation.screens.jobs.JobScreenModel
+import com.sdjic.gradnet.presentation.screens.jobs.SavedJobScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.AddPostScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.LikedPostScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.PostScreenModel
@@ -60,11 +62,12 @@ val screenModelsModule = module {
     factory { ProfileScreenModel(get(), get(), get()) }
     factory { SetUpAccountViewModel(get(), get(), get()) }
 
-    factory { PostScreenModel(get(), get(), get()) }
-    factory { LikedPostScreenModel(get(), get(), get()) }
-    factory { AddPostScreenModel(get(), get()) }
     factory { JobScreenModel(get()) }
     factory { EventScreenModel(get()) }
+    factory { AddPostScreenModel(get(), get()) }
+    factory { PostScreenModel(get(), get(), get()) }
+    factory { LikedPostScreenModel(get(), get(), get()) }
+    factory { SavedJobScreenModel(get(), get(), get()) }
 
     // testing only
     factory { TestViewModel(testRepository = get()) }
@@ -75,6 +78,7 @@ val userCases = module {
     single { GetLikedPostsUseCase(get()) }
     single { LikePostUseCase(get()) }
     single { GetJobsUseCase(get()) }
+    single { GetSavedJobUseCase(get()) }
 }
 
 val repositoryModule = module {

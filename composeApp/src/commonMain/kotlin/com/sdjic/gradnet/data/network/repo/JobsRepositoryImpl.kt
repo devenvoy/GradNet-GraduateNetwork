@@ -9,7 +9,9 @@ import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.domain.repo.JobsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import kotlinx.serialization.json.JsonElement
 
 class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(httpClient) {
 
@@ -30,4 +32,28 @@ class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(h
         }
     }
 
+    override suspend fun getSavedJobs(
+        page: Int,
+        pageSize: Int,
+        accessToken: String
+    ): Result<ServerResponse<JobsResponse>, ServerError> {
+        return tryToExecute<ServerResponse<JobsResponse>> {
+            get("${BuildConfig.BASE_URL}/job/saved") {
+                header("Authorization", "Bearer $accessToken")
+                parameter("page", "$page")
+                parameter("per_page", "$pageSize")
+            }
+        }
+    }
+
+    override suspend fun saveJob(
+        jobId: String,
+        accessToken: String
+    ): Result<ServerResponse<JsonElement>, ServerError> {
+        return tryToExecute {
+            get("${BuildConfig.BASE_URL}/job/save") {
+            header("Authorization", "Bearer $accessToken")
+            }
+        }
+    }
 }

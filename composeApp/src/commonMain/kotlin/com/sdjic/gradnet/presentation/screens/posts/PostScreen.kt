@@ -368,84 +368,84 @@ class PostScreen : Screen {
             }
         )
     }
+}
 
-    @Composable
-    fun PostItem(
-        post: Post,
-        checkProfileEnable: Boolean,
-        modifier: Modifier = Modifier,
-        onLikeClicked: () -> Unit = {},
-        onShareClick: () -> Unit = {},
-        onProfileClick: () -> Unit = {}
+@Composable
+fun PostItem(
+    post: Post,
+    checkProfileEnable: Boolean,
+    modifier: Modifier = Modifier,
+    onLikeClicked: () -> Unit = {},
+    onShareClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {}
+) {
+    var postedAgo by remember { mutableStateOf("Loading...") }
+    LaunchedEffect(post.createdAt) {
+        val localDateTime = parseDateAsync(post.createdAt)
+        postedAgo =
+            DateTimeUtils.getTimeAgoAsync(toEpochMillis(localDateTime))
+    }
+    Column(
+        modifier = modifier.padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
-        var postedAgo by remember { mutableStateOf("Loading...") }
-        LaunchedEffect(post.createdAt) {
-            val localDateTime = parseDateAsync(post.createdAt)
-            postedAgo =
-                DateTimeUtils.getTimeAgoAsync(toEpochMillis(localDateTime))
-        }
-        Column(
-            modifier = modifier.padding(horizontal = 8.dp, vertical = 8.dp)
-        ) {
 
-            Row {
-                CircularProfileImage(
-                    modifier = Modifier.clickable(
-                        enabled = checkProfileEnable,
-                        onClick = onProfileClick
-                    ),
-                    placeHolderName = post.userName,
-                    data = post.userImage,
-                    imageSize = 36.dp,
-                    borderWidth = 0.dp
-                )
-                Column(modifier = Modifier.padding(horizontal = 6.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        SText(
-                            modifier = Modifier.clickable(
-                                enabled = checkProfileEnable,
-                                onClick = onProfileClick
-                            ),
-                            text = post.userName,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(800)
-                        )
-                        SText(
-                            text = " • $postedAgo",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight(400),
-                            textColor = Color.Gray
-                        )
-                    }
-                    ExpandableRichText(
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        text = post.content
+        Row {
+            CircularProfileImage(
+                modifier = Modifier.clickable(
+                    enabled = checkProfileEnable,
+                    onClick = onProfileClick
+                ),
+                placeHolderName = post.userName,
+                data = post.userImage,
+                imageSize = 36.dp,
+                borderWidth = 0.dp
+            )
+            Column(modifier = Modifier.padding(horizontal = 6.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    SText(
+                        modifier = Modifier.clickable(
+                            enabled = checkProfileEnable,
+                            onClick = onProfileClick
+                        ),
+                        text = post.userName,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(800)
+                    )
+                    SText(
+                        text = " • $postedAgo",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(400),
+                        textColor = Color.Gray
                     )
                 }
-            }
-            if (post.images.isNotEmpty()) {
-                PostImages(images = post.images, onLikeClicked = onLikeClicked)
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.sdp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(if (post.liked) Res.drawable.heart else Res.drawable.heart_outlined),
-                    contentDescription = null,
-                    modifier = Modifier.size(28.dp).noRippleEffect(onLikeClicked),
-                    tint = if (post.liked) Color.Red
-                    else MaterialTheme.colorScheme.onSurface.copy(.8f)
-                )
-                SText(post.likesCount.toString())
-                Icon(
-                    painter = painterResource(Res.drawable.ic_share),
-                    contentDescription = null,
-                    modifier = Modifier.noRippleEffect(onShareClick).size(28.dp),
-                    tint = MaterialTheme.colorScheme.onSurface.copy(.8f)
+                ExpandableRichText(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    text = post.content
                 )
             }
+        }
+        if (post.images.isNotEmpty()) {
+            PostImages(images = post.images, onLikeClicked = onLikeClicked)
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.sdp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(if (post.liked) Res.drawable.heart else Res.drawable.heart_outlined),
+                contentDescription = null,
+                modifier = Modifier.size(28.dp).noRippleEffect(onLikeClicked),
+                tint = if (post.liked) Color.Red
+                else MaterialTheme.colorScheme.onSurface.copy(.8f)
+            )
+            SText(post.likesCount.toString())
+            Icon(
+                painter = painterResource(Res.drawable.ic_share),
+                contentDescription = null,
+                modifier = Modifier.noRippleEffect(onShareClick).size(28.dp),
+                tint = MaterialTheme.colorScheme.onSurface.copy(.8f)
+            )
         }
     }
 }

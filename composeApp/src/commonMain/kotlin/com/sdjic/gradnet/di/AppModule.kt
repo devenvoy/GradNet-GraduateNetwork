@@ -22,6 +22,7 @@ import com.sdjic.gradnet.domain.repo.TestRepository
 import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.domain.useCases.GetJobsUseCase
+import com.sdjic.gradnet.domain.useCases.GetLikedPostsUseCase
 import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
 import com.sdjic.gradnet.domain.useCases.LikePostUseCase
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpAccountViewModel
@@ -34,6 +35,7 @@ import com.sdjic.gradnet.presentation.screens.event.EventScreenModel
 import com.sdjic.gradnet.presentation.screens.home.HomeScreenViewModel
 import com.sdjic.gradnet.presentation.screens.jobs.JobScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.AddPostScreenModel
+import com.sdjic.gradnet.presentation.screens.posts.LikedPostScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.PostScreenModel
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreenModel
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreenModel
@@ -59,6 +61,7 @@ val screenModelsModule = module {
     factory { SetUpAccountViewModel(get(), get(), get()) }
 
     factory { PostScreenModel(get(), get(), get()) }
+    factory { LikedPostScreenModel(get(), get(), get()) }
     factory { AddPostScreenModel(get(), get()) }
     factory { JobScreenModel(get()) }
     factory { EventScreenModel(get()) }
@@ -69,6 +72,7 @@ val screenModelsModule = module {
 
 val userCases = module {
     single { GetPostsUseCase(get(), get()) }
+    single { GetLikedPostsUseCase(get()) }
     single { LikePostUseCase(get()) }
     single { GetJobsUseCase(get()) }
 }

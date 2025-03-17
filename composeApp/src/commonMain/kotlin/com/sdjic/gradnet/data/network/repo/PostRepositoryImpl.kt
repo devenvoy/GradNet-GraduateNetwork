@@ -47,6 +47,20 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
         }
     }
 
+    override suspend fun getLikedPosts(
+        accessToken: String,
+        page: Int,
+        perPage: Int,
+    ): Result<ServerResponse<PostResponse>, ServerError> {
+        return tryToExecute<ServerResponse<PostResponse>> {
+            get("$baseUrl/posts/liked_post") {
+                header("Authorization", "Bearer $accessToken")
+                parameter("page", "$page")
+                parameter("per_page", "$perPage")
+            }
+        }
+    }
+
     override suspend fun getPostByUserId(userId: String): Result<ServerResponse<List<PostDto>>, ServerError> {
         return tryToExecute<ServerResponse<List<PostDto>>> {
             get("$baseUrl/posts/user"){

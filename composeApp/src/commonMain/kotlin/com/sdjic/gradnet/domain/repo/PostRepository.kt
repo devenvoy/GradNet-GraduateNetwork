@@ -31,4 +31,8 @@ interface PostRepository {
         accessToken: String,
         postId: String
     ): Result<ServerResponse<JsonElement>, ServerError>
+
+    suspend fun getLikedPosts(
+        accessToken: String, page: Int, perPage: Int
+    ): Result<ServerResponse<PostResponse>, ServerError>
 }

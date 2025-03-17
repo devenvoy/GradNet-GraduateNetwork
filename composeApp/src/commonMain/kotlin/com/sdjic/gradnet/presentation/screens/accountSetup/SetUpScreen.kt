@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -51,6 +52,7 @@ import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.tabs.FancyIndicator
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.composables.text.Title
+import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicSetUpScreen
@@ -75,6 +77,12 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun BaseSetUpContent(navigator: Navigator) {
+
+        val scope = rememberCoroutineScope()
+        val setUpAccountViewModel = koinScreenModel<SetUpAccountViewModel>()
+        val state by setUpAccountViewModel.userData.collectAsState()
+        val userRole by setUpAccountViewModel.userRole.collectAsState()
+
         Scaffold(
             modifier = Modifier.imePadding(),
             topBar = {
@@ -84,6 +92,32 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                             text = "${if (isEditProfile) "Edit " else "Set Up "}Profile",
                             size = 14.ssp
                         )
+                    },
+                    actions = {
+                        PrimaryButton(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            shape = CircleShape,
+                            contentPadding = PaddingValues(horizontal = 20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                            onClick = {
+                                if ((state as UiState.Success).data.isVerified) {
+                                    setUpAccountViewModel.updateUserProfile()
+                                    if (!isEditProfile) navigator.replace(HomeScreen())
+//                                    else navigator.pop()
+                                } else {
+                                    setUpAccountViewModel.showErrorState("Please verify to proceed")
+                                }
+                            }
+                        ) {
+                            SText(
+                                text = "Save",
+                                fontSize = 14.sp,
+                                fontWeight = Bold,
+                                textColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
                     },
                     navigationIcon = {
                         if (isEditProfile) {
@@ -99,15 +133,13 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
             }
         )
         { sPad ->
-            val setUpAccountViewModel = koinScreenModel<SetUpAccountViewModel>()
-            val scope = rememberCoroutineScope()
+
             Box(
                 modifier = Modifier.padding(sPad)
             ) {
                 UiStateHandler(
-                    uiState = setUpAccountViewModel.userData.collectAsState().value,
+                    uiState = state,
                     content = { userProfile ->
-                        val userRole by setUpAccountViewModel.userRole.collectAsState()
 
                         val setUpScreenTabs by remember {
                             mutableStateOf(
@@ -141,38 +173,6 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                                 tabs = setUpScreenTabs,
                                 pagerState = pagerState,
                                 userRole = userRole ?: UserRole.Organization
-                            )
-                        }
-                        PrimaryButton(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(16.sdp)
-                                .fillMaxWidth()
-                                .shadow(
-                                    4.dp,
-                                    RoundedCornerShape(8.sdp),
-                                    true,
-                                    MaterialTheme.colorScheme.primary
-                                ),
-                            contentPadding = PaddingValues(vertical = 10.sdp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            ),
-                            onClick = {
-                                if (userProfile.isVerified) {
-                                    setUpAccountViewModel.updateUserProfile()
-                                    if (!isEditProfile) navigator.replace(HomeScreen())
-//                                    else navigator.pop()
-                                } else {
-                                    setUpAccountViewModel.showErrorState("Please verify to proceed")
-                                }
-                            }
-                        ) {
-                            SText(
-                                text = "Save",
-                                fontSize = 14.ssp,
-                                fontWeight = W600,
-                                textColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
                         }
                     },

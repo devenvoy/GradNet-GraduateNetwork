@@ -7,6 +7,7 @@ import com.sdjic.gradnet.data.network.entity.UserProfileRequest
 import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.entity.dto.URLDto
 import com.sdjic.gradnet.data.network.entity.dto.VerifyUserResponse
+import com.sdjic.gradnet.data.network.entity.response.SearchProfileResponse
 import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
@@ -161,6 +162,18 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
         else tryToExecute {
             // 75ed0707-e5e7-45cf-9013-c6cbe79ceb49
             get(BuildConfig.BASE_URL + "/posts/user?user_id=$userId"){
+            }
+        }
+    }
+
+    override suspend fun getUsers(
+        page: Int,
+        query: String,
+        pageSize: Int
+    ): Result<ServerResponse<SearchProfileResponse>, ServerError> {
+        return tryToExecute {
+            get(BuildConfig.BASE_URL + "/search_profile/user_name?page=$page&per_page=$pageSize&search=$query") {
+                contentType(ContentType.Application.Json)
             }
         }
     }

@@ -199,16 +199,6 @@ val SkillList = listOf(
     "Fleet Management"
 )
 
-fun getEmptyUserDto() = UserDto(
-    userId = "1",
-    email = "test@gmail.com",
-    isVerified = true,
-    userType = "alumni",
-    username = "Devansh amdavadwala",
-    createdAt = "",
-    updatedAt = "",
-)
-
 val DummyBgImage =
     "https://images.wallpaperscraft.com/image/single/starry_sky_milky_way_stars_118495_1600x900.jpg"
 val DummyDpImage =

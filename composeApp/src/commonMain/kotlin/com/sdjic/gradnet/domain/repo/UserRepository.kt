@@ -3,6 +3,7 @@ package com.sdjic.gradnet.domain.repo
 import androidx.compose.ui.graphics.ImageBitmap
 import com.sdjic.gradnet.data.network.entity.dto.PostDto
 import com.sdjic.gradnet.data.network.entity.dto.VerifyUserResponse
+import com.sdjic.gradnet.data.network.entity.response.SearchProfileResponse
 import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
@@ -43,4 +44,10 @@ interface UserRepository {
     ): Result<ServerResponse<Map<String,String>>, ServerError>
 
     suspend fun fetchUserPosts(userId:String) : Result<ServerResponse<List<PostDto>>,ServerError>
+
+    suspend fun getUsers(
+        page: Int,
+        query: String,
+        pageSize: Int,
+    ): Result<ServerResponse<SearchProfileResponse>, ServerError>
 }

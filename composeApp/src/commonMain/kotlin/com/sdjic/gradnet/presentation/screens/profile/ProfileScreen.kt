@@ -1,4 +1,7 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@file:OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalFoundationApi::class
+)
 
 package com.sdjic.gradnet.presentation.screens.profile
 
@@ -59,6 +62,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -156,9 +160,19 @@ fun ProfileScreenContent(
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
-    val pagerState = rememberPagerState(1, pageCount = { 2 })
+    val pagerState = rememberPagerState(0, pageCount = { 2 })
     val userRole = viewModel.userRole
 
+
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage == 0) {
+            if (!isReadOnlyMode) {
+                scrollState.scrollToItem(2)
+            }
+        } else {
+            scrollState.scrollToItem(0)
+        }
+    }
 
     val headerOffset by remember {
         derivedStateOf {
@@ -187,6 +201,7 @@ fun ProfileScreenContent(
             LazyColumn(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .clipToBounds()
                     .fillMaxSize(),
                 state = scrollState
             ) {

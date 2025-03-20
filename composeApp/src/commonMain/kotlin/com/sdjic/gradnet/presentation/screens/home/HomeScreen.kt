@@ -52,7 +52,6 @@ import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.rememberToasterState
-import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.presentation.composables.drawer.CustomDrawer
 import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.core.model.NavigationItem
@@ -61,6 +60,7 @@ import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.MyTab
 import com.sdjic.gradnet.presentation.helper.ToastManager
+import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.aboutUs.AboutUsScreen
 import com.sdjic.gradnet.presentation.screens.home.tabs.EventsTab
 import com.sdjic.gradnet.presentation.screens.home.tabs.JobsTab
@@ -72,12 +72,14 @@ import com.sdjic.gradnet.presentation.screens.posts.LikedPostScreen
 import com.sdjic.gradnet.presentation.screens.setting.SettingScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
 
 class HomeScreen : Screen {
     override val key: ScreenKey = uniqueScreenKey
@@ -91,10 +93,11 @@ class HomeScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class, InternalVoyagerApi::class)
     @Composable
     fun HomeScreenContent() {
-        val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val navigator = LocalNavigator.currentOrThrow
         val scope = rememberCoroutineScope()
+        val navigator = LocalNavigator.currentOrThrow
+        val viewModel = koinScreenModel<HomeScreenViewModel>()
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
 
         val bottomTabList = listOf(
             PostTab,
@@ -147,7 +150,11 @@ class HomeScreen : Screen {
                     gesturesEnabled = it.current == ProfileTab,
                     drawerContent = {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                            DrawerContent(navigator, drawerState)
+                            DrawerContent(
+                                navigator = navigator,
+                                drawerState = drawerState,
+                                onLogoutClick = viewModel::appLogout
+                            )
                         }
                     },
                     drawerState = drawerState,
@@ -187,10 +194,13 @@ class HomeScreen : Screen {
     }
 
     @Composable
-    private fun DrawerContent(navigator: Navigator, drawerState: DrawerState) {
+    private fun DrawerContent(
+        navigator: Navigator,
+        drawerState: DrawerState,
+        onLogoutClick: suspend () -> Unit = {}
+    ) {
         val selectedNavigationItem by remember { mutableStateOf(NavigationItem.Profile) }
         val scope = rememberCoroutineScope()
-        val pref = koinInject<AppCacheSetting>()
         ModalDrawerSheet(
             modifier = Modifier.fillMaxWidth(.8f),
             drawerShape = MaterialTheme.shapes.large
@@ -202,28 +212,34 @@ class HomeScreen : Screen {
                         drawerState.apply {
                             if (isOpen) close() else open()
                         }
-                        when (it) {
-                            NavigationItem.Profile -> {}
-                            NavigationItem.Settings -> {
-                                navigator.push(SettingScreen())
-                            }
+                    }
+                    when (it) {
+                        NavigationItem.Profile -> {}
+                        NavigationItem.Settings -> {
+                            navigator.push(SettingScreen())
+                        }
 
-                            NavigationItem.AboutUs -> {
-                                navigator.push(AboutUsScreen())
-                            }
+                        NavigationItem.AboutUs -> {
+                            navigator.push(AboutUsScreen())
+                        }
 
-                            NavigationItem.Logout -> {
-                                pref.logout { }
-                                navigator.replaceAll(SplashScreen())
+                        NavigationItem.Logout -> {
+                            scope.launch {
+                                withContext(Dispatchers.IO) {
+                                    onLogoutClick()
+                                }
+                                withContext(Dispatchers.Main) {
+                                    navigator.replaceAll(SplashScreen())
+                                }
                             }
+                        }
 
-                            NavigationItem.LikedPosts -> {
-                                navigator.push(LikedPostScreen())
-                            }
+                        NavigationItem.LikedPosts -> {
+                            navigator.push(LikedPostScreen())
+                        }
 
-                            NavigationItem.SavedJobs -> {
-                                navigator.push(SavedJobScreen())
-                            }
+                        NavigationItem.SavedJobs -> {
+                            navigator.push(SavedJobScreen())
                         }
                     }
                 }

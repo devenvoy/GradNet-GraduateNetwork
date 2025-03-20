@@ -55,4 +55,8 @@ class UserDataSourceImpl(private val userDao: UserDao) : UserDataSource {
     override suspend fun getUrlById(id: Long): UrlTable? {
         return userDao.getUrlTableById(id)
     }
+
+    override suspend fun clearDatabase(): Boolean {
+        return userDao.clearDatabase()
+    }
 }

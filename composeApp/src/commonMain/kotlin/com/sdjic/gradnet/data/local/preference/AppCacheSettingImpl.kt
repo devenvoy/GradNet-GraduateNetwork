@@ -108,8 +108,5 @@ class AppCacheSettingImpl : AppCacheSetting {
     }
 
 
-    override fun logout(callBack: () -> Unit) {
-        settings.clear()
-        callBack()
-    }
+    override fun logout()=settings.clear()
 }

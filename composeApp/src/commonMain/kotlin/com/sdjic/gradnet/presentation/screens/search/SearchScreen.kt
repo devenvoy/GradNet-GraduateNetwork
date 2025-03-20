@@ -30,12 +30,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.sdjic.gradnet.data.network.entity.dto.UserDto
 import com.sdjic.gradnet.presentation.composables.filter.UserRoleChip
 import com.sdjic.gradnet.presentation.composables.images.CircularProfileImage
 import com.sdjic.gradnet.presentation.helper.CashPagingGridUi
+import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.LocalScrollBehavior
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
@@ -52,7 +51,7 @@ class SearchScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun SearchScreenContent() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalRootNavigator.current
 
         val scope = rememberCoroutineScope()
         val navigateToDetail: (String) -> Unit = { navigator.push(ProfileScreen(it)) }

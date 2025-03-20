@@ -20,5 +20,5 @@ interface AppCacheSetting {
 
     fun getUserProfile(): UserProfile
 
-    fun logout(callBack: () -> Unit)
+    fun logout()
 }

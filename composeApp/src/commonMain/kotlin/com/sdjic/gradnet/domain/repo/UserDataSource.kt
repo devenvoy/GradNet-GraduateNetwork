@@ -21,4 +21,5 @@ interface UserDataSource {
     suspend fun getExperienceById(id: Long): ExperienceTable?
     suspend fun getUrlById(id: Long): UrlTable?
 
+    suspend fun clearDatabase(): Boolean
 }

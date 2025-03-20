@@ -56,7 +56,7 @@ fun MoreInfoSection(
                 }
             )
         }else{
-            if(userProfile.isPrivate.not()){
+            if(userProfile.isPrivate){
                 ContactIconButton(
                     icon = painterResource(Res.drawable.phone),
                     onClick = {

@@ -74,4 +74,16 @@ interface UserDao {
     @Query("DELETE FROM url_table")
     suspend fun deleteAllUrl()
 
+    @Transaction
+    suspend fun clearDatabase(): Boolean {
+        return try {
+            deleteAllUrl()
+            deleteAllExperience()
+            deleteAllEducation()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 }

@@ -35,6 +35,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.LibraryBooks
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Monitor
 import androidx.compose.material.icons.outlined.RememberMe
 import androidx.compose.material.icons.outlined.Translate
@@ -45,6 +46,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -183,6 +185,12 @@ fun ProfileScreenContent(
 
     val isStickyHeaderNearTop = headerOffset <= 200
 
+    val shareProfile = {
+        getContactsUtil().shareText(
+            "https://devenvoy.github.io/#/profile/${userProfile.userId}"
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBarView(
@@ -208,13 +216,24 @@ fun ProfileScreenContent(
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Spacer(modifier = Modifier.height(30.dp))
                         if (isReadOnlyMode) {
-                            LongBackButton(
-                                modifier = Modifier
-                                    .padding(horizontal = 12.dp)
-                                    .align(Alignment.Start),
-                                onBackPressed = onBackPress,
-                                iconColor = Color.White
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                LongBackButton(
+                                    modifier = Modifier
+                                        .padding(horizontal = 12.dp),
+                                    onBackPressed = onBackPress,
+                                    iconColor = Color.White
+                                )
+                                IconButton(onClick = shareProfile) {
+                                    Icon(
+                                        tint = Color.White,
+                                        imageVector = Icons.Filled.Share,
+                                        contentDescription = "Share"
+                                    )
+                                }
+                            }
                         } else {
                             Icon(
                                 imageVector = Icons.Default.Menu,
@@ -270,7 +289,7 @@ fun ProfileScreenContent(
                         }
                     }
                     if (isReadOnlyMode.not()) {
-                        EditButtonRow(onEditClick = onEditClick, onShareClick = {})
+                        EditButtonRow(onEditClick = onEditClick, onShareClick = shareProfile)
                     }
                 }
 
@@ -321,50 +340,69 @@ fun UserDetailsContent(
     isReadOnlyMode: Boolean,
     userProfile: UserProfile
 ) {
-    Column {
-        AboutMeSection(userProfile.about)
-        InterestsSection(icon = Icons.Outlined.Monitor, title = "Skills", data = userProfile.skills)
-        if (userProfile.educations.isNotEmpty()) {
-            SectionTitle(icon = Icons.AutoMirrored.Outlined.LibraryBooks, title = "Education")
-            Card(
-                modifier = Modifier.padding(10.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(1.dp)
-            ) {
-                userProfile.educations.fastForEachIndexed { idx, it ->
-                    EducationItem(it)
+    LazyColumn(modifier = Modifier.height(getScreenHeight())) {
+        item {
+            AboutMeSection(userProfile.about)
+        }
+
+        item {
+            InterestsSection(
+                icon = Icons.Outlined.Monitor,
+                title = "Skills",
+                data = userProfile.skills
+            )
+        }
+        item {
+            if (userProfile.educations.isNotEmpty()) {
+                SectionTitle(icon = Icons.AutoMirrored.Outlined.LibraryBooks, title = "Education")
+                Card(
+                    modifier = Modifier.padding(10.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    elevation = CardDefaults.cardElevation(1.dp)
+                ) {
+                    userProfile.educations.fastForEachIndexed { idx, it ->
+                        EducationItem(it)
+                    }
+                }
+            }
+        }
+        item {
+
+            if (userProfile.experiences.isNotEmpty()) {
+                SectionTitle(icon = Icons.Outlined.WorkOutline, title = "Experience")
+                Card(
+                    modifier = Modifier.padding(10.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    elevation = CardDefaults.cardElevation(1.dp)
+                ) {
+                    userProfile.experiences.fastForEachIndexed { idx, it ->
+                        ExperienceItem(it)
+                    }
                 }
             }
         }
 
-        if (userProfile.experiences.isNotEmpty()) {
-            SectionTitle(icon = Icons.Outlined.WorkOutline, title = "Experience")
-            Card(
-                modifier = Modifier.padding(10.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(1.dp)
-            ) {
-                userProfile.experiences.fastForEachIndexed { idx, it ->
-                    ExperienceItem(it)
-                }
-            }
+        item {
+            InterestsSection(
+                icon = Icons.Outlined.Translate,
+                title = "Languages",
+                data = userProfile.languages
+            )
+        }
+        item {
+            MoreInfoSection(
+                isReadOnlyMode = isReadOnlyMode,
+                userProfile = userProfile
+            )
         }
 
-        InterestsSection(
-            icon = Icons.Outlined.Translate,
-            title = "Languages",
-            data = userProfile.languages
-        )
-        MoreInfoSection(
-            isReadOnlyMode = isReadOnlyMode,
-            userProfile = userProfile
-        )
-
-        Spacer(modifier = Modifier.height(100.dp))
+        item {
+            Spacer(modifier = Modifier.height(100.dp))
+        }
     }
 }
 
@@ -560,7 +598,6 @@ fun TopScrollingContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.CenterVertically)
                 .alpha(animateFloatAsState(if (visibilityChangeFloat) 0f else 1f).value)
         ) {
 //            Spacer(modifier = Modifier.height(60.dp))

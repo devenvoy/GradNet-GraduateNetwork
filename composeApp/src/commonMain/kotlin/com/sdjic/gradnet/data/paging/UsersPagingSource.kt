@@ -26,7 +26,7 @@ class UsersPagingSource(
         )
         userRepository.getUsers(
             page = page,
-            query = "",
+            query = query,
             pageSize = limit,
         ).onSuccess { r ->
             r.value?.let { response ->

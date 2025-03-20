@@ -65,9 +65,8 @@ class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(h
                 setBody(
                     """{
                     "old_password": "$oldPassword",
-                    "new_password": "$newPassword",
-                    "re_new_password": "$newPassword",
-                    """.trimIndent()
+                    "new_password": "$newPassword"
+                    }""".trimIndent()
                 )
             }
         }

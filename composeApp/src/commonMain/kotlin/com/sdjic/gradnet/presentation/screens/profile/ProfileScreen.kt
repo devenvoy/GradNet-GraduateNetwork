@@ -160,15 +160,14 @@ fun ProfileScreenContent(
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
-    val pagerState = rememberPagerState(0, pageCount = { 2 })
+    val pagerState = rememberPagerState(if (isReadOnlyMode) 1 else 0, pageCount = { 2 })
     val userRole = viewModel.userRole
-
 
     LaunchedEffect(pagerState.currentPage) {
         if (pagerState.currentPage == 0) {
-            if (!isReadOnlyMode) {
-                scrollState.scrollToItem(2)
-            }
+//            if (!isReadOnlyMode) {
+            scrollState.scrollToItem(3)
+//            }
         } else {
             scrollState.scrollToItem(0)
         }
@@ -301,7 +300,9 @@ fun ProfileScreenContent(
                 item {
                     HorizontalPager(
                         state = pagerState,
-                        modifier = Modifier.fillMaxSize()
+                        beyondViewportPageCount = 1,
+                        modifier = Modifier
+                            .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                     ) { page ->
                         when (page) {
@@ -363,7 +364,6 @@ fun UserDetailsContent(
             userProfile = userProfile
         )
 
-//        Spacer(modifier = Modifier.height(getScreenHeight() / 2))
         Spacer(modifier = Modifier.height(100.dp))
     }
 }

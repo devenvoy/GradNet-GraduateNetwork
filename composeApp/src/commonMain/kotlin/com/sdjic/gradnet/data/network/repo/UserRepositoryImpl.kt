@@ -92,7 +92,7 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
             website = "",
             department = "",
             designation = "",
-            isPrivate = basicState.showContactsToOthers,
+            isPrivate = !basicState.showContactsToOthers,   // if showContactsToOthers true means isPrivate false
             education = educationState.eductionList,
             experience = professionState.experienceList,
             urls = listOf(

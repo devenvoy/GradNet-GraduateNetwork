@@ -187,6 +187,6 @@ fun jobDtoToJob(jobDto: JobDto?) = jobDto?.let {
         companyLogo = it.companyLogo,
         category = it.industry.orEmpty(),
         skills = it.skills.orEmpty(),
-        isSaved = /*it.isSaved ?: */ false
+        isSaved = it.isSaved ?: false
     )
 }

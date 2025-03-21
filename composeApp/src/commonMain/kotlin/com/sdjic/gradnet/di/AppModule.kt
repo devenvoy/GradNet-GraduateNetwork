@@ -79,12 +79,12 @@ val screenModelsModule = module {
 }
 
 val userCases = module {
-    single { GetPostsUseCase(get(), get()) }
-    single { GetLikedPostsUseCase(get()) }
-    single { LikePostUseCase(get()) }
-    single { GetJobsUseCase(get()) }
     single { GetUsersUseCase(get()) }
+    single { LikePostUseCase(get()) }
     single { GetSavedJobUseCase(get()) }
+    single { GetLikedPostsUseCase(get()) }
+    single { GetJobsUseCase(get(), get()) }
+    single { GetPostsUseCase(get(), get()) }
 }
 
 val repositoryModule = module {

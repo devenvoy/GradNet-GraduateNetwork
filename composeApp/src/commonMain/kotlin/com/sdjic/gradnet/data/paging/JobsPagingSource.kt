@@ -6,11 +6,19 @@ import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.BasePagingSource
 import com.sdjic.gradnet.domain.repo.JobsRepository
 import com.sdjic.gradnet.presentation.core.model.Job
+import kotlin.properties.Delegates
 
 class JobsPagingSource(
     private val jobsRepository: JobsRepository,
-    private val selectedFilter: List<String> = emptyList() // Default empty list
+    private val accessToken: String,
+    private val selectedFilter: List<String> = emptyList()
 ) : BasePagingSource<Job>() {
+
+    private var query by Delegates.notNull<String>()
+
+    fun intiQuery(value: String) {
+        query = value
+    }
 
     override suspend fun fetchData(page: Int, limit: Int): PaginationItems<Job> {
         var result = PaginationItems<Job>(
@@ -19,8 +27,9 @@ class JobsPagingSource(
             total = 0
         )
         jobsRepository.getJobs(
+            accessToken = accessToken,
             page = page,
-            query = "",
+            query = query,
             pageSize = limit,
             filter = selectedFilter
         ).onSuccess { r ->

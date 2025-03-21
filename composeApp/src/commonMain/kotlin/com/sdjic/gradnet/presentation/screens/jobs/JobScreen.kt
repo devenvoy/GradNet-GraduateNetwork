@@ -15,12 +15,16 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.cash.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -50,6 +54,7 @@ class JobScreen : Screen {
         val navigateToDetail: (Job) -> Unit = { navigator.push(JobDetailScreen(it)) }
         val viewModel = koinScreenModel<JobScreenModel>()
         val scrollBehavior = LocalScrollBehavior.current
+        val lifecycleOwner = LocalLifecycleOwner.current
 
         val query by viewModel.query.collectAsState()
         val isActive by viewModel.searchActive.collectAsState()
@@ -59,11 +64,23 @@ class JobScreen : Screen {
 
         val data = viewModel.jobs.collectAsLazyPagingItems()
 
-        Scaffold {
-
-            LaunchedEffect(isActive) {
-                scrollBehavior.state.heightOffset = if (isActive) -1000f else 0f
+        DisposableEffect(lifecycleOwner) {
+            val observer = LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    data.refresh()
+                }
             }
+            lifecycleOwner.lifecycle.addObserver(observer)
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+            }
+        }
+
+        LaunchedEffect(isActive) {
+            scrollBehavior.state.heightOffset = if (isActive) -1000f else 0f
+        }
+
+        Scaffold {
 
             Column {
                 SearchBar(

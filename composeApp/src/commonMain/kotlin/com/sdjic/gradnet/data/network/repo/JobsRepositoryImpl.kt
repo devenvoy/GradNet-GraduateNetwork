@@ -8,7 +8,6 @@ import com.sdjic.gradnet.data.network.utils.BaseGateway
 import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.domain.repo.JobsRepository
 import io.ktor.client.HttpClient
-import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.headers
@@ -20,6 +19,7 @@ import kotlinx.serialization.json.JsonElement
 class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(httpClient) {
 
     override suspend fun getJobs(
+        accessToken: String,
         query: String,
         page: Int,
         pageSize: Int,
@@ -27,10 +27,14 @@ class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(h
     ): Result<ServerResponse<JobsResponse>, ServerError> {
         return tryToExecute<ServerResponse<JobsResponse>> {
             get("${BuildConfig.BASE_URL}/jobs") {
+                header("Authorization", "Bearer $accessToken")
                 parameter("page", "$page")
                 parameter("per_page", "$pageSize")
                 filter.forEach {
                     parameter("work_mode", it.uppercase())
+                }
+                if (query.isNotEmpty()) {
+                    parameter("search", query)
                 }
             }
         }

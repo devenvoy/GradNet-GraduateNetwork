@@ -8,6 +8,7 @@ import kotlinx.serialization.json.JsonElement
 
 interface JobsRepository {
     suspend fun getJobs(
+        accessToken: String,
         query: String,
         page: Int,
         pageSize: Int,

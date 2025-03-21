@@ -4,7 +4,7 @@ import com.sdjic.gradnet.presentation.core.model.UserProfile
 
 interface AppCacheSetting {
 
-    var accessToken: String
+    var accessToken: String?
 
     val isLoggedIn: Boolean
 

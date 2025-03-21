@@ -172,7 +172,7 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
         pageSize: Int
     ): Result<ServerResponse<SearchProfileResponse>, ServerError> {
         return tryToExecute {
-            get(BuildConfig.BASE_URL + "/search_profile/user_name?page=$page&per_page=$pageSize&search=$query") {
+            get(BuildConfig.BASE_URL + "/search_profile?page=$page&per_page=$pageSize&search=$query") {
                 contentType(ContentType.Application.Json)
             }
         }

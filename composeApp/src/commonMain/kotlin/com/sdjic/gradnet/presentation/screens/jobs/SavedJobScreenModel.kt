@@ -28,7 +28,7 @@ class SavedJobScreenModel(
     }
 
     suspend fun refreshPosts() {
-        getSavedJobUseCase(5, prefs.accessToken)
+        getSavedJobUseCase(5, prefs.accessToken.orEmpty())
             .cachedIn(screenModelScope)
             .distinctUntilChanged()
             .collectLatest { pagingData ->

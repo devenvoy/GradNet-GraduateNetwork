@@ -42,7 +42,7 @@ class JobDetailScreenModel(
                 it.copy(isSaved = !it.isSaved)
             }
 
-            jobsRepository.toggleSavedJob(_jobDetail.value.id, prefs.accessToken)
+            jobsRepository.toggleSavedJob(_jobDetail.value.id, prefs.accessToken.toString())
                 .onSuccess { r ->
                     ToastManager.showMessage(
                         ToastMessage(

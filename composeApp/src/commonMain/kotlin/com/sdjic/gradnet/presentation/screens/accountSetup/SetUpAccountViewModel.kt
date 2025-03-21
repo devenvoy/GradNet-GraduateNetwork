@@ -76,7 +76,7 @@ class SetUpAccountViewModel(
             try {
                 var result = prefs.getUserProfile()
                 if (!_isVerified.value or !prefs.firstInitialized) {
-                    userRepository.fetchProfile(prefs.accessToken).onSuccess {
+                    userRepository.fetchProfile(prefs.accessToken.orEmpty()).onSuccess {
                         it.value?.let { up ->
                             prefs.firstInitialized = true
                             updateUserPreference(up)
@@ -334,7 +334,7 @@ class SetUpAccountViewModel(
     private fun uploadImage(image: ImageBitmap, type: String) = screenModelScope.launch {
         _setUpOrEditState.update { UiState.Loading }
         userRepository.updateUserImages(
-            token = prefs.accessToken,
+            token = prefs.accessToken.orEmpty(),
             imageBitmap = image,
             type = type
         ).apply {
@@ -355,7 +355,7 @@ class SetUpAccountViewModel(
             _setUpOrEditState.update { UiState.Loading }
             userRepository.updateUser(
                 prefs.userRole,
-                prefs.accessToken,
+                prefs.accessToken.orEmpty(),
                 _basicState.value,
                 _educationState.value,
                 _professionState.value

@@ -62,7 +62,7 @@ class AddPostScreenModel(
             }
 
             val result = postRepository.createNewPost(
-                accessToken = pref.accessToken,
+                accessToken = pref.accessToken.toString(),
                 postContent = content,
                 location = "",
                 files = imageBytes

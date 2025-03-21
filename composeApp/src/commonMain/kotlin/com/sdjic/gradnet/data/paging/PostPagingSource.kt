@@ -28,7 +28,7 @@ class PostPagingSource(
             total = 0
         )
         postRepository.getPosts(
-            accessToken = pref.accessToken,
+            accessToken = pref.accessToken.toString(),
             page = page,
             perPage = limit,
             selectedFilters = selectedFilter

@@ -58,7 +58,7 @@ class ProfileScreenModel(
                 fetchUserPosts(result.userId)
                 _profileState.update { UiState.Success(result) }
                 if (!prefs.firstInitialized) {
-                    userRepository.fetchProfile(prefs.accessToken).onSuccess {
+                    userRepository.fetchProfile(prefs.accessToken.toString()).onSuccess {
                         it.value?.let { up ->
                             prefs.firstInitialized = true
                             updateUserPreference(up)

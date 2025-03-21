@@ -47,12 +47,15 @@ class SplashScreenModel(
         isLoading.value = true
 
         screenModelScope.launch {
-            val result = userRepo.checkUpdateToken(pref.accessToken)
+            val result = userRepo.checkUpdateToken(pref.accessToken.orEmpty())
             isLoading.value = false
 
             result.onSuccess { r ->
                 r.value?.get("token")?.let { pref.accessToken = it }
-            }.onError {
+            }.onError { e ->
+                if (e.code == null || e.code >= 400) {
+                    pref.accessToken = null
+                }
                 stopCurrentFlow.value = true
             }
 

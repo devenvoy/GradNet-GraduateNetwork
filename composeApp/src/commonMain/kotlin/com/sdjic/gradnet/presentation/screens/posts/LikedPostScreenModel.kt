@@ -30,7 +30,7 @@ class LikedPostScreenModel(
     }
 
     suspend fun refreshPosts() {
-        getLikedPostUseCase(5, prefs.accessToken)
+        getLikedPostUseCase(5, prefs.accessToken.orEmpty())
             .cachedIn(screenModelScope)
             .distinctUntilChanged()
             .collectLatest { pagingData ->
@@ -50,7 +50,7 @@ class LikedPostScreenModel(
                 if (currentPost.postId == post.postId) newPost else currentPost
             }
 
-            likedPostScreen(post.postId, prefs.accessToken).onError {
+            likedPostScreen(post.postId, prefs.accessToken.orEmpty()).onError {
                 _posts.value = _posts.value.map { currentPost ->
                     if (currentPost.postId == post.postId) post else currentPost
                 }

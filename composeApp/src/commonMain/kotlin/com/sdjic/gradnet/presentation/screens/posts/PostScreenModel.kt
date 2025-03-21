@@ -74,7 +74,7 @@ class PostScreenModel(
                 if (currentPost.postId == post.postId) newPost else currentPost
             }
 
-            likePostUseCase(post.postId, prefs.accessToken).onError {
+            likePostUseCase(post.postId, prefs.accessToken.toString()).onError {
                 _posts.value = _posts.value.map { currentPost ->
                     if (currentPost.postId == post.postId) post else currentPost
                 }

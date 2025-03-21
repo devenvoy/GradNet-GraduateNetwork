@@ -72,7 +72,6 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Globe
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.edit_square
 import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
 import gradnet_graduatenetwork.composeapp.generated.resources.github
 import gradnet_graduatenetwork.composeapp.generated.resources.linkedin
@@ -309,12 +308,12 @@ fun ProfessionSetUpScreen(
                                         tint = errorColor,
                                         contentDescription = "cross",
                                     )
-                                    Icon(
-                                        modifier = Modifier.size(18.sdp)
-                                            .noRippleEffect(onClick = {}),
-                                        painter = painterResource(Res.drawable.edit_square),
-                                        contentDescription = "edit",
-                                    )
+                                    /*   Icon(
+                                           modifier = Modifier.size(18.sdp)
+                                               .noRippleEffect(onClick = {}),
+                                           painter = painterResource(Res.drawable.edit_square),
+                                           contentDescription = "edit",
+                                       )*/
                                 }
                             },
                             content = {

@@ -67,7 +67,7 @@ class UserVerificationScreenModel(
             val result = userRepository.verifyOtp(
                 _verificationField.value,
                 _otpField.value,
-                token = prefs.accessToken
+                token = prefs.accessToken.orEmpty()
             )
             result.onSuccess { r ->
                 r.value?.let { user ->
@@ -75,6 +75,9 @@ class UserVerificationScreenModel(
                     prefs.isVerified = user.verified
                     prefs.saveUserProfile(userProfile)
                     _isUserVerified.value = prefs.isVerified
+                    user.accessToken.takeIf { it.isNotEmpty() }?.let {
+                        prefs.accessToken = it
+                    }
                     _showOtpBottomSheet.update { false }
                     _verificationState.update { UiState.Success(r.status) }
                 }
@@ -95,7 +98,7 @@ class UserVerificationScreenModel(
                 return@launch
             }
             onOtpFieldValueChange("")
-            userRepository.sendOtp(_verificationField.value,prefs.accessToken)
+            userRepository.sendOtp(_verificationField.value, prefs.accessToken.orEmpty())
                 .onSuccess { r ->
                     _verificationState.update { UiState.Success(r.status) }
                     _otpEmailField.update { r.value?.email ?: "" }

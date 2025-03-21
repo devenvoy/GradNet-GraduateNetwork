@@ -50,7 +50,7 @@ class ChangePasswordScreenModel(
                 return@launch
             }
             authRepository.updatePassword(
-                accessToken = pref.accessToken,
+                accessToken = pref.accessToken.toString(),
                 oldPassword = oldPassword.value,
                 newPassword = newPassword.value
             ).onSuccess { r ->

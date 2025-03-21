@@ -74,7 +74,6 @@ import com.sdjic.gradnet.presentation.core.model.EducationModel
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.edit_square
 import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
 import kotlinx.datetime.LocalDate
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
@@ -253,12 +252,12 @@ fun EducationSetUpScreen(
                                         tint = errorColor,
                                         contentDescription = "cross",
                                     )
-                                    Icon(
+                                  /*  Icon(
                                         modifier = Modifier.size(18.sdp)
                                             .noRippleEffect(onClick = {}),
                                         painter = painterResource(Res.drawable.edit_square),
                                         contentDescription = "edit",
-                                    )
+                                    )*/
                                 }
                             },
                             content = {

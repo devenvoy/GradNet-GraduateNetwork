@@ -5,8 +5,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,11 +33,13 @@ import com.sdjic.gradnet.presentation.composables.animatedlist.AnimatedInfiniteL
 import com.sdjic.gradnet.presentation.core.model.CalendarDate
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
+import kotlinx.datetime.LocalDateTime
 
 @OptIn(FlowPreview::class)
 @Composable
 fun AnimatedCalendar(
-    daysList:List<CalendarDate>,
+    daysList: List<CalendarDate>,
+    todayDate: LocalDateTime? = null,
     selectedDay: CalendarDate? = null,
     debounceTime: Long = 500L,
     onDaySelected: (CalendarDate) -> Unit
@@ -43,7 +50,7 @@ fun AnimatedCalendar(
             val selectedDate = daysList.firstOrNull {
                 it.day == selectedDay?.day && it.month == selectedDay.month
             }
-            daysList.indexOf(selectedDate).coerceAtLeast(0)
+            daysList.indexOf(selectedDate)
         }
     }
 
@@ -104,6 +111,16 @@ fun AnimatedCalendar(
                     fontSize = 10.sp,
                     color = animationProgress.color
                 )
+            }
+            todayDate?.let { it ->
+                if (date.compareWithLocalDateTime(it)) {
+                    Icon(
+                        modifier = Modifier.align(Alignment.TopEnd).padding(8.dp).size(14.dp),
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = null,
+                        tint = if (index == selectedIndex) Color.White else animationProgress.color
+                    )
+                }
             }
         }
     }

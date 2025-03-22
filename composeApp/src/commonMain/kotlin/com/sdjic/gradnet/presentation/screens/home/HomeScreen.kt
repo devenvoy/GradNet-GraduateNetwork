@@ -129,7 +129,7 @@ class HomeScreen : Screen {
         }
 
         TabNavigator(
-            bottomTabList.last(),
+            bottomTabList.first(),
             tabDisposable = {
                 TabDisposable(
                     navigator = it,

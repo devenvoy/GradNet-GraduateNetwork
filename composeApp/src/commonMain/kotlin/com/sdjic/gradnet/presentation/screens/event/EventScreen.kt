@@ -59,6 +59,7 @@ import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.helper.shimmerLoadingAnimation
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
+import kotlinx.datetime.Month
 import kotlinx.datetime.number
 import network.chaintech.sdpcomposemultiplatform.ssp
 
@@ -79,7 +80,27 @@ class EventScreen : Screen {
 
         val daysList by remember {
             derivedStateOf {
-                todayDate.month.let { DateTimeUtils.getCalendarDays(todayDate.year) }
+                todayDate.month.let {
+                    val list = mutableListOf<CalendarDate>()
+                    list.addAll(
+                        DateTimeUtils.getCalendarDays(
+                            todayDate.year, Month(
+                                if (it.number <= 1) 12 else it.number - 1
+                            )
+                        )
+                    )
+                    list.addAll(
+                        DateTimeUtils.getCalendarDays(todayDate.year, it)
+                    )
+                    list.addAll(
+                        DateTimeUtils.getCalendarDays(
+                            todayDate.year, Month(
+                                if (it.number >= 12) 1 else it.number + 1
+                            )
+                        )
+                    )
+                    list
+                }
             }
         }
 
@@ -140,6 +161,7 @@ class EventScreen : Screen {
 
                 AnimatedCalendar(
                     daysList = daysList,
+                    todayDate = todayDate,
                     selectedDay = selectedDay,
                     onDaySelected = { date ->
                         Logger.e(

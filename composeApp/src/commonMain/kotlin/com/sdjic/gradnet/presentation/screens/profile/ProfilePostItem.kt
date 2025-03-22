@@ -3,6 +3,7 @@ package com.sdjic.gradnet.presentation.screens.profile
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,13 +27,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdjic.gradnet.presentation.composables.text.ExpandableRichText
-import com.sdjic.gradnet.presentation.composables.text.SText
 import com.sdjic.gradnet.presentation.core.model.Post
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils.parseDateAsync
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils.toEpochMillis
 import com.sdjic.gradnet.presentation.screens.posts.PostImages
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.empty_trash
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
@@ -41,8 +42,11 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun ProfilePostItem(
     post: Post,
+    isReadOnly: Boolean,
     onShareClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLikeClicked: () -> Unit,
+    onDeleteClicked: () -> Unit
 ) {
     var postedAgo by remember { mutableStateOf("Loading...") }
     LaunchedEffect(post.createdAt) {
@@ -76,6 +80,15 @@ fun ProfilePostItem(
                             }
                         }
                     )
+                    Spacer(Modifier.weight(1f))
+                    if (isReadOnly.not())
+                        Icon(
+                            painter = painterResource(Res.drawable.empty_trash),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp).noRippleEffect(onDeleteClicked),
+                            tint = if (post.liked) Color.Red
+                            else MaterialTheme.colorScheme.error.copy(.8f)
+                        )
                 }
                 ExpandableRichText(
                     modifier = Modifier.padding(vertical = 4.dp),
@@ -106,10 +119,19 @@ fun ProfilePostItem(
                 },
                 modifier = Modifier.weight(1f)
             )
+            /*
+            Icon(
+                painter = painterResource(if (post.liked) Res.drawable.heart else Res.drawable.heart_outlined),
+                contentDescription = null,
+                modifier = Modifier.size(28.dp).noRippleEffect(onLikeClicked),
+                tint = if (post.liked) Color.Red
+                else MaterialTheme.colorScheme.onSurface.copy(.8f)
+            )
+*/
             Icon(
                 painter = painterResource(Res.drawable.ic_share),
                 contentDescription = null,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 4.dp)
                     .size(28.dp)
                     .noRippleEffect(onShareClick),
                 tint = MaterialTheme.colorScheme.onSurface.copy(.8f)

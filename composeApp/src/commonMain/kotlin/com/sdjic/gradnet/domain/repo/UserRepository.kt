@@ -11,19 +11,23 @@ import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.presentation.screens.accountSetup.basic.BasicState
 import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationState
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionState
+import kotlinx.serialization.json.JsonElement
 
 interface UserRepository {
-    suspend fun sendOtp(verificationId: String, token: String): Result<ServerResponse<VerifyUserResponse>, ServerError>
+    suspend fun sendOtp(
+        verificationId: String,
+        token: String
+    ): Result<ServerResponse<VerifyUserResponse>, ServerError>
 
     suspend fun verifyOtp(
         verificationId: String,
         otp: String,
-        token:String
+        token: String
     ): Result<ServerResponse<UserProfileResponse>, ServerError>
 
     suspend fun fetchProfile(token: String): Result<ServerResponse<UserProfileResponse>, ServerError>
 
-    suspend fun fetchUser(userId: String) : Result<ServerResponse<UserProfileResponse>, ServerError>
+    suspend fun fetchUser(userId: String): Result<ServerResponse<UserProfileResponse>, ServerError>
 
     suspend fun updateUser(
         userRole: String,
@@ -31,7 +35,7 @@ interface UserRepository {
         basicState: BasicState,
         educationState: EducationState,
         professionState: ProfessionState
-    ): Result<ServerResponse<UserProfileResponse>,ServerError>
+    ): Result<ServerResponse<UserProfileResponse>, ServerError>
 
     suspend fun updateUserImages(
         token: String,
@@ -41,13 +45,15 @@ interface UserRepository {
 
     suspend fun checkUpdateToken(
         oldToken: String
-    ): Result<ServerResponse<Map<String,String>>, ServerError>
+    ): Result<ServerResponse<Map<String, String>>, ServerError>
 
-    suspend fun fetchUserPosts(userId:String) : Result<ServerResponse<List<PostDto>>,ServerError>
+    suspend fun fetchUserPosts(userId: String): Result<ServerResponse<List<PostDto>>, ServerError>
 
     suspend fun getUsers(
         page: Int,
         query: String,
         pageSize: Int,
     ): Result<ServerResponse<SearchProfileResponse>, ServerError>
+
+    suspend fun deletePost(postId: String, token: String): Result<ServerResponse<JsonElement>, ServerError>
 }

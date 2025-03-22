@@ -21,6 +21,7 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.profession.Profession
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.onUpload
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
@@ -36,6 +37,7 @@ import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonElement
 
 class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(httpClient) {
 
@@ -173,6 +175,15 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
     ): Result<ServerResponse<SearchProfileResponse>, ServerError> {
         return tryToExecute {
             get(BuildConfig.BASE_URL + "/search_profile?page=$page&per_page=$pageSize&search=$query") {
+                contentType(ContentType.Application.Json)
+            }
+        }
+    }
+
+    override suspend fun deletePost(postId: String, token: String) : Result<ServerResponse<JsonElement>, ServerError>{
+       return tryToExecute {
+            delete(BuildConfig.BASE_URL + "/posts/$postId") {
+                header(HttpHeaders.Authorization, "Bearer $token")
                 contentType(ContentType.Application.Json)
             }
         }

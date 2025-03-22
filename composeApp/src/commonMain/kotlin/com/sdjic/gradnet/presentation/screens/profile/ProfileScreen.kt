@@ -407,10 +407,12 @@ fun UserDetailsContent(
 }
 
 @Composable
-fun UserPostsContent(viewModel: ProfileScreenModel) {
+fun UserPostsContent(
+    viewModel: ProfileScreenModel
+) {
     val isFetchingPost by viewModel.isFetchingPost
     val userPosts by viewModel.userPosts.collectAsState()
-
+    val isReadOnlyMode by viewModel.isReadOnlyMode.collectAsState()
     if (isFetchingPost) {
         Column(
             modifier = Modifier.fillMaxWidth().height(getScreenHeight() / 1.2f),
@@ -433,8 +435,13 @@ fun UserPostsContent(viewModel: ProfileScreenModel) {
                 items(userPosts) { post ->
                     ProfilePostItem(
                         post = post,
+                        isReadOnly = isReadOnlyMode,
                         onShareClick = {
                             getContactsUtil().sharePost(post)
+                        },
+                        onLikeClicked = {},
+                        onDeleteClicked = {
+                            viewModel.deletePost(post)
                         }
                     )
                 }

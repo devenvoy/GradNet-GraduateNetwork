@@ -7,9 +7,9 @@ import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.JobsRepository
 import com.sdjic.gradnet.presentation.core.model.Job
+import com.sdjic.gradnet.presentation.core.model.ToastMessage
 import com.sdjic.gradnet.presentation.core.model.emptyJob
 import com.sdjic.gradnet.presentation.helper.ToastManager
-import com.sdjic.gradnet.presentation.helper.ToastMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

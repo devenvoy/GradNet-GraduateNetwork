@@ -1,10 +1,8 @@
 package com.sdjic.gradnet.presentation.helper
 
-import com.dokar.sonner.ToastType
-import com.dokar.sonner.ToasterDefaults
+import com.sdjic.gradnet.presentation.core.model.ToastMessage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlin.time.Duration
 
 object ToastManager {
 
@@ -16,8 +14,3 @@ object ToastManager {
     }
 }
 
-data class ToastMessage(
-    val message: String,
-    val type: ToastType,
-    val duration: Duration = ToasterDefaults.DurationDefault
-)

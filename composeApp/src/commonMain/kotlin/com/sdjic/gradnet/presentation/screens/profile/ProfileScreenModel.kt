@@ -3,6 +3,7 @@ package com.sdjic.gradnet.presentation.screens.profile
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.dokar.sonner.ToastType
 import com.sdjic.gradnet.data.network.entity.response.UserProfileResponse
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
@@ -19,6 +20,8 @@ import com.sdjic.gradnet.domain.AppCacheSetting
 import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.presentation.core.model.Post
+import com.sdjic.gradnet.presentation.core.model.ToastMessage
+import com.sdjic.gradnet.presentation.helper.ToastManager
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -131,6 +134,28 @@ class ProfileScreenModel(
                     _userPosts.update { emptyList() }
                 }
             isFetchingPost.value = false
+        }
+    }
+
+    fun deletePost(post: Post) {
+        screenModelScope.launch {
+            userRepository.deletePost(post.postId, prefs.accessToken.orEmpty())
+                .onSuccess {
+                    ToastManager.showMessage(
+                        ToastMessage(
+                            message = it.detail,
+                            type = ToastType.Success,
+                        )
+                    )
+                    _userPosts.update { posts -> posts.filter { it.postId != post.postId } }
+                }.onError {
+                    ToastManager.showMessage(
+                        ToastMessage(
+                            message = it.detail,
+                            type = ToastType.Error,
+                        )
+                    )
+                }
         }
     }
 }

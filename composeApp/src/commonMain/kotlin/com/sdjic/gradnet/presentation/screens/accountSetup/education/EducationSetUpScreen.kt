@@ -461,6 +461,10 @@ fun AddEditEducationModal(
             PrimaryButton(
                 modifier = Modifier.weight(1f),
                 onClick = {
+                    if(eduModel.schoolName.isEmpty() || eduModel.degree.isNullOrEmpty()){
+                        // todo show error
+                        return@PrimaryButton
+                    }
                     onSave(eduModel)
                     onCancel()
                 },

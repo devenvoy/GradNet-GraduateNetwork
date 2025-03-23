@@ -103,8 +103,9 @@ class SetUpScreen(private val isEditProfile: Boolean) : Screen {
                             ),
                             onClick = {
                                 if ((state as UiState.Success).data.isVerified) {
-                                    setUpAccountViewModel.updateUserProfile()
-                                    if (!isEditProfile) navigator.replace(HomeScreen())
+                                    setUpAccountViewModel.updateUserProfile {
+                                        if (!isEditProfile) navigator.replace(HomeScreen())
+                                    }
 //                                    else navigator.pop()
                                 } else {
                                     setUpAccountViewModel.showErrorState("Please verify to proceed")

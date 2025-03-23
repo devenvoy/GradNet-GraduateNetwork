@@ -31,15 +31,17 @@ import com.sdjic.gradnet.presentation.screens.accountSetup.education.EducationSt
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionScreenAction
 import com.sdjic.gradnet.presentation.screens.accountSetup.profession.ProfessionState
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SetUpAccountViewModel(
-    private val prefs:AppCacheSetting,
+    private val prefs: AppCacheSetting,
     private val userRepository: UserRepository,
     private val userDataSource: UserDataSource
 ) : ScreenModel {
@@ -350,7 +352,7 @@ class SetUpAccountViewModel(
         }
     }
 
-    fun updateUserProfile() {
+    fun updateUserProfile(callbacks: () -> Unit) {
         screenModelScope.launch {
             _setUpOrEditState.update { UiState.Loading }
             userRepository.updateUser(
@@ -364,6 +366,9 @@ class SetUpAccountViewModel(
                     if (r.value != null) {
                         updateUserPreference(r.value)
                         _setUpOrEditState.update { UiState.Success(r.detail) }
+                        withContext(Dispatchers.Main) {
+                            callbacks()
+                        }
                     } else {
                         _setUpOrEditState.update { UiState.Error(r.detail) }
                     }

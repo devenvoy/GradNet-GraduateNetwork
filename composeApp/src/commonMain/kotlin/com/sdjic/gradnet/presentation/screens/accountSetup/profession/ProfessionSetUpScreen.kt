@@ -444,6 +444,10 @@ fun AddEditExperienceModal(
             Spacer(modifier = Modifier.width(20.dp))
             PrimaryButton(
                 modifier = Modifier.weight(1f), onClick = {
+                    if(expModel.title.isEmpty()){
+                        // todo show error
+                        return@PrimaryButton
+                    }
                     onSave(expModel)
                     onCancel()
                 }, colors = ButtonDefaults.buttonColors(

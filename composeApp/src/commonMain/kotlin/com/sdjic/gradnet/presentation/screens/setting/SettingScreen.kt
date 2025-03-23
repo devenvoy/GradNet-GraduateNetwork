@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Password
+import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -77,6 +78,15 @@ class SettingScreen : Screen {
                     title = "Change Password",
                     onClick = {
                         navigator.push(ChangePasswordScreen())
+                    }
+                )
+
+                SettingItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    icon = Icons.Outlined.Shield,
+                    title = "Privacy Policy",
+                    onClick = {
+                        navigator.push(PrivatePolicyScreen())
                     }
                 )
 

@@ -20,5 +20,13 @@ interface AppCacheSetting {
 
     fun getUserProfile(): UserProfile
 
+    var userName : String
+
+    var userEmail : String
+
+    var designation : String
+
+    var course : String
+
     fun logout()
 }

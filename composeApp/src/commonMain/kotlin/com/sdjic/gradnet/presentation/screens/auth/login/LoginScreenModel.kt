@@ -86,6 +86,8 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
     private fun updateLoginPref(loginResponse: LoginResponse) {
         prefs.accessToken = loginResponse.accessToken.toString()
         prefs.userId = loginResponse.userDto?.userId.toString()
+        prefs.userName = loginResponse.userDto?.username.toString()
+        prefs.userEmail = loginResponse.userDto?.email.toString()
         prefs.isVerified = loginResponse.userDto?.isVerified == true
         prefs.userRole =
             loginResponse.userDto?.userType?.let { UserRole.getUserRole(it)?.name } ?: ""

@@ -143,6 +143,8 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         prefs.accessToken = loginResponse.accessToken.toString()
         prefs.userId = loginResponse.user?.userId.toString()
         prefs.isVerified = loginResponse.user?.isVerified == true
+        prefs.userName = loginResponse.user?.username.toString()
+        prefs.userEmail = loginResponse.user?.email.toString()
         prefs.userRole = loginResponse.user?.userType?.let { UserRole.getUserRole(it)?.name } ?: ""
     }
 

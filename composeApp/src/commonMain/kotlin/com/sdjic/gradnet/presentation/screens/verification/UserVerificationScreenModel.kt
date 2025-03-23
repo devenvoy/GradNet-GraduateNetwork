@@ -6,20 +6,26 @@ import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.data.network.utils.toUserProfile
 import com.sdjic.gradnet.domain.AppCacheSetting
+import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.presentation.helper.ConnectivityManager
 import com.sdjic.gradnet.presentation.helper.UiState
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserVerificationScreenModel(
     private val userRepository: UserRepository,
+    private val userDataSource: UserDataSource,
     private val prefs: AppCacheSetting
 ) : ScreenModel {
+
+    val userEmail = prefs.userEmail
 
     private val _verificationState = MutableStateFlow<UserVerificationState>(UiState.Idle)
     val verificationState = _verificationState.asStateFlow()
@@ -108,6 +114,16 @@ class UserVerificationScreenModel(
                     _verificationState.update { UiState.Error(e.detail) }
                     _showOtpBottomSheet.update { false }
                 }
+        }
+    }
+
+    fun logout(callback: () -> Unit) {
+        screenModelScope.launch {
+            prefs.logout()
+            userDataSource.clearDatabase()
+            withContext(Dispatchers.Main) {
+                callback()
+            }
         }
     }
 }

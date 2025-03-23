@@ -14,13 +14,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -34,7 +38,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -49,6 +59,8 @@ import com.sdjic.gradnet.presentation.helper.UiStateHandler
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
 import com.sdjic.gradnet.presentation.screens.accountSetup.SetUpScreen
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
+import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
+import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 
@@ -109,21 +121,42 @@ class UserVerificationScreen : Screen {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = 30.sdp)
-                        .padding(12.sdp)
+                        .padding(12.sdp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Column {
-                        Title(
-                            text = "${
-                                userRole?.name?.lowercase()
-                                    ?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-                            } Verification",
-                            size = 16.ssp
-                        )
-                        SText(
-                            text = "only need to verify one time",
-                            textColor = MaterialTheme.colorScheme.secondary,
-                        )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Title(
+                                text = "${
+                                    userRole?.name?.lowercase()
+                                        ?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                                } Verification",
+                                size = 16.ssp
+                            )
+                            SText(
+                                text = "only need to verify one time",
+                                textColor = MaterialTheme.colorScheme.secondary,
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    if (isUserVerified) Color(0xFF4CAF50) else Color(0xFFF44336),
+                                    shape = CircleShape
+                                )
+                                .padding(horizontal = 12.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = if (isUserVerified) "Verified" else "Not verified",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                        }
                     }
 
                     Spacer(Modifier.height(16.sdp))
@@ -174,12 +207,44 @@ class UserVerificationScreen : Screen {
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(50.dp))
+                    Text(
+                        text = buildAnnotatedString {
+                            append("logged in as: ")
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(viewModel.userEmail)
+                            }
+                        },
+                        fontFamily = displayFontFamily()
+                    )
+                    Text(
+                        text = "do you want to change account?",
+                        fontFamily = displayFontFamily()
+                    )
+                    OutlinedButton(
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primaryContainer
+                        ),
+                        contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 8.sdp),
+                        onClick = {
+                            viewModel.logout {
+                                navigator.replaceAll(SplashScreen())
+                            }
+                        }) {
+                        Text(
+                            "Logout",
+                            fontSize = 14.sp,
+                            fontFamily = displayFontFamily()
+                        )
+                    }
                 }
 
                 UiStateHandler(
                     uiState = uiState,
                     onErrorShowed = {},
-                    content = {}
+                    content = {
+
+                    }
                 )
 
                 if (showBottomSheet) {
@@ -210,7 +275,7 @@ class UserVerificationScreen : Screen {
                     enabled = isUserVerified,
                     contentPadding = PaddingValues(horizontal = 20.sdp, vertical = 8.sdp),
                     onClick = {
-                        navigator.push(SetUpScreen(false))
+                        navigator.replaceAll(SetUpScreen(false))
                     }) {
                     SText(
                         "Next",

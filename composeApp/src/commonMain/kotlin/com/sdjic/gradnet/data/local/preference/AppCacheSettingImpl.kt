@@ -45,6 +45,34 @@ class AppCacheSettingImpl : AppCacheSetting {
             settings[SettingStorageKeys.ROLE.key] = value
         }
 
+
+    override var userName: String
+        get() = settings[SettingStorageKeys.NAME.key] ?: ""
+        set(value) {
+            settings[SettingStorageKeys.NAME.key] = value
+        }
+
+    override var userEmail: String
+        get() = settings[SettingStorageKeys.EMAIL.key] ?: ""
+        set(value) {
+            settings[SettingStorageKeys.EMAIL.key] = value
+        }
+
+    override var designation: String
+        get() =
+            settings[SettingStorageKeys.DESIGNATION.key] ?: ""
+        set(value) {
+            settings[SettingStorageKeys.DESIGNATION.key] = value
+        }
+
+
+    override var course: String
+        get() =
+            settings[SettingStorageKeys.COURSE.key] ?: ""
+        set(value) {
+            settings[SettingStorageKeys.COURSE.key] = value
+        }
+
     // Store simple fields
     override fun saveUserProfile(userProfile: UserProfile) {
         settings[SettingStorageKeys.USER_ID.key] = userProfile.userId
@@ -107,6 +135,5 @@ class AppCacheSettingImpl : AppCacheSetting {
         )
     }
 
-
-    override fun logout()=settings.clear()
+    override fun logout() = settings.clear()
 }

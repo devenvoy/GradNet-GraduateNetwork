@@ -135,7 +135,8 @@ class AboutUsScreen : Screen {
                 Column(
                     modifier = Modifier.weight(1f)
                         .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     RichText(
                         state = RichTextState().setMarkdown(selectedItem.description)
@@ -155,21 +156,21 @@ class AboutUsScreen : Screen {
         Row {
             Icon(
                 modifier = Modifier.padding(4.dp).size(36.dp)
-                    .noRippleEffect {  getContactsUtil().openLink(selectedItem.github) },
+                    .noRippleEffect { getContactsUtil().openLink(selectedItem.github) },
                 imageVector = FontAwesomeIcons.Brands.Github,
                 contentDescription = "github"
             )
 
             Icon(
                 modifier = Modifier.padding(4.dp).size(36.dp)
-                    .noRippleEffect {  getContactsUtil().openLink(selectedItem.instagram) },
+                    .noRippleEffect { getContactsUtil().openLink(selectedItem.instagram) },
                 imageVector = FontAwesomeIcons.Brands.InstagramSquare,
                 contentDescription = "InstagramSquare"
             )
 
             Icon(
                 modifier = Modifier.padding(4.dp).size(36.dp)
-                    .noRippleEffect {  getContactsUtil().openLink(selectedItem.linkedin) },
+                    .noRippleEffect { getContactsUtil().openLink(selectedItem.linkedin) },
                 imageVector = FontAwesomeIcons.Brands.Linkedin,
                 contentDescription = "Linkedin"
             )
@@ -242,8 +243,14 @@ class AboutUsScreen : Screen {
         Developer(
             name = "Amdavadwala Devansh ",
             role = "Android Developer | Compose | Kotlin | Multiplatform",
-            description = "",
-            profileImageUrl = "https://instagram.fstv5-1.fna.fbcdn.net/v/t51.2885-19/376030627_1744217199339437_5293057648068263787_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_ht=instagram.fstv5-1.fna.fbcdn.net&_nc_cat=105&_nc_oc=Q6cZ2AEnYylH4YsTSaM6JBbkuZsS8EMHox00AxeZ9eQdjrDxtlhSOUnUGoXF3-6LntTEjHg&_nc_ohc=Y4juZBkieGUQ7kNvgGjDRKv&_nc_gid=f7e59a965c5e4109bff1d503ace62cd8&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AYC6ii5w00LB3bOWx797_h_mK2H08amo0G2RJVJB22gM_g&oe=67BEB49B&_nc_sid=7a9f4b",
+            description = """
+                Android Application Developer with developing, and maintaining high-quality mobile applications that meet client requirements and enhance user experiences. Proficient in Java, Kotlin, and Android SDK, with strong problem-solving skills and a keen eye for detail. Skilled in deliver projects within deadlines and budget constraints. Excited to leverage my expertise in Android development to contribute to innovative and impactful projects.
+
+                reach out to me :-
+                Phone no :+91 9429509806 
+                Email : devanshamadavadwala@gmail.com
+            """.trimIndent(),
+            profileImageUrl = "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/e82625cba96f41cc91c150e4673c30e7.jpg",
             github = "https://github.com/devenvoy",
             linkedin = "https://www.linkedin.com/in/devansh-a-bb104524a/",
             instagram = "https://www.instagram.com/aj_devansh/",
@@ -253,30 +260,32 @@ class AboutUsScreen : Screen {
             name = " Malaviya Smit ",
             role = "Backend Developer | Python | Machine Learning",
             description = "",
-            profileImageUrl = "https://instagram.fstv5-1.fna.fbcdn.net/v/t51.2885-19/299378448_466040581771917_7101039651663906813_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_ht=instagram.fstv5-1.fna.fbcdn.net&_nc_cat=109&_nc_oc=Q6cZ2AHXaU9741mdeR44X_j99E08x2zKaM1m2PAbwiEXumarLz4B3OxQmsCWRce0Wb9gFSk&_nc_ohc=W2GhUKK14rUQ7kNvgHz3aCB&_nc_gid=1514d78034e74613a7c9a1787c69554d&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AYCwcdyLbXLDDCtF5xyjKmaUklUTLzZ6hjpFsfXMPMFerA&oe=67BE9792&_nc_sid=7a9f4b",
-            github = "",
-            linkedin = "",
-            instagram = "",
+            profileImageUrl = "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/27f571923037401bb5883f935b80e88c.jpg",
+            github = "https://github.com/smit014",
+            linkedin = "https://www.linkedin.com/in/smit-malaviya/",
+            instagram = "https://www.instagram.com/smit_malaviya_14/",
             bgColor = "#A8E6CF"
         ),
         Developer(
             name = "  Korat Aryan   ",
             role = "Backend Developer | React Developer | Node ",
-            description = "",
-            profileImageUrl = "https://instagram.fstv5-1.fna.fbcdn.net/v/t51.2885-19/413250164_3465693833682632_8177938303943813843_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_ht=instagram.fstv5-1.fna.fbcdn.net&_nc_cat=108&_nc_oc=Q6cZ2AHYDpxxD78NmvXkTz5wIwLev1R-sopWwI4653XC17ZKyjM-ePVcHHy07rce1nHh0Pk&_nc_ohc=rKUjKztZYO4Q7kNvgGrtBy6&_nc_gid=5ba5e3d76e714df68e6c45c473c9d38c&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AYBNsrA_cwYOMgLCRtBvgvEQwHQ7wKOJpJ2zx8z1IMkTSw&oe=67BE8FC2&_nc_sid=7a9f4b",
-            github = "",
-            linkedin = "",
-            instagram = "",
+            description = """
+                I am a final-year BCA student at SDJ International College, with a strong passion for AI and Machine Learning. I am also enhancing my skills and knowledge in AI/ML at Rejoice Talent Academy.
+            """.trimIndent(),
+            profileImageUrl = "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/1a103ca5909e4ababba46b9db559de71.jpg",
+            github = "https://github.com/korat08",
+            linkedin = "https://www.linkedin.com/in/korat-aryan-3b4688242/",
+            instagram = "https://www.instagram.com/_aryan0808/",
             bgColor = "#A7C7E7"
         ),
         Developer(
             name = "Kyada shubhangi",
             role = "React Developer | Node ",
             description = "",
-            profileImageUrl = "https://instagram.fstv5-1.fna.fbcdn.net/v/t51.2885-19/460682937_1175643466880573_8384927044933965467_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_ht=instagram.fstv5-1.fna.fbcdn.net&_nc_cat=105&_nc_oc=Q6cZ2AFmIgHOQm5BsbeJJPkwdUN2dJ_uD9WJmmr8BBWwerrIaXqG0ngmMzeDyTANFckbn2E&_nc_ohc=8XcUkih8w5wQ7kNvgFg32Y2&_nc_gid=b85c482e2a3d4118a614b64d515d159d&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AYC60rUNIIprk6M-QDsSv5ER1tyN1K8CEkEJf6pmYvGmzQ&oe=67BEA054&_nc_sid=7a9f4b",
-            github = "",
-            linkedin = "",
-            instagram = "",
+            profileImageUrl = "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/d0a59bc079e148f792561a06d8618e42.jpg",
+            github = "https://github.com/ShubhangiKyada",
+            linkedin = "https://www.linkedin.com/in/shubhangi-kyada-a81347289/",
+            instagram = "https://www.instagram.com/shubhangi_kyada_/",
             bgColor = "#FFB6C1"
         )
     )

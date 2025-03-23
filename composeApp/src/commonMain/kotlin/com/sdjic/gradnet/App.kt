@@ -45,8 +45,7 @@ fun App() {
         KoinApplication(
             application = { modules(appModules) }) {
             if (authReady) {
-//                Navigator(SplashScreen()){ FadeTransition(it) }
-                Navigator(AboutUsScreen()){ FadeTransition(it) }
+                Navigator(SplashScreen()){ FadeTransition(it) }
             }
         }
     }

@@ -8,7 +8,7 @@ plugins {
 
 //   added
     alias(libs.plugins.ksp)
-    alias(libs.plugins.swiftklib)
+//    alias(libs.plugins.swiftklib)
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.kotlin.serialization)
@@ -50,13 +50,13 @@ kotlin {
             isStatic = true
             linkerOpts.add("-lsqlite3")
         }
-        iosTarget.compilations {
-            val main by getting {
-                cinterops {
-                    create("IosHelper")
-                }
-            }
-        }
+//        iosTarget.compilations {
+//            val main by getting {
+//                cinterops {
+//                    create("IosHelper")
+//                }
+//            }
+//        }
     }
 
     sourceSets {
@@ -164,8 +164,8 @@ android {
 
     dependencies {
         debugImplementation(compose.uiTooling)
-        debugImplementation("com.github.chuckerteam.chucker:library:4.1.0")
-        debugImplementation("com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:1.0.7")
+        implementation("com.github.chuckerteam.chucker:library:4.1.0")
+        implementation("com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:1.0.7")
     }
 }
 
@@ -195,9 +195,10 @@ dependencies {
     add("kspIosArm64", libs.room.compiler)
 }
 
+/*
 swiftklib {
     create("IosHelper") {
         path = file("../iosApp/iosApp/helpers")
         packageName("com.sdjic.ioshelper")
     }
-}
+}*/

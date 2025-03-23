@@ -10,7 +10,7 @@ import com.sdjic.gradnet.GradNetApp
 import java.io.File
 
 actual fun getStorageInfo(): StorageInfo {
-    val context =GradNetApp.AppContext
+    val context = GradNetApp.AppContext
     val totalStorage = getTotalStorage()
     val freeStorage = getFreeStorage()
     val usedByApp = getAppStorageUsage(context)
@@ -42,9 +42,11 @@ fun getFreeStorage(): Float {
 fun getAppStorageUsage(context: Context): Float {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         try {
-            val storageStatsManager = context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+            val storageStatsManager =
+                context.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
             val appInfo = context.applicationInfo
-            val storageStats: StorageStats = storageStatsManager.queryStatsForUid(appInfo.storageUuid, appInfo.uid)
+            val storageStats: StorageStats =
+                storageStatsManager.queryStatsForUid(appInfo.storageUuid, appInfo.uid)
 
             val appSize = storageStats.appBytes + storageStats.dataBytes + storageStats.cacheBytes
             return (appSize / (1024.0 * 1024.0)).toFloat() // Convert to MB
@@ -73,9 +75,9 @@ fun getFolderSize(file: File): Float {
 
 actual fun clearCache() {
     val context: Context = GradNetApp.AppContext
-        try {
-            context.cacheDir?.deleteRecursively()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    try {
+        context.cacheDir?.deleteRecursively()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }

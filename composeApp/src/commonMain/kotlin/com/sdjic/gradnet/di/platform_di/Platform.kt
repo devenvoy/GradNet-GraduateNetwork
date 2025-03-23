@@ -17,3 +17,6 @@ expect fun getScreenWidth(): Dp
 expect fun getScreenHeight(): Dp
 
 expect fun ImageBitmap.toByteArray(): ByteArray
+
+
+expect fun share (context: PlatformContext, text: String)

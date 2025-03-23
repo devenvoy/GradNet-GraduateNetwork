@@ -66,6 +66,12 @@ kotlin {
 
             implementation(compose.uiTooling)
             implementation(libs.ktor.client.okhttp)
+
+            api(libs.maps.compose)
+
+            //Location
+            api(libs.play.services.location)
+            api(libs.play.services.maps)
         }
 
         commonMain.dependencies {

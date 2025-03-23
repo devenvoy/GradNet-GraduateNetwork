@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import co.touchlab.kermit.Logger
+import com.sdjic.gradnet.domain.location.LocationRepository
 import com.sdjic.gradnet.data.network.utils.onError
 import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.di.platform_di.toByteArray
@@ -23,6 +24,7 @@ import kotlinx.coroutines.withContext
 
 class AddPostScreenModel(
     private val postRepository: PostRepository,
+    private val locationRepository: LocationRepository,
     private val pref: AppCacheSetting
 ) : ScreenModel {
 
@@ -64,7 +66,7 @@ class AddPostScreenModel(
             val result = postRepository.createNewPost(
                 accessToken = pref.accessToken.toString(),
                 postContent = content,
-                location = "",
+                location = locationRepository.getCurrentLocation().toString(),
                 files = imageBytes
             ) { bytesSentTotal, contentLength ->
                 if (contentLength != null) {

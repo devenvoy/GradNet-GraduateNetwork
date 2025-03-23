@@ -1,5 +1,6 @@
 package com.sdjic.gradnet.di.platform_di
 
+import com.sdjic.gradnet.domain.location.LocationRepository
 import com.sdjic.gradnet.data.local.room.GradNetDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -10,4 +11,5 @@ actual fun platformModule(): Module = module{
     single<GradNetDB>{
         IosDatabaseBuilder().build().setQueryCoroutineContext(Dispatchers.IO).build()
     }
+    single<LocationRepository> { IosLocationRepository() }
 }

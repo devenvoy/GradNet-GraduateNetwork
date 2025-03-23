@@ -61,15 +61,15 @@ val screenModelsModule = module {
     factory { UserVerificationScreenModel(get(), get()) }
 
     // home , profile , post , jobs
-    factory { HomeScreenViewModel(get(),get()) }
+    factory { HomeScreenViewModel(get(), get()) }
     factory { ProfileScreenModel(get(), get(), get()) }
     factory { SetUpAccountViewModel(get(), get(), get()) }
 
     factory { JobScreenModel(get()) }
     factory { EventScreenModel(get()) }
     factory { SearchScreenModel(get()) }
-    factory { JobDetailScreenModel(get(),get()) }
-    factory { AddPostScreenModel(get(), get()) }
+    factory { JobDetailScreenModel(get(), get()) }
+    factory { AddPostScreenModel(get(), get(), get()) }
     factory { PostScreenModel(get(), get(), get()) }
     factory { LikedPostScreenModel(get(), get(), get()) }
     factory { SavedJobScreenModel(get(), get(), get()) }

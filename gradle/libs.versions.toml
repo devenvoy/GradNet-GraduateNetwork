@@ -31,12 +31,16 @@ multiplatformSettingsNoArg = "1.0.0"
 mvvmCore = "0.16.1"
 pagingComposeCommon = "3.3.0-alpha02-0.5.1"
 retrofit = "2.9.0"
-room = "2.7.0-rc01"
+room = "2.7.0-rc02"
 ksp = "2.1.0-1.0.29"
 sdpSspComposeMultiplatform = "1.0.4"
 sqlite = "2.5.0-SNAPSHOT"
-google-play-services = "24.0.0"
+google-play-services = "24.1.0"
 
+mapsCompose = "2.15.0"
+playServicesMaps = "19.1.0"
+playServicesLocation = "21.3.0"
+maps-secrets = "2.0.1"
 desugar = "2.1.5"
 
 voyager = "1.1.0-beta02"
@@ -69,7 +73,7 @@ connectivity = "1.2.0"
 uiAndroid = "1.7.8"
 material3Android = "1.3.1"
 lifecycleRuntimeKtx = "2.8.7"
-composeBom = "2025.02.00"
+composeBom = "2025.03.00"
 zoomable = "2.1.0"
 
 [libraries]
@@ -171,9 +175,15 @@ lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", versi
 
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
+
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+
 google-playServices-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "google-play-services" }
 moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
+moko-location={ group = "dev.icerock.moko", name = "permissions-location", version = "0.19.1" }
 
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
@@ -208,9 +218,9 @@ google-gms-google-services = { id = "com.google.gms.google-services", version.re
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
-swiftklib = {  id = "io.github.ttypic.swiftklib" , version = "0.6.4" }
+swiftklib = { id = "io.github.ttypic.swiftklib", version = "0.6.4" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+maps-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "maps-secrets" }
 
 [bundles]
 
@@ -273,7 +283,8 @@ multiplatform-settings = [
 
 moko-permissions = [
     "moko-permissions",
-    "moko-permissions-compose"
+    "moko-permissions-compose",
+    "moko-location"
 ]
 
 voyager = [

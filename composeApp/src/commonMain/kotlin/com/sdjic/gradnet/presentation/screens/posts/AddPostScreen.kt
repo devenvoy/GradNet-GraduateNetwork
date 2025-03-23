@@ -40,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -79,8 +81,13 @@ import com.sdjic.gradnet.presentation.theme.errorColor
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Camera
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import dev.icerock.moko.permissions.location.LOCATION
 import network.chaintech.cmpimagepickncrop.CMPImagePickNCropDialog
 import network.chaintech.cmpimagepickncrop.imagecropper.rememberImageCropper
+import network.chaintech.sdpcomposemultiplatform.ssp
 
 typealias AddPostState = UiState<String>
 
@@ -108,6 +115,23 @@ class AddPostScreen : Screen, ScreenTransition by VerticalSlideTransition() {
         val user by addPostScreenModel.user.collectAsState()
         val selectedImages by addPostScreenModel.selectedImages.collectAsState()
         val uiState by addPostScreenModel.uiState.collectAsState()
+
+        val factory = rememberPermissionsControllerFactory()
+        val controller = remember(factory) {
+            factory.createPermissionsController()
+        }
+
+        BindEffect(controller)
+
+        LaunchedEffect(Unit) {
+            val granted = controller.isPermissionGranted(Permission.LOCATION)
+            if (!granted) {
+                try {
+                    controller.providePermission(Permission.LOCATION)
+                } catch (_: Exception) {
+                }
+            }
+        }
 
         Scaffold(
             modifier = Modifier
@@ -362,7 +386,12 @@ fun UserDetailRow(userProfile: UserProfile) {
         )
         Column {
             Title(userProfile.name)
-            SText(userProfile.designation ?: userProfile.email)
+            SText(
+                text = userProfile.designation ?: (userProfile.course
+                    ?: userProfile.email),
+                fontSize = 10.ssp,
+                fontWeight = FontWeight(400)
+            )
         }
     }
 }

@@ -13,6 +13,7 @@ import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
 import com.sdjic.gradnet.di.appModules
 import com.sdjic.gradnet.presentation.helper.ConnectivityManager
+import com.sdjic.gradnet.presentation.screens.aboutUs.AboutUsScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -44,7 +45,8 @@ fun App() {
         KoinApplication(
             application = { modules(appModules) }) {
             if (authReady) {
-                Navigator(SplashScreen()){ FadeTransition(it) }
+//                Navigator(SplashScreen()){ FadeTransition(it) }
+                Navigator(AboutUsScreen()){ FadeTransition(it) }
             }
         }
     }

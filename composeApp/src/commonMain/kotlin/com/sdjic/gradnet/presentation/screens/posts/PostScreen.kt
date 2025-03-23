@@ -238,7 +238,11 @@ class PostScreen : Screen {
                             onLikeClicked = {
                                 postScreenModel.toggleLike(item)
                             },
-                            onShareClick = { getContactsUtil().sharePost(item) },
+                            onShareClick = {
+                                getContactsUtil().shareText(
+                                    "https://devenvoy.github.io/#/post_detail/${item.postId}"
+                                )
+                            },
                             onProfileClick = {
                                 rootNavigator.push(ProfileScreen(item.userId))
                             },

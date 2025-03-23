@@ -437,7 +437,9 @@ fun UserPostsContent(
                         post = post,
                         isReadOnly = isReadOnlyMode,
                         onShareClick = {
-                            getContactsUtil().sharePost(post)
+                            getContactsUtil().shareText(
+                                "https://devenvoy.github.io/#/post_detail/${post.postId}"
+                            )
                         },
                         onLikeClicked = {},
                         onDeleteClicked = {

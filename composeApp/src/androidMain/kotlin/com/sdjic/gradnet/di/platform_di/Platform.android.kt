@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sdjic.gradnet.MainActivity
 import java.io.ByteArrayOutputStream
 
 class AndroidPlatform : Platform {
@@ -40,4 +41,8 @@ actual fun share(context: PlatformContext, text: String) {
     val shareIntent = Intent.createChooser(sendIntent, null)
 
     context.androidContext.startActivity(shareIntent)
+}
+
+actual fun exitProcess() {
+    MainActivity.instance.finish()
 }

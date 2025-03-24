@@ -41,3 +41,9 @@ actual fun share(context: PlatformContext, text: String) {
 
     Holder.viewController?.presentViewController(controller, true, null)
 }
+
+actual fun exitProcess() {
+    Holder.viewController?.dismissViewControllerAnimated(true){
+
+    }
+}

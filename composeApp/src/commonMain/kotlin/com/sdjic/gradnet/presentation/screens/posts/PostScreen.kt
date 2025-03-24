@@ -134,11 +134,11 @@ class PostScreen : Screen {
         val scrollBehavior = LocalScrollBehavior.current
         val rootNavigator = LocalRootNavigator.current
         val lifecycleOwner = LocalLifecycleOwner.current
-
-        var hasLoadedOnce by remember { mutableStateOf(false) }
         val postScreenModel = koinScreenModel<PostScreenModel>()
+
         val data: LazyPagingItems<Post> = postScreenModel.posts.collectAsLazyPagingItems()
 
+        var hasLoadedOnce by remember { mutableStateOf(false) }
 
         val isRefreshing by remember {
             derivedStateOf {

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -29,10 +28,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import coil3.compose.LocalPlatformContext
 import com.alorma.compose.settings.ui.SettingsSwitch
-import com.sdjic.gradnet.di.platform_di.getContactsUtil
 import com.sdjic.gradnet.presentation.composables.SectionTitle
 import com.sdjic.gradnet.presentation.composables.filter.CustomImageChip
 import com.sdjic.gradnet.presentation.composables.images.BackgroundImage
@@ -47,7 +46,6 @@ import gradnet_graduatenetwork.composeapp.generated.resources.ic_contacts
 import network.chaintech.cmpimagepickncrop.CMPImagePickNCropDialog
 import network.chaintech.cmpimagepickncrop.imagecropper.ImageAspectRatio
 import network.chaintech.cmpimagepickncrop.imagecropper.rememberImageCropper
-import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
 import org.jetbrains.compose.resources.painterResource
 
@@ -153,6 +151,7 @@ fun BasicSetUpScreen(
                     onValueChange = { s ->
                         onAction(BasicScreenAction.OnAddressFieldValueChange(s))
                     },
+                    imeAction = ImeAction.Done,
                     placeholder = { SText("add address") },
                 )
 

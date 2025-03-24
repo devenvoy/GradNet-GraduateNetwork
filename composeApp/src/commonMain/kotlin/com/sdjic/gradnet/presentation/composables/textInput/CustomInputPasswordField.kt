@@ -96,7 +96,8 @@ fun CustomInputPasswordField(
             singleLine = singleLine,
             keyboardOptions = KeyboardOptions(
                 keyboardType = if (isPasswordField && !passwordVisible) KeyboardType.Password else KeyboardType.Text,
-                imeAction = imeAction
+                imeAction = imeAction,
+                autoCorrectEnabled = true
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
@@ -172,7 +173,8 @@ fun CustomInputPasswordField(
             singleLine = singleLine,
             keyboardOptions = KeyboardOptions(
                 keyboardType = if (isPasswordField && !passwordVisible) KeyboardType.Password else KeyboardType.Text,
-                imeAction = imeAction
+                imeAction = imeAction,
+                autoCorrectEnabled = true
             ),
             keyboardActions = KeyboardActions(
                 onDone = {

@@ -35,6 +35,7 @@ fun CustomInputArea(
     prefix: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
     isEnable: Boolean = true,
+    imeAction: ImeAction = ImeAction.Next,
     keyboardOption: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
     height: Dp = 80.sdp
 ) {
@@ -63,7 +64,8 @@ fun CustomInputArea(
             prefix = prefix,
             singleLine = singleLine,
             keyboardOptions = keyboardOption.copy(
-                imeAction = ImeAction.Next
+                imeAction = imeAction,
+                autoCorrectEnabled = true
             ),
             supportingText = supportingText,
             textStyle = LocalTextStyle.current.copy(

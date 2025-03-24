@@ -2,6 +2,7 @@ package com.sdjic.gradnet.presentation.screens.accountSetup.profession
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -36,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,10 +50,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.dokar.sonner.ToastType
+import com.dokar.sonner.Toaster
+import com.dokar.sonner.rememberToasterState
 import com.maxkeppeker.sheets.core.models.base.Header
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -66,6 +73,7 @@ import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputArea
 import com.sdjic.gradnet.presentation.composables.textInput.CustomInputField
 import com.sdjic.gradnet.presentation.core.model.ExperienceModel
+import com.sdjic.gradnet.presentation.core.model.ToastMessage
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
 import compose.icons.FontAwesomeIcons
@@ -338,6 +346,23 @@ fun AddEditExperienceModal(
     var expModel by remember { mutableStateOf(experienceModel ?: ExperienceModel()) }
     val startDatePicker = rememberUseCaseState(visible = false)
     val endDatePicker = rememberUseCaseState(visible = false)
+    var toastMessage by remember { mutableStateOf<ToastMessage?>(null) }
+    val toaster = rememberToasterState(onToastDismissed = { toastMessage = null })
+
+    LaunchedEffect(toastMessage) {
+        toastMessage?.let {
+            toaster.show(it.message, it.type)
+        }
+    }
+
+    Toaster(
+        modifier = Modifier.navigationBarsPadding(),
+        state = toaster,
+        richColors = true,
+        darkTheme = isSystemInDarkTheme(),
+        showCloseButton = true,
+        alignment = Alignment.BottomCenter,
+    )
 
     CalendarDialog(
         state = startDatePicker,
@@ -406,6 +431,7 @@ fun AddEditExperienceModal(
         CustomInputArea(
             fieldTitle = "Description",
             textFieldValue = expModel.description ?: "",
+            imeAction = ImeAction.Done,
             onValueChange = { expModel = expModel.copy(description = it) },
             placeholder = { SText(text = "Enter description") },
             singleLine = false
@@ -445,7 +471,7 @@ fun AddEditExperienceModal(
             PrimaryButton(
                 modifier = Modifier.weight(1f), onClick = {
                     if(expModel.title.isEmpty()){
-                        // todo show error
+                        toastMessage = ToastMessage(message = "Please fill all required fields", type = ToastType.Error)
                         return@PrimaryButton
                     }
                     onSave(expModel)
@@ -503,7 +529,7 @@ fun ExperienceItem(experience: ExperienceModel) {
             // Description
             experience.description?.let {
                 SText(
-                    text = it,
+                    text = it.trim(),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier.padding(top = 8.dp)

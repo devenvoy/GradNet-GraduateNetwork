@@ -2,6 +2,7 @@ package com.sdjic.gradnet.presentation.screens.accountSetup.education
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -37,6 +39,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,11 +50,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.DialogProperties
+import com.dokar.sonner.ToastType
+import com.dokar.sonner.Toaster
+import com.dokar.sonner.rememberToasterState
 import com.maxkeppeker.sheets.core.models.base.Header
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -71,6 +78,7 @@ import com.sdjic.gradnet.presentation.composables.textInput.DropDownTextField
 import com.sdjic.gradnet.presentation.core.LanguagesList
 import com.sdjic.gradnet.presentation.core.SkillList
 import com.sdjic.gradnet.presentation.core.model.EducationModel
+import com.sdjic.gradnet.presentation.core.model.ToastMessage
 import com.sdjic.gradnet.presentation.screens.auth.register.model.UserRole
 import com.sdjic.gradnet.presentation.theme.errorColor
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
@@ -252,12 +260,12 @@ fun EducationSetUpScreen(
                                         tint = errorColor,
                                         contentDescription = "cross",
                                     )
-                                  /*  Icon(
-                                        modifier = Modifier.size(18.sdp)
-                                            .noRippleEffect(onClick = {}),
-                                        painter = painterResource(Res.drawable.edit_square),
-                                        contentDescription = "edit",
-                                    )*/
+                                    /*  Icon(
+                                          modifier = Modifier.size(18.sdp)
+                                              .noRippleEffect(onClick = {}),
+                                          painter = painterResource(Res.drawable.edit_square),
+                                          contentDescription = "edit",
+                                      )*/
                                 }
                             },
                             content = {
@@ -337,6 +345,24 @@ fun AddEditEducationModal(
     var eduModel by remember { mutableStateOf(educationModel ?: EducationModel()) }
     val startDatePicker = rememberUseCaseState(visible = false)
     val endDatePicker = rememberUseCaseState(visible = false)
+    var toastMessage by remember { mutableStateOf<ToastMessage?>(null) }
+    val toaster = rememberToasterState(onToastDismissed = { toastMessage = null })
+
+    LaunchedEffect(toastMessage) {
+        toastMessage?.let {
+            toaster.show(it.message, it.type)
+        }
+    }
+
+    Toaster(
+        modifier = Modifier.navigationBarsPadding(),
+        state = toaster,
+        richColors = true,
+        darkTheme = isSystemInDarkTheme(),
+        showCloseButton = true,
+        alignment = Alignment.BottomCenter,
+    )
+
 
     CalendarDialog(
         state = startDatePicker,
@@ -389,24 +415,28 @@ fun AddEditEducationModal(
             modifier = Modifier.padding(vertical = 8.sdp)
         )
 
-        CustomInputField(fieldTitle = "School Name",
+        CustomInputField(
+            fieldTitle = "School Name",
             textFieldValue = eduModel.schoolName,
             onValueChange = { eduModel = eduModel.copy(schoolName = it) },
             placeholder = { SText(text = "Enter school name") },
             supportingText = { SText(text = "Required", textColor = Color.Red) })
 
-        CustomInputField(fieldTitle = "Degree",
+        CustomInputField(
+            fieldTitle = "Degree",
             textFieldValue = eduModel.degree ?: "",
             onValueChange = { eduModel = eduModel.copy(degree = it) },
             placeholder = { SText(text = "Enter degree") },
             supportingText = { SText(text = "Required", textColor = Color.Red) })
 
-        CustomInputField(fieldTitle = "Field of Study",
+        CustomInputField(
+            fieldTitle = "Field of Study",
             textFieldValue = eduModel.field ?: "",
             onValueChange = { eduModel = eduModel.copy(field = it) },
             placeholder = { SText(text = "Enter field of study") })
 
-        CustomInputField(fieldTitle = "Location",
+        CustomInputField(
+            fieldTitle = "Location",
             textFieldValue = eduModel.location ?: "",
             onValueChange = { eduModel = eduModel.copy(location = it) },
             placeholder = { SText(text = "Enter location") })
@@ -414,6 +444,7 @@ fun AddEditEducationModal(
         CustomInputArea(
             fieldTitle = "Description",
             textFieldValue = eduModel.description ?: "",
+            imeAction = ImeAction.Done,
             onValueChange = { eduModel = eduModel.copy(description = it) },
             placeholder = { SText(text = "Enter description") },
             singleLine = false
@@ -461,8 +492,11 @@ fun AddEditEducationModal(
             PrimaryButton(
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    if(eduModel.schoolName.isEmpty() || eduModel.degree.isNullOrEmpty()){
-                        // todo show error
+                    if (eduModel.schoolName.isEmpty() || eduModel.degree.isNullOrEmpty()) {
+                        toastMessage = ToastMessage(
+                            message = "Please fill all required fields",
+                            type = ToastType.Error
+                        )
                         return@PrimaryButton
                     }
                     onSave(eduModel)
@@ -532,7 +566,7 @@ fun EducationItem(education: EducationModel) {
             // Description
             education.description?.let {
                 SText(
-                    text = it,
+                    text = it.trim(),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier.padding(top = 8.dp)

@@ -64,7 +64,7 @@ fun CustomInputField(
             suffix = suffix,
             prefix = prefix,
             singleLine = singleLine,
-            keyboardOptions = keyboardOption.copy(imeAction = imeAction),
+            keyboardOptions = keyboardOption.copy(imeAction = imeAction, autoCorrectEnabled = true),
             supportingText = supportingText,
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 12.ssp,

@@ -342,7 +342,10 @@ fun UserDetailsContent(
 ) {
     LazyColumn(modifier = Modifier.height(getScreenHeight())) {
         item {
-            AboutMeSection(userProfile.about)
+            AboutMeSection(
+                userProfile.about,
+                isCompany = userProfile.userRole == UserRole.Organization
+            )
         }
 
         item {
@@ -454,8 +457,11 @@ fun UserPostsContent(
 
 
 @Composable
-fun AboutMeSection(about: String) {
-    SectionTitle(icon = Icons.Outlined.RememberMe, title = "About Me")
+fun AboutMeSection(about: String, isCompany: Boolean) {
+    SectionTitle(
+        icon = Icons.Outlined.RememberMe,
+        title = "About ${if (isCompany) "Company" else "Me"}"
+    )
     if (about.isNotEmpty())
         SText(
             text = about,

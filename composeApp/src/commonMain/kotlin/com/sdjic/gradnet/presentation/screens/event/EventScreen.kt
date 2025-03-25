@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.sdjic.gradnet.presentation.screens.event
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,6 +59,7 @@ import com.sdjic.gradnet.presentation.helper.AutoSwipePagerEffect
 import com.sdjic.gradnet.presentation.helper.DateTimeUtils
 import com.sdjic.gradnet.presentation.helper.LocalRootNavigator
 import com.sdjic.gradnet.presentation.helper.koinScreenModel
+import com.sdjic.gradnet.presentation.helper.parallaxLayoutModifier
 import com.sdjic.gradnet.presentation.helper.shimmerLoadingAnimation
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
@@ -105,122 +109,129 @@ class EventScreen : Screen {
         }
 
         Scaffold { pVal ->
-            Column(
+            LazyColumn(
                 modifier = Modifier.padding(pVal).fillMaxSize(),
             ) {
 
-                if (eventScreenModel.isEventLoading.value) {
-                    EventLoadingShimmer()
-                } else {
-                    if (trendingEventItems.isNotEmpty())
-                        Row(
-                            modifier = Modifier.padding(12.dp).fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Label(
-                                size = 18.sp,
-                                text = "Trending Events",
-                                modifier = Modifier.padding(12.dp).weight(1f),
-                                textColor = MaterialTheme.colorScheme.secondary
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
-                            /*TextButton(onClick = {}) {
-                                SText("View more")
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }*/
-                        }
-                    BannerCarouselWidget(trendingEventItems) {
-                        navigator.push(EventDetailScreen(it))
-                    }
-                }
-
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Label(
-                        size = 22.sp,
-                        text = "Upcoming Events",
-                        modifier = Modifier.padding(12.dp).weight(1f),
-                        textColor = MaterialTheme.colorScheme.secondary
-                    )
-                    /* if (selectedDay.day != todayDate.dayOfMonth && selectedDay.month == todayDate.date.month) {
-                         TextButton(onClick = {
-                             eventScreenModel.refreshTodayDate()
-                         }) {
-                             SText("Today")
-                         }
-                     }*/
-                }
-
-                AnimatedCalendar(
-                    daysList = daysList,
-                    todayDate = todayDate,
-                    selectedDay = selectedDay,
-                    onDaySelected = { date ->
-                        Logger.e(
-                            "${date.localDate}",
-                            null,
-                            tag = "TAG111"
-                        )
-                        eventScreenModel.updateSelectedDay(date)
-                        eventScreenModel.getEventsByDate("${date.localDate}")
-                    }
-                )
-
-                LazyColumn(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                    if (selectedDateEvents.isEmpty()) {
-                        item {
-                            Box(
-                                modifier = Modifier.padding(top = 100.dp).fillMaxSize(),
-                                contentAlignment = Alignment.Center
+                item {
+                    if (eventScreenModel.isEventLoading.value) {
+                        EventLoadingShimmer()
+                    } else {
+                        if (trendingEventItems.isNotEmpty())
+                            Row(
+                                modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Title(
-                                    "No events found"
+                                Label(
+                                    size = 18.sp,
+                                    text = "Trending Events",
+                                    modifier = Modifier.padding(12.dp).weight(1f),
+                                    textColor = MaterialTheme.colorScheme.secondary
                                 )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                /*TextButton(onClick = {}) {
+                                    SText("View more")
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }*/
                             }
+                        BannerCarouselWidget(
+                            banners = trendingEventItems
+                        ) {
+                            navigator.push(EventDetailScreen(it))
                         }
                     }
 
-                    // example
-                    /* item {
-                         MiniEventItemCard(
-                             modifier = Modifier,
-                             eventDto = EventDto(
-                                 eventTitle = "Independence day",
-                                 description = "this is independece day ",
-                                 type = "miniEvent",
-                                 eventName = "Independence day"
-                             ),
-                             calendarDate = selectedDay
-                         )
-                     }*/
+                }
 
-                    items(selectedDateEvents) { event ->
-                        when (event.type.lowercase()) {
-                            "casual", "trending", "normal", "default" -> {
-                                EventItemCard(
-                                    modifier = Modifier.height(220.dp).padding(12.dp),
-                                    eventDto = event,
-                                    onBannerClick = {
-                                        navigator.push(EventDetailScreen(it))
-                                    }
+                stickyHeader {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Label(
+                            size = 22.sp,
+                            text = "Upcoming Events",
+                            modifier = Modifier.padding(12.dp).weight(1f),
+                            textColor = MaterialTheme.colorScheme.secondary
+                        )
+                        /* if (selectedDay.day != todayDate.dayOfMonth && selectedDay.month == todayDate.date.month) {
+                             TextButton(onClick = {
+                                 eventScreenModel.refreshTodayDate()
+                             }) {
+                                 SText("Today")
+                             }
+                         }*/
+                    }
+                    Box(
+                        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                    ) {
+                        AnimatedCalendar(
+                            daysList = daysList,
+                            todayDate = todayDate,
+                            selectedDay = selectedDay,
+                            onDaySelected = { date ->
+                                Logger.e(
+                                    "${date.localDate}",
+                                    null,
+                                    tag = "TAG111"
                                 )
+                                eventScreenModel.updateSelectedDay(date)
+                                eventScreenModel.getEventsByDate("${date.localDate}")
                             }
+                        )
+                    }
+                }
 
-                            "miniEvent".lowercase() -> {
-                                MiniEventItemCard(
-                                    modifier = Modifier.padding(12.dp),
-                                    eventDto = event,
-                                    calendarDate = selectedDay
-                                )
-                            }
+                if (selectedDateEvents.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.padding(top = 100.dp).fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Title(
+                                "No events found"
+                            )
+                        }
+                    }
+                }
+
+                // example
+                /* item {
+                     MiniEventItemCard(
+                         modifier = Modifier,
+                         eventDto = EventDto(
+                             eventTitle = "Independence day",
+                             description = "this is independece day ",
+                             type = "miniEvent",
+                             eventName = "Independence day"
+                         ),
+                         calendarDate = selectedDay
+                     )
+                 }*/
+
+                items(selectedDateEvents) { event ->
+                    when (event.type.lowercase()) {
+                        "casual", "trending", "normal", "default" -> {
+                            EventItemCard(
+                                modifier = Modifier.height(220.dp).padding(12.dp),
+                                eventDto = event,
+                                onBannerClick = {
+                                    navigator.push(EventDetailScreen(it))
+                                }
+                            )
+                        }
+
+                        "miniEvent".lowercase() -> {
+                            MiniEventItemCard(
+                                modifier = Modifier.padding(12.dp),
+                                eventDto = event,
+                                calendarDate = selectedDay
+                            )
                         }
                     }
                 }
@@ -347,8 +358,7 @@ class EventScreen : Screen {
             }
             Row(
                 Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(pagerState.pageCount) { iteration ->

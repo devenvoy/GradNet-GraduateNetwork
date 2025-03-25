@@ -456,17 +456,18 @@ fun UserPostsContent(
 @Composable
 fun AboutMeSection(about: String) {
     SectionTitle(icon = Icons.Outlined.RememberMe, title = "About Me")
-    SText(
-        text = about,
-        modifier = Modifier
-            .padding(6.sdp)
-            .fillMaxWidth()
-            .background(
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .5f),
-                RoundedCornerShape(3.sdp)
-            )
-            .padding(6.sdp),
-    )
+    if (about.isNotEmpty())
+        SText(
+            text = about,
+            modifier = Modifier
+                .padding(6.sdp)
+                .fillMaxWidth()
+                .background(
+                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .5f),
+                    RoundedCornerShape(3.sdp)
+                )
+                .padding(6.sdp),
+        )
 }
 
 @Composable

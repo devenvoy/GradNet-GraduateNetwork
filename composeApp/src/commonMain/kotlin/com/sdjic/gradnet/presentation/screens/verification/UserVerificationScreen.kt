@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.sdjic.gradnet.di.platform_di.exitProcess
 import com.sdjic.gradnet.presentation.composables.OtpBottomSheet
 import com.sdjic.gradnet.presentation.composables.button.PrimaryButton
 import com.sdjic.gradnet.presentation.composables.images.BackButton
@@ -103,7 +104,13 @@ class UserVerificationScreen : Screen {
                     navigationIcon = {
                         BackButton(
                             iconColor = MaterialTheme.colorScheme.onPrimary
-                        ) { navigator.pop() }
+                        ) {
+                            if (!navigator.canPop) {
+                                exitProcess() // This will close the app
+                            } else {
+                                navigator.pop()
+                            }
+                        }
                     }
                 )
             }

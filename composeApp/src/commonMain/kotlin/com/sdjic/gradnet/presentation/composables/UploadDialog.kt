@@ -88,7 +88,7 @@ fun UploadDialog(
                             tint = Color.Red
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        titleText = "Uploading Finished"
+                        titleText = "Uploading Error"
                         Text(state.error)
                     }
                 }

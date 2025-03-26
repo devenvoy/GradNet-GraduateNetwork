@@ -2,9 +2,6 @@ package com.sdjic.gradnet.presentation.screens.aboutUs
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Spring.DampingRatioMediumBouncy
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
@@ -23,12 +20,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -39,14 +34,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.key.Key.Companion.F
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight.Companion.W500
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -55,11 +45,13 @@ import com.maxkeppeker.sheets.core.utils.JvmSerializable
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.sdjic.gradnet.di.platform_di.getContactsUtil
-import com.sdjic.gradnet.presentation.composables.images.BackButton
 import com.sdjic.gradnet.presentation.composables.images.LongBackButton
 import com.sdjic.gradnet.presentation.composables.images.RoundedCornerImage
-import com.sdjic.gradnet.presentation.composables.text.Label
 import com.sdjic.gradnet.presentation.composables.text.Title
+import com.sdjic.gradnet.presentation.core.aryanPic
+import com.sdjic.gradnet.presentation.core.devanshPic
+import com.sdjic.gradnet.presentation.core.shubhangiPic
+import com.sdjic.gradnet.presentation.core.smitPic
 import com.sdjic.gradnet.presentation.helper.colorFromHex
 import com.sdjic.gradnet.presentation.helper.horizontalGradientBackground
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
@@ -250,7 +242,7 @@ class AboutUsScreen : Screen {
                 Phone no :+91 9429509806 
                 Email : devanshamadavadwala@gmail.com
             """.trimIndent(),
-            profileImageUrl = "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/e82625cba96f41cc91c150e4673c30e7.jpg",
+            profileImageUrl = devanshPic,
             github = "https://github.com/devenvoy",
             linkedin = "https://www.linkedin.com/in/devansh-a-bb104524a/",
             instagram = "https://www.instagram.com/aj_devansh/",
@@ -260,7 +252,7 @@ class AboutUsScreen : Screen {
             name = " Malaviya Smit ",
             role = "Backend Developer | Python | Machine Learning",
             description = "",
-            profileImageUrl = "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/27f571923037401bb5883f935b80e88c.jpg",
+            profileImageUrl = smitPic,
             github = "https://github.com/smit014",
             linkedin = "https://www.linkedin.com/in/smit-malaviya/",
             instagram = "https://www.instagram.com/smit_malaviya_14/",
@@ -272,7 +264,7 @@ class AboutUsScreen : Screen {
             description = """
                 I am a final-year BCA student at SDJ International College, with a strong passion for AI and Machine Learning. I am also enhancing my skills and knowledge in AI/ML at Rejoice Talent Academy.
             """.trimIndent(),
-            profileImageUrl = "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/1a103ca5909e4ababba46b9db559de71.jpg",
+            profileImageUrl = aryanPic,
             github = "https://github.com/korat08",
             linkedin = "https://www.linkedin.com/in/korat-aryan-3b4688242/",
             instagram = "https://www.instagram.com/_aryan0808/",
@@ -282,7 +274,7 @@ class AboutUsScreen : Screen {
             name = "Kyada shubhangi",
             role = "React Developer | Node ",
             description = "",
-            profileImageUrl = "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/d0a59bc079e148f792561a06d8618e42.jpg",
+            profileImageUrl = shubhangiPic,
             github = "https://github.com/ShubhangiKyada",
             linkedin = "https://www.linkedin.com/in/shubhangi-kyada-a81347289/",
             instagram = "https://www.instagram.com/shubhangi_kyada_/",

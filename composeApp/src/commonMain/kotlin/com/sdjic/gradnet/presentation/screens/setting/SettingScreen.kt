@@ -3,15 +3,13 @@ package com.sdjic.gradnet.presentation.screens.setting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Feedback
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.outlined.Storage
@@ -87,6 +85,15 @@ class SettingScreen : Screen {
                     title = "Privacy Policy",
                     onClick = {
                         navigator.push(PrivatePolicyScreen())
+                    }
+                )
+
+                SettingItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    icon = Icons.Outlined.Feedback,
+                    title = "Give Feedback",
+                    onClick = {
+                        navigator.push(FeedBackScreen())
                     }
                 )
 

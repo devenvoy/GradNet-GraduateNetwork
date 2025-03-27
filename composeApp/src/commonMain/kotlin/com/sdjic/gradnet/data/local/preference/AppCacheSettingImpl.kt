@@ -132,6 +132,8 @@ class AppCacheSettingImpl : AppCacheSetting {
             skills = (settings[SettingStorageKeys.SKILLS.key] ?: "").split("|")
                 .filter { it.isNotEmpty() },
             isPrivate = settings[SettingStorageKeys.IS_PRIVATE.key] ?: false,
+            userRole = UserRole.getUserRole(settings[SettingStorageKeys.ROLE.key] ?: "")
+                ?: UserRole.Alumni
         )
     }
 

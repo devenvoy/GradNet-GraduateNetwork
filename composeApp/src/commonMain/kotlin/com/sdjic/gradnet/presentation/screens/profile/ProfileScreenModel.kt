@@ -73,7 +73,7 @@ class ProfileScreenModel(
                 val experienceList =
                     userDataSource.getAllExperiences().map { it.toExperienceModel() }
                 val urlList = userDataSource.getAllUrls().map { it.toUrlDto() }
-
+                userRole.value = result.userRole
                 result = result.copy(
                     educations = educationList,
                     experiences = experienceList,

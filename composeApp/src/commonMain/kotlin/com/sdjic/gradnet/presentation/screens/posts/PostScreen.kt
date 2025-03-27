@@ -10,6 +10,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,10 +63,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -103,11 +104,10 @@ import com.sdjic.gradnet.presentation.screens.profile.ProfileScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import com.sdjic.gradnet.presentation.theme.displayFontFamily
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
-import gradnet_graduatenetwork.composeapp.generated.resources.app_name
 import gradnet_graduatenetwork.composeapp.generated.resources.heart
 import gradnet_graduatenetwork.composeapp.generated.resources.heart_outlined
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_share
-import kotlinx.coroutines.delay
+import gradnet_graduatenetwork.composeapp.generated.resources.main_icon
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.snapBackZoomable
@@ -115,7 +115,6 @@ import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 import network.chaintech.sdpcomposemultiplatform.sdp
 import network.chaintech.sdpcomposemultiplatform.ssp
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 
 class PostScreen : Screen {
@@ -353,11 +352,13 @@ class PostScreen : Screen {
     fun TopBar(onFilterIconClicked: () -> Unit) {
         TopAppBar(
             title = {
-                Text(
-                    text = stringResource(Res.string.app_name),
-                    style = TextStyle(
-                        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                        color = MaterialTheme.colorScheme.onSurface
+                Image(
+                    modifier = Modifier.padding(start = 10.dp).size(120.dp,46.dp),
+                    contentScale = ContentScale.FillBounds,
+                    painter = painterResource(Res.drawable.main_icon),
+                    contentDescription = "appIcon",
+                    colorFilter = ColorFilter.tint(
+                        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary
                     )
                 )
             },

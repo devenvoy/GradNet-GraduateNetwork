@@ -3,6 +3,19 @@ package com.sdjic.gradnet.presentation.core
 import androidx.compose.ui.unit.dp
 import com.sdjic.gradnet.data.network.entity.dto.UserDto
 
+val devanshPic =
+    "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/ba24cbb0a199416bab7d8d7ae44bc65a.jpg"
+
+val smitPic =
+    "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/58b73e56d7f24b04af7ab892017ed8ec.jpg"
+
+val aryanPic =
+    "https://myawsalumnibucket.s3.us-east-1.amazonaws.com/images/96bfe31507e2423aafce294ba32d02dc.jpg"
+
+val shubhangiPic =
+    "https://instagram.fstv5-1.fna.fbcdn.net/v/t51.2885-19/460682937_1175643466880573_8384927044933965467_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_ht=instagram.fstv5-1.fna.fbcdn.net&_nc_cat=105&_nc_oc=Q6cZ2QGNUd_70cqW__ZLHdTxcm93FMfhjw3mGA5CRGD1Fwh8p7bjVRVXw8MKpSJe_niOrRE&_nc_ohc=EZuG3s1hveYQ7kNvgHcvajj&_nc_gid=zohLPsoiTa7EZ68m2DhXMA&edm=AEYEu-QBAAAA&ccb=7-5&oh=00_AYHUdQnbn2Ai18YIgj8JMmcJ97aNndj-Nt1XlUjWRpPtfQ&oe=67E940D4&_nc_sid=ead929"
+
+
 val LanguagesList = listOf(
     "Hindi",
     "English",

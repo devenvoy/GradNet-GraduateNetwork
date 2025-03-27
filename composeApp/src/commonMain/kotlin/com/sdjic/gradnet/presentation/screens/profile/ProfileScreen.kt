@@ -342,7 +342,10 @@ fun UserDetailsContent(
 ) {
     LazyColumn(modifier = Modifier.height(getScreenHeight())) {
         item {
-            AboutMeSection(userProfile.about)
+            AboutMeSection(
+                userProfile.about,
+                isCompany = userProfile.userRole == UserRole.Organization
+            )
         }
 
         item {
@@ -454,19 +457,23 @@ fun UserPostsContent(
 
 
 @Composable
-fun AboutMeSection(about: String) {
-    SectionTitle(icon = Icons.Outlined.RememberMe, title = "About Me")
-    SText(
-        text = about,
-        modifier = Modifier
-            .padding(6.sdp)
-            .fillMaxWidth()
-            .background(
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .5f),
-                RoundedCornerShape(3.sdp)
-            )
-            .padding(6.sdp),
+fun AboutMeSection(about: String, isCompany: Boolean) {
+    SectionTitle(
+        icon = Icons.Outlined.RememberMe,
+        title = "About ${if (isCompany) "Company" else "Me"}"
     )
+    if (about.isNotEmpty())
+        SText(
+            text = about,
+            modifier = Modifier
+                .padding(6.sdp)
+                .fillMaxWidth()
+                .background(
+                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .5f),
+                    RoundedCornerShape(3.sdp)
+                )
+                .padding(6.sdp),
+        )
 }
 
 @Composable

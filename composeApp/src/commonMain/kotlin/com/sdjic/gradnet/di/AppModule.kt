@@ -5,7 +5,7 @@ import com.sdjic.gradnet.data.local.room.GradNetDB
 import com.sdjic.gradnet.data.local.room.repo.TestRepositoryImpl
 import com.sdjic.gradnet.data.local.room.repo.UserDataSourceImpl
 import com.sdjic.gradnet.data.network.repo.AuthRepositoryImpl
-import com.sdjic.gradnet.data.network.repo.CryptoRepository
+import com.sdjic.gradnet.data.network.repo.GeneralRepository
 import com.sdjic.gradnet.data.network.repo.EventRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.JobsRepositoryImpl
 import com.sdjic.gradnet.data.network.repo.PostRepositoryImpl
@@ -43,6 +43,7 @@ import com.sdjic.gradnet.presentation.screens.posts.LikedPostScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.PostScreenModel
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreenModel
 import com.sdjic.gradnet.presentation.screens.search.SearchScreenModel
+import com.sdjic.gradnet.presentation.screens.setting.lost_found.LostItemReportScreenModel
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreenModel
 import com.sdjic.gradnet.presentation.screens.verification.UserVerificationScreenModel
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +59,7 @@ val screenModelsModule = module {
     factory { SignUpScreenModel(get()) }
     factory { ForgotPasswordScreenModel(get()) }
     factory { ChangePasswordScreenModel(get(), get()) }
-    factory { UserVerificationScreenModel(get(), get(),get()) }
+    factory { UserVerificationScreenModel(get(), get(), get()) }
 
     // home , profile , post , jobs
     factory { HomeScreenViewModel(get(), get()) }
@@ -73,6 +74,7 @@ val screenModelsModule = module {
     factory { PostScreenModel(get(), get(), get()) }
     factory { LikedPostScreenModel(get(), get(), get()) }
     factory { SavedJobScreenModel(get(), get(), get()) }
+    factory { LostItemReportScreenModel(get(),get()) }
 
     // testing only
     factory { TestViewModel(testRepository = get()) }
@@ -95,12 +97,10 @@ val repositoryModule = module {
     single<EventRepository> { EventRepositoryImpl(get()) }
     single<PostRepository> { PostRepositoryImpl(get()) }
     single<JobsRepository> { JobsRepositoryImpl(get()) }
-
-//    single<PostPagingSource> { PostPagingSource(get(),get()) }
+    single<GeneralRepository> { GeneralRepository(get()) }
 
     // testing only
     single<TestRepository> { TestRepositoryImpl(testDao = get()) }
-    single<CryptoRepository> { CryptoRepository(httpClient = get()) }
 }
 
 val dispatcherModule = module {

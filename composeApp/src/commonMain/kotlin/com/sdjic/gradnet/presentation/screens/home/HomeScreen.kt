@@ -70,6 +70,7 @@ import com.sdjic.gradnet.presentation.screens.home.tabs.SearchTab
 import com.sdjic.gradnet.presentation.screens.jobs.SavedJobScreen
 import com.sdjic.gradnet.presentation.screens.posts.LikedPostScreen
 import com.sdjic.gradnet.presentation.screens.setting.SettingScreen
+import com.sdjic.gradnet.presentation.screens.setting.lost_found.LostItemListScreen
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreen
 import com.sdjic.gradnet.presentation.theme.AppTheme
 import kotlinx.coroutines.Dispatchers
@@ -240,6 +241,10 @@ class HomeScreen : Screen {
 
                         NavigationItem.SavedJobs -> {
                             navigator.push(SavedJobScreen())
+                        }
+
+                        NavigationItem.LostFoundItem -> {
+                            navigator.push(LostItemListScreen())
                         }
                     }
                 }

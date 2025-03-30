@@ -1,5 +1,6 @@
 package com.sdjic.gradnet.presentation.screens.setting.lost_found
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -189,9 +190,13 @@ class LostItemListScreen : Screen {
             elevation = CardDefaults.cardElevation(2.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                PostImages(lostItem.photos, onLikeClicked = {})
+                Title(lostItem.userName, size = 14.ssp)
+                if (lostItem.photos.isNotEmpty()) {
+                    PostImages(lostItem.photos, onLikeClicked = {})
+                }
                 Text(
                     text = postedAgo,
                     style = TextStyle(

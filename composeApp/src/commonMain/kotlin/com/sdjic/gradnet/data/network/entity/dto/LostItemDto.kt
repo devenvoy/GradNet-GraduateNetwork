@@ -10,5 +10,6 @@ data class LostItemDto(
     @SerialName("description") val description: String,
     @SerialName("id") val id: String,
     @SerialName("photos") val photos: List<String>,
-    @SerialName("user_id") val userId: String
+    @SerialName("user_id") val userId: String,
+    @SerialName("username") val userName: String
 )

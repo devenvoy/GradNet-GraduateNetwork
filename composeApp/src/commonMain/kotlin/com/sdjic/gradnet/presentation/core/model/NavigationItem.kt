@@ -1,9 +1,9 @@
 package com.sdjic.gradnet.presentation.core.model
 
 import gradnet_graduatenetwork.composeapp.generated.resources.Res
+import gradnet_graduatenetwork.composeapp.generated.resources.edit_square
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_bookmark
 import gradnet_graduatenetwork.composeapp.generated.resources.ic_favorites
-import gradnet_graduatenetwork.composeapp.generated.resources.ic_link
 import gradnet_graduatenetwork.composeapp.generated.resources.info_outline
 import gradnet_graduatenetwork.composeapp.generated.resources.logout
 import gradnet_graduatenetwork.composeapp.generated.resources.person
@@ -29,6 +29,10 @@ enum class NavigationItem(
     Settings(
         icon = Res.drawable.settings,
         title = "Settings"
+    ),
+    LostFoundItem(
+        icon = Res.drawable.edit_square,
+        title = "Lost & Found News",
     ),
     AboutUs(
         icon = Res.drawable.info_outline,

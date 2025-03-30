@@ -83,15 +83,6 @@ class SettingScreen : Screen {
 
                 SettingItem(
                     modifier = Modifier.fillMaxWidth(),
-                    icon = Icons.Outlined.EditNote,
-                    title = "Lost & Found News",
-                    onClick = {
-                        navigator.push(LostItemListScreen())
-                    }
-                )
-
-                SettingItem(
-                    modifier = Modifier.fillMaxWidth(),
                     icon = Icons.Outlined.Shield,
                     title = "Privacy Policy",
                     onClick = {

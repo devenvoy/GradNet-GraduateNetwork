@@ -37,7 +37,7 @@ class LostItemReportScreenModel(
             }
             val description = descriptionText.value.text
             val response = generalRepository.submitLostItemReport(
-                image = selectedImage.value!!,
+                image = selectedImage.value,
                 description = description,
                 accessToken = pref.accessToken.toString(),
                 listener = null

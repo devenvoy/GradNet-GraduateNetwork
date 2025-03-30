@@ -2,6 +2,7 @@ package com.sdjic.gradnet.data.network.repo
 
 import GradNet_GraduateNetwork.composeApp.BuildConfig
 import androidx.compose.ui.graphics.ImageBitmap
+import com.sdjic.gradnet.data.network.entity.dto.LostItemResponse
 import com.sdjic.gradnet.data.network.entity.response.ServerError
 import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.data.network.utils.BaseGateway
@@ -12,6 +13,7 @@ import io.ktor.client.content.ProgressListener
 import io.ktor.client.plugins.onUpload
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -52,6 +54,18 @@ class GeneralRepository(httpClient: HttpClient) : BaseGateway(httpClient) {
                     )
                 )
                 onUpload(listener)
+            }
+        }
+    }
+
+
+    suspend fun getLostItems(
+        page: Int,
+        perPage: Int
+    ): Result<ServerResponse<LostItemResponse>,ServerError>{
+        return tryToExecute {
+            get(BuildConfig.BASE_URL+"/lostfound?page=$page&per_page=$perPage"){
+                contentType(ContentType.Application.Json)
             }
         }
     }

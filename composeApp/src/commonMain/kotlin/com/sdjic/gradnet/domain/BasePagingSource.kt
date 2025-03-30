@@ -19,7 +19,7 @@ abstract class BasePagingSource<Value : Any> : PagingSource<Int, Value>() {
             PagingSourceLoadResultPage(
                 data = response.items,
                 prevKey = if (currentPage <= 1) null else currentPage - 1,
-                nextKey =  (currentPage + 1).takeIf { response.items.lastIndex >= currentPage }
+                nextKey = if (response.items.size < limit) null else currentPage + 1
             )
 
         } catch (e: Exception) {

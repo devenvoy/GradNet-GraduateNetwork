@@ -23,6 +23,7 @@ import com.sdjic.gradnet.domain.repo.UserDataSource
 import com.sdjic.gradnet.domain.repo.UserRepository
 import com.sdjic.gradnet.domain.useCases.GetJobsUseCase
 import com.sdjic.gradnet.domain.useCases.GetLikedPostsUseCase
+import com.sdjic.gradnet.domain.useCases.GetLostItemsUseCase
 import com.sdjic.gradnet.domain.useCases.GetPostsUseCase
 import com.sdjic.gradnet.domain.useCases.GetSavedJobUseCase
 import com.sdjic.gradnet.domain.useCases.GetUsersUseCase
@@ -43,6 +44,7 @@ import com.sdjic.gradnet.presentation.screens.posts.LikedPostScreenModel
 import com.sdjic.gradnet.presentation.screens.posts.PostScreenModel
 import com.sdjic.gradnet.presentation.screens.profile.ProfileScreenModel
 import com.sdjic.gradnet.presentation.screens.search.SearchScreenModel
+import com.sdjic.gradnet.presentation.screens.setting.lost_found.LostItemListScreenModel
 import com.sdjic.gradnet.presentation.screens.setting.lost_found.LostItemReportScreenModel
 import com.sdjic.gradnet.presentation.screens.splash.SplashScreenModel
 import com.sdjic.gradnet.presentation.screens.verification.UserVerificationScreenModel
@@ -70,6 +72,7 @@ val screenModelsModule = module {
     factory { EventScreenModel(get()) }
     factory { SearchScreenModel(get()) }
     factory { JobDetailScreenModel(get(), get()) }
+    factory { LostItemListScreenModel(get()) }
     factory { AddPostScreenModel(get(), get(), get()) }
     factory { PostScreenModel(get(), get(), get()) }
     factory { LikedPostScreenModel(get(), get(), get()) }
@@ -84,6 +87,7 @@ val userCases = module {
     single { GetUsersUseCase(get()) }
     single { LikePostUseCase(get()) }
     single { GetSavedJobUseCase(get()) }
+    single { GetLostItemsUseCase(get()) }
     single { GetLikedPostsUseCase(get()) }
     single { GetJobsUseCase(get(), get()) }
     single { GetPostsUseCase(get(), get()) }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.Feedback
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.Shield
@@ -32,6 +33,7 @@ import com.sdjic.gradnet.di.platform_di.getStorageInfo
 import com.sdjic.gradnet.presentation.composables.images.BackButton
 import com.sdjic.gradnet.presentation.composables.text.Title
 import com.sdjic.gradnet.presentation.screens.auth.password.ChangePasswordScreen
+import com.sdjic.gradnet.presentation.screens.setting.lost_found.LostItemListScreen
 import network.chaintech.kmp_date_time_picker.utils.noRippleEffect
 
 class SettingScreen : Screen {
@@ -76,6 +78,15 @@ class SettingScreen : Screen {
                     title = "Change Password",
                     onClick = {
                         navigator.push(ChangePasswordScreen())
+                    }
+                )
+
+                SettingItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    icon = Icons.Outlined.EditNote,
+                    title = "Lost & Found News",
+                    onClick = {
+                        navigator.push(LostItemListScreen())
                     }
                 )
 

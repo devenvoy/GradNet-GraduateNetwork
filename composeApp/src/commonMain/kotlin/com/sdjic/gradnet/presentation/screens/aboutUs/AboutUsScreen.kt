@@ -251,7 +251,10 @@ class AboutUsScreen : Screen {
         Developer(
             name = " Malaviya Smit ",
             role = "Backend Developer | Python | Machine Learning",
-            description = "",
+            description = """
+                Project Leader & Backend Developer
+                As the leader of GradNet, I oversee the project's vision and technical direction while handling backend development in Python. With expertise in AI and Machine Learning, I focus on building robust and scalable solutions that enhance alumni connectivity and engagement.
+            """.trimIndent(),
             profileImageUrl = smitPic,
             github = "https://github.com/smit014",
             linkedin = "https://www.linkedin.com/in/smit-malaviya/",
@@ -262,8 +265,9 @@ class AboutUsScreen : Screen {
             name = "  Korat Aryan   ",
             role = "Backend Developer | React Developer | Node ",
             description = """
-                I am a final-year BCA student at SDJ International College, with a strong passion for AI and Machine Learning. I am also enhancing my skills and knowledge in AI/ML at Rejoice Talent Academy.
-            """.trimIndent(),
+                Designer, Researcher & Content Manager
+                Aryan is the creative mind behind GradNet’s user experience. He ensures the platform is visually appealing and user-friendly while also conducting in-depth research to refine and enhance our features. Additionally, he manages content, ensuring that alumni have access to valuable and engaging information.
+             """.trimIndent(),
             profileImageUrl = aryanPic,
             github = "https://github.com/korat08",
             linkedin = "https://www.linkedin.com/in/korat-aryan-3b4688242/",
@@ -273,7 +277,10 @@ class AboutUsScreen : Screen {
         Developer(
             name = "Kyada shubhangi",
             role = "React Developer | Node ",
-            description = "",
+            description = """
+                Backend Developer & Content Manager
+                Shubhangi plays a crucial role in backend development and ensures that our platform has well-structured, informative content. She is responsible for curating engaging resources that keep alumni informed and involved.
+            """.trimIndent(),
             profileImageUrl = shubhangiPic,
             github = "https://github.com/ShubhangiKyada",
             linkedin = "https://www.linkedin.com/in/shubhangi-kyada-a81347289/",

@@ -3,7 +3,7 @@ package com.sdjic.gradnet.di.platform_di
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.sdjic.gradnet.data.local.GradNetDB
+import com.sdjic.gradnet.data.local.room.GradNetDB
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager

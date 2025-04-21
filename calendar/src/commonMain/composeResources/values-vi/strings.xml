@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Chọn tháng</string>
+    <string name="scd_calendar_dialog_next_month" >Tháng sau</string>
+    <string name="scd_calendar_dialog_prev_month" >Tháng sau</string>
+    <string name="scd_calendar_dialog_next_week" >Tuần tới</string>
+    <string name="scd_calendar_dialog_prev_week" >Tuần trước</string>
+    <string name="scd_calendar_dialog_select_year" >Chọn năm</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

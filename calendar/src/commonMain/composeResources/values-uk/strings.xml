@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Вибрати місяць</string>
+    <string name="scd_calendar_dialog_next_month" >Наступний місяць</string>
+    <string name="scd_calendar_dialog_prev_month" >Наступного місяця</string>
+    <string name="scd_calendar_dialog_next_week" >Наступного тижня</string>
+    <string name="scd_calendar_dialog_prev_week" >Минулий тиждень</string>
+    <string name="scd_calendar_dialog_select_year" >Виберіть рік</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

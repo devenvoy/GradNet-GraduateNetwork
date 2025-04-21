@@ -1,0 +1,8 @@
+target 'iosApp' do
+  use_frameworks!
+  platform :ios, '16.0'
+  pod 'composeApp', :path => '../composeApp'
+  pod 'FirebaseCore'
+  pod 'GoogleSignIn'
+  pod 'FirebaseMessaging'
+end

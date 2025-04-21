@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >महीना चुनें</string>
+    <string name="scd_calendar_dialog_next_month" >अगले महीने</string>
+    <string name="scd_calendar_dialog_prev_month" >अगले महीने</string>
+    <string name="scd_calendar_dialog_next_week" >अगले हफ़्ते</string>
+    <string name="scd_calendar_dialog_prev_week" >पिछला सप्ताह</string>
+    <string name="scd_calendar_dialog_select_year" >साल चुनें</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Izvēlieties mēnesi</string>
+    <string name="scd_calendar_dialog_next_month" >Nākamajā mēnesī</string>
+    <string name="scd_calendar_dialog_prev_month" >Nākamajā mēnesī</string>
+    <string name="scd_calendar_dialog_next_week" >Nākamā nedēļa</string>
+    <string name="scd_calendar_dialog_prev_week" >Iepriekšējā nedēļā.</string>
+    <string name="scd_calendar_dialog_select_year" >Izvēlieties gadu</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

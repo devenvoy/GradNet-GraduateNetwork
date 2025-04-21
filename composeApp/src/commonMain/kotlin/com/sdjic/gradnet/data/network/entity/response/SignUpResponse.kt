@@ -1,0 +1,12 @@
+package com.sdjic.gradnet.data.network.entity.response
+
+
+import com.sdjic.gradnet.data.network.entity.dto.UserAuthDto
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class SignUpResponse(
+    @SerialName("access_token") val accessToken: String?,
+    @SerialName("user") val user: UserAuthDto?
+)

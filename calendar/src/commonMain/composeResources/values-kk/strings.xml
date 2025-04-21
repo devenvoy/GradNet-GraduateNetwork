@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Айды таңдау</string>
+    <string name="scd_calendar_dialog_next_month" >Келесі ай</string>
+    <string name="scd_calendar_dialog_prev_month" >Келесі ай</string>
+    <string name="scd_calendar_dialog_next_week" >Желкегі аптаның келесі қызығы.</string>
+    <string name="scd_calendar_dialog_prev_week" >Өткен апта</string>
+    <string name="scd_calendar_dialog_select_year" >Жылды таңдау</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

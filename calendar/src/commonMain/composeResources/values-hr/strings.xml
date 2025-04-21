@@ -1,0 +1,9 @@
+<resources>
+    <string name="scd_calendar_dialog_select_month" >Odaberite mjesec</string>
+    <string name="scd_calendar_dialog_next_month" >Sljedeći mjesec</string>
+    <string name="scd_calendar_dialog_prev_month" >Sljedeći mjesec</string>
+    <string name="scd_calendar_dialog_next_week" >Sljedeći tjedan</string>
+    <string name="scd_calendar_dialog_prev_week" >Prošli tjedan</string>
+    <string name="scd_calendar_dialog_select_year" >Odaberite godinu</string>
+    <string name="scd_calendar_dialog_cw" >CW</string>
+</resources>

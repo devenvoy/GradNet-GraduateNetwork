@@ -1,6 +1,4 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,16 +6,36 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 
-// added
-    alias(libs.plugins.kotlin.serialization)
+//   added
     alias(libs.plugins.ksp)
+//    alias(libs.plugins.swiftklib)
+    alias(libs.plugins.buildConfig)
+    alias(libs.plugins.kotlinCocoapods)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+   androidTarget()
+
+    cocoapods {
+        summary = "Some description for the Shared Module"
+        homepage = "Link to the Shared Module homepage"
+        version = "1.0"
+        ios.deploymentTarget = "16.0"
+        podfile = project.file("../iosApp/Podfile")
+
+        framework {
+            baseName = "composeApp"
+            isStatic = true
+            export(libs.kmpNotifier)
+            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+            transitiveExport = true
+
+            linkerOpts.add("-lsqlite3")
+//            linkerOpts.add("-Xbinary=bundleId=com.example")
+//            binaryOption("bundleId", "com.example")
+
         }
     }
 
@@ -27,11 +45,18 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export(libs.kmpNotifier)
             baseName = "ComposeApp"
             isStatic = true
             linkerOpts.add("-lsqlite3")
-            linkerOpts.add("-framework AVFoundation")
         }
+//        iosTarget.compilations {
+//            val main by getting {
+//                cinterops {
+//                    create("IosHelper")
+//                }
+//            }
+//        }
     }
 
     sourceSets {
@@ -39,66 +64,76 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
 
+            implementation(compose.uiTooling)
             implementation(libs.ktor.client.okhttp)
-//            implementation(libs.google.playServices.ads)
+
+            api(libs.maps.compose)
+
+            //Location
+            api(libs.play.services.location)
+            api(libs.play.services.maps)
         }
+
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
             implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-
-            //            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
-            // Navigator
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.screenModel)
-
+            implementation(compose.runtime)
             implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
-            implementation(libs.mvvm.core)
-
-//            implementation("network.chaintech:cmp-preference:1.0.0")
-//            implementation(libs.kotlinx.serialization.json.jvm)
-
-            // #1 - Basic settings
-            implementation(libs.multiplatform.settings.no.arg)
-
-            // #2 - For custom class serialization
-            implementation(libs.kotlinx.serialization.json.v141)
-            implementation(libs.multiplatform.settings.serialization)
-
-            // #3 - For observing values as flows
-            implementation(libs.kotlinx.coroutines.core.v164)
-            implementation(libs.multiplatform.settings.coroutines)
-
-            implementation(libs.kotlinx.datetime)
-
-            implementation(libs.sdp.ssp.compose.multiplatform)
-            implementation(libs.cmptoast)
-
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
+            implementation(compose.foundation)
+            implementation(compose.components.resources)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(compose.components.uiToolingPreview)
+            implementation(libs.androidx.lifecycle.runtime.compose)
 
             implementation(libs.retrofit)
 
-            implementation(libs.coil.compose)
+            implementation(libs.mvvm.core)
 
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.encoding)
+            implementation(libs.kotlinx.datetime)
 
-            api(libs.moko.permissions)
-            api(libs.moko.permissions.compose)
+            implementation(compose.materialIconsExtended)
+
+            implementation(libs.kotlinx.serialization.json.v141)
+            implementation(libs.kotlinx.coroutines.core.v164)
+            implementation(libs.sdp.ssp.compose.multiplatform)
+
+            implementation(libs.bundles.koin)
+            implementation(libs.bundles.ktor)
+            implementation(libs.bundles.coil)
+            api(libs.bundles.moko.permissions)
+//            implementation(libs.bundles.paging)
+            implementation(libs.bundles.voyager)
+            implementation(libs.bundles.compottie)
+            implementation(libs.bundles.connectivity)
+            implementation(libs.bundles.androidx.room)
+            implementation(libs.bundles.compose.settings)
+            implementation(libs.bundles.multiplatform.settings)
+
+            implementation(libs.sonner)
+            implementation(libs.composeIcons.fontAwesome)
+
+            implementation(libs.kermit)
+            implementation(libs.kstore)
+
+            implementation(libs.kmp.date.time.picker)
+            implementation(libs.cmp.image.pick.n.crop)
+
+            implementation(libs.kmpauth.google)
+            implementation(libs.kmpauth.uihelper)
+            implementation(libs.richeditor.compose)
+
+            implementation(project(":color"))
+            implementation(project(":calendar"))
+            implementation (libs.zoomable)
+
+            api(libs.kmpNotifier)
+
+            implementation("app.cash.paging:paging-common:3.3.0-alpha02-0.5.1")
+            implementation("app.cash.paging:paging-compose-common:3.3.0-alpha02-0.5.1")
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation("app.cash.paging:paging-runtime-uikit:3.3.0-alpha02-0.5.1")
         }
     }
 }
@@ -120,18 +155,33 @@ android {
         }
     }
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+        debug {
+//            resValue("string", "PORT_NUMBER", "8088")
         }
+       release {
+           isMinifyEnabled = false
+       }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    dependencies {
+        debugImplementation(compose.uiTooling)
+        implementation("com.github.chuckerteam.chucker:library:4.1.0")
+        implementation("com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:1.0.7")
     }
 }
 
-dependencies {
-    debugImplementation(compose.uiTooling)
+
+buildConfig {
+    // BuildConfig configuration here.
+    buildConfigField("APP_NAME", project.project.name)
+    buildConfigField("APP_VERSION_CODE", project.version.toString())
+    buildConfigField("APP_VERSION_NAME", project.version.toString())
+    buildConfigField("BASE_URL", "https://grednet-production.up.railway.app")
 }
 
 ksp {
@@ -139,17 +189,22 @@ ksp {
 }
 
 dependencies {
-
+    coreLibraryDesugaring(libs.desugar)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.ui.android)
     // Android
-
     add("kspAndroid", libs.room.compiler)
 
     // iOS
-
     add("kspIosSimulatorArm64", libs.room.compiler)
-
     add("kspIosX64", libs.room.compiler)
-
     add("kspIosArm64", libs.room.compiler)
-
 }
+
+/*
+swiftklib {
+    create("IosHelper") {
+        path = file("../iosApp/iosApp/helpers")
+        packageName("com.sdjic.ioshelper")
+    }
+}*/

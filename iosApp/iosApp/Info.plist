@@ -46,5 +46,31 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>Privacy - Camera Usage Description</key>
+    <string>This app uses camera for capturing photos.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>$(PRODUCT_NAME) requires access to your camera to capture photos or videos for your convenience.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>$(PRODUCT_NAME) requires access to your photo library to select or save photos for your projects.</string>
+
+    <key>GIDServerClientID</key>
+        <string>352124325984-ce3q3af8eqh1oqr54b0k6lm9d2ir6vkq.apps.googleusercontent.com</string>
+
+        <key>GIDClientID</key>
+        <string>352124325984-4td60prqdct0ka27aqhfmiubi8mmvdgc.apps.googleusercontent.com</string>
+
+        <key>CFBundleURLTypes</key>
+        <array>
+          <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+              <string>com.googleusercontent.apps.352124325984-4td60prqdct0ka27aqhfmiubi8mmvdgc</string>
+            </array>
+          </dict>
+        </array>
+
+<key>NSLocationWhenInUseUsageDescription</key>
+	<string>grant the permission, to access your current location </string>
+
 </dict>
 </plist>

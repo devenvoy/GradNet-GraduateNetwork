@@ -12,6 +12,9 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            url = uri("https://www.jitpack.io" )
+        }
     }
 }
 
@@ -25,7 +28,13 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven {
+            url = uri("https://www.jitpack.io" )
+        }
     }
 }
 
 include(":composeApp")
+include(":calendar")
+include(":sheetCore")
+include(":color")

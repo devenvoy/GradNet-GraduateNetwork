@@ -1,6 +1,6 @@
 'use client';
 
-import { useLogout, useChangePassword } from '@/hooks/useAuth';
+import { useLogout, useChangePassword, useDeleteAccount } from '@/hooks/useAuth';
 import { useAuthStore } from '@/stores/authStore';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +10,7 @@ export default function SettingsPage() {
   const { user } = useAuthStore();
   const logout = useLogout();
   const changePassword = useChangePassword();
+  const deleteAccount = useDeleteAccount();
   const { register, handleSubmit, formState: { errors }, reset } = useForm<ChangePasswordSchema>({
     resolver: zodResolver(changePasswordSchema),
   });
@@ -36,7 +37,7 @@ export default function SettingsPage() {
       {/* Change Password */}
       <section className="bg-surface-container rounded-2xl p-6">
         <h2 className="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-4">Change Password</h2>
-        <form onSubmit={handleSubmit((d) => { changePassword.mutate(d); reset(); })} className="space-y-4">
+        <form onSubmit={handleSubmit((d) => { changePassword.mutate({ currentPassword: d.currentPassword, newPassword: d.newPassword }); reset(); })} className="space-y-4">
           <input {...register('currentPassword')} type="password" placeholder="Current password" className="w-full bg-surface-container-lowest rounded-xl px-4 py-3 text-on-surface focus:ring-1 focus:ring-primary outline-none text-sm" />
           {errors.currentPassword && <p className="text-error text-xs">{errors.currentPassword.message}</p>}
           <input {...register('newPassword')} type="password" placeholder="New password" className="w-full bg-surface-container-lowest rounded-xl px-4 py-3 text-on-surface focus:ring-1 focus:ring-primary outline-none text-sm" />
@@ -54,6 +55,23 @@ export default function SettingsPage() {
         <h2 className="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-4">Session</h2>
         <button onClick={() => logout.mutate()} className="px-6 py-3 rounded-xl text-sm font-bold bg-error-container/20 text-error hover:bg-error-container/40 transition-colors">
           Sign Out
+        </button>
+      </section>
+
+      {/* Danger Zone */}
+      <section className="bg-surface-container rounded-2xl p-6 border border-error/20">
+        <h2 className="text-xs font-bold tracking-widest uppercase text-error mb-4">Danger Zone</h2>
+        <p className="text-sm text-on-surface-variant mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
+        <button
+          onClick={() => {
+            if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
+              deleteAccount.mutate();
+            }
+          }}
+          disabled={deleteAccount.isPending}
+          className="px-6 py-3 rounded-xl text-sm font-bold bg-error text-on-error hover:bg-error/80 transition-colors disabled:opacity-50"
+        >
+          {deleteAccount.isPending ? 'Deleting...' : 'Delete Account'}
         </button>
       </section>
     </div>

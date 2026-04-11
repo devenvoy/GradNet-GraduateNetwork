@@ -8,13 +8,17 @@ export interface PostResponse {
   userRole: string | null;
   userAvatar: string | null;
   likeCount: number;
-  isLiked: boolean;
   createdAt: string;
   updatedAt: string;
+  liked: boolean;
 }
 
 export interface PostCreateRequest {
   description?: string;
   location?: string;
   images?: string[];
+}
+
+export interface LikePostRequest {
+  postId: string;
 }

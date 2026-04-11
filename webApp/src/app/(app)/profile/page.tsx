@@ -30,31 +30,28 @@ export default function ProfilePage() {
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Profile Header */}
       <div className="relative bg-surface-container rounded-2xl overflow-hidden">
-        {profile?.coverUrl && (
-          <img src={profile.coverUrl} alt="Cover" className="w-full h-40 object-cover" />
-        )}
-        {!profile?.coverUrl && <div className="w-full h-40 campus-mesh bg-surface-container-lowest" />}
+        <div className="w-full h-40 campus-mesh bg-surface-container-lowest" />
         <div className="p-8 pt-0 -mt-12 relative z-10">
           <div className="flex items-end gap-6">
             <Avatar src={profile?.avatarUrl || user?.avatarUrl} name={`${user?.firstName} ${user?.lastName}`} size="lg" className="ring-4 ring-surface-container" />
             <div className="flex-1 mb-2">
               <h1 className="font-headline text-2xl font-bold text-white">
-                {user?.displayName || `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || 'User'}
+                {profile?.displayName || user?.displayName || `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || 'User'}
               </h1>
               <div className="flex items-center gap-2 mt-1">
                 <RoleBadge role={user?.roles?.[0] ?? null} />
-                {profile?.headline && <span className="text-sm text-on-surface-variant">• {profile.headline}</span>}
+                {profile?.designation && <span className="text-sm text-on-surface-variant">• {profile.designation}</span>}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bio */}
-      {profile?.bio && (
+      {/* About */}
+      {profile?.aboutSelf && (
         <div className="bg-surface-container rounded-2xl p-6">
           <h2 className="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">About</h2>
-          <p className="text-sm text-on-surface leading-relaxed">{profile.bio}</p>
+          <p className="text-sm text-on-surface leading-relaxed">{profile.aboutSelf}</p>
         </div>
       )}
 
@@ -70,6 +67,54 @@ export default function ProfilePage() {
         </div>
       )}
 
+      {/* Languages */}
+      {profile?.languages && profile.languages.length > 0 && (
+        <div className="bg-surface-container rounded-2xl p-6">
+          <h2 className="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">Languages</h2>
+          <div className="flex flex-wrap gap-2">
+            {profile.languages.map((lang) => (
+              <span key={lang} className="px-3 py-1 rounded-full bg-secondary-container/10 text-secondary text-xs font-bold">{lang}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Professional Info */}
+      {(profile?.department || profile?.designation || profile?.industryType || profile?.employee) && (
+        <div className="bg-surface-container rounded-2xl p-6">
+          <h2 className="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-4">Professional</h2>
+          <div className="space-y-3">
+            {profile?.designation && (
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-tertiary/10 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-tertiary text-sm">work</span>
+                </div>
+                <div>
+                  <p className="text-white font-bold text-sm">{profile.designation}</p>
+                  {profile.employee && <p className="text-xs text-on-surface-variant">{profile.employee}</p>}
+                </div>
+              </div>
+            )}
+            {profile?.department && (
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-primary text-sm">apartment</span>
+                </div>
+                <p className="text-white font-bold text-sm">{profile.department}</p>
+              </div>
+            )}
+            {profile?.industryType && (
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-secondary text-sm">factory</span>
+                </div>
+                <p className="text-white font-bold text-sm">{profile.industryType}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Education */}
       {profile?.education && profile.education.length > 0 && (
         <div className="bg-surface-container rounded-2xl p-6">
@@ -81,9 +126,8 @@ export default function ProfilePage() {
                   <span className="material-symbols-outlined text-secondary text-sm">school</span>
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm">{edu.institution}</p>
-                  <p className="text-xs text-on-surface-variant">{edu.degree} • {edu.field}</p>
-                  <p className="text-[10px] text-on-surface-variant mt-0.5">{edu.startYear} — {edu.current ? 'Present' : edu.endYear}</p>
+                  <p className="text-white font-bold text-sm">{String(edu.institution ?? edu.name ?? '')}</p>
+                  <p className="text-xs text-on-surface-variant">{String(edu.degree ?? '')} {edu.field ? `• ${edu.field}` : ''}</p>
                 </div>
               </div>
             ))}
@@ -102,13 +146,24 @@ export default function ProfilePage() {
                   <span className="material-symbols-outlined text-tertiary text-sm">work</span>
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm">{exp.title}</p>
-                  <p className="text-xs text-on-surface-variant">{exp.company}{exp.location ? ` • ${exp.location}` : ''}</p>
-                  {exp.description && <p className="text-xs text-on-surface-variant mt-1 line-clamp-2">{exp.description}</p>}
+                  <p className="text-white font-bold text-sm">{String(exp.title ?? '')}</p>
+                  <p className="text-xs text-on-surface-variant">{String(exp.company ?? '')}{exp.location ? ` • ${exp.location}` : ''}</p>
+                  {exp.description && <p className="text-xs text-on-surface-variant mt-1 line-clamp-2">{String(exp.description)}</p>}
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Website */}
+      {profile?.website && (
+        <div className="bg-surface-container rounded-2xl p-6">
+          <h2 className="text-xs font-bold tracking-widest uppercase text-on-surface-variant mb-3">Website</h2>
+          <a href={profile.website} target="_blank" rel="noopener noreferrer" className="text-primary text-sm hover:underline flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">link</span>
+            {profile.website}
+          </a>
         </div>
       )}
     </div>

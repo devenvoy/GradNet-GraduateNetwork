@@ -12,15 +12,15 @@ export interface JobResponse {
   applyLink: string | null;
   companyLogo: string | null;
   userId: string;
-  isSaved: boolean;
   createdAt: string;
   updatedAt: string;
+  saved: boolean;
 }
 
 export interface JobCreateRequest {
-  jobTitle: string;
-  companyName: string;
-  workMode: string;
+  jobTitle?: string;
+  companyName?: string;
+  workMode?: string;
   jobLocation?: string;
   jobOverview?: string;
   salary?: string;
@@ -29,4 +29,8 @@ export interface JobCreateRequest {
   benefits?: string[];
   applyLink?: string;
   companyLogo?: string;
+}
+
+export interface SaveJobRequest {
+  jobId: string;
 }

@@ -1,19 +1,32 @@
 import { api } from './client';
-import type { ApiResponse, EventResponse, EventCreateRequest, EventFilterRequest } from '@/types';
+import type {
+  ApiResponse,
+  PagedResponse,
+  EventResponse,
+  EventCreateRequest,
+  EventUpdateRequest,
+  EventFilterRequest,
+  EventDateFilterRequest,
+} from '@/types';
 
 export const eventsApi = {
+  /** POST /api/v1/events */
   create: (data: EventCreateRequest) =>
     api.post<ApiResponse<EventResponse>>('/api/v1/events', data).then(r => r.data),
 
-  filter: (data: EventFilterRequest) =>
-    api.post<ApiResponse<EventResponse[]>>('/api/v1/events/filter', data).then(r => r.data),
+  /** POST /api/v1/events/filter?page=&perPage= */
+  filter: (data: EventFilterRequest, params?: { page?: number; perPage?: number }) =>
+    api.post<ApiResponse<PagedResponse<EventResponse>>>('/api/v1/events/filter', data, { params }).then(r => r.data),
 
-  getByDate: (data: { startDate: string; endDate: string }) =>
-    api.post<ApiResponse<EventResponse[]>>('/api/v1/events/by-date', data).then(r => r.data),
+  /** POST /api/v1/events/by-date?page=&perPage= */
+  getByDate: (data: EventDateFilterRequest, params?: { page?: number; perPage?: number }) =>
+    api.post<ApiResponse<PagedResponse<EventResponse>>>('/api/v1/events/by-date', data, { params }).then(r => r.data),
 
-  update: (eventId: string, data: Partial<EventCreateRequest>) =>
+  /** PUT /api/v1/events/{eventId} */
+  update: (eventId: string, data: EventUpdateRequest) =>
     api.put<ApiResponse<EventResponse>>(`/api/v1/events/${eventId}`, data).then(r => r.data),
 
+  /** DELETE /api/v1/events/{eventId} */
   delete: (eventId: string) =>
-    api.delete(`/api/v1/events/${eventId}`),
+    api.delete<ApiResponse<void>>(`/api/v1/events/${eventId}`).then(r => r.data),
 };

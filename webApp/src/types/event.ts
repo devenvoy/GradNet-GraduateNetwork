@@ -21,8 +21,8 @@ export interface EventResponse {
 export interface EventCreateRequest {
   eventTitle: string;
   eventName: string;
-  date: string;
-  time: string;
+  date?: string;
+  time?: string;
   description: string;
   venue: string;
   registerLink?: string;
@@ -34,8 +34,26 @@ export interface EventCreateRequest {
   eventType: string;
 }
 
+export interface EventUpdateRequest {
+  eventTitle?: string;
+  eventName?: string;
+  date?: string;
+  time?: string;
+  description?: string;
+  venue?: string;
+  registerLink?: string;
+  guestNames?: string;
+  forWhom?: string;
+  remarks?: string;
+  contactUs?: string;
+  eventPic?: string;
+  eventType?: string;
+}
+
 export interface EventFilterRequest {
   eventType?: string;
-  page?: number;
-  perPage?: number;
+}
+
+export interface EventDateFilterRequest {
+  eventDate?: string;
 }

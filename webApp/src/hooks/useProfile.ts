@@ -34,10 +34,10 @@ export function useUpdateProfile() {
   });
 }
 
-export function useSearchProfiles(query: string) {
+export function useSearchProfiles(query: string, page?: number, perPage?: number) {
   return useQuery({
-    queryKey: [...PROFILE_QUERY_KEY, 'search', query],
-    queryFn: () => profileApi.search(query),
+    queryKey: [...PROFILE_QUERY_KEY, 'search', query, page, perPage],
+    queryFn: () => profileApi.search({ q: query, page, perPage }),
     enabled: query.length >= 2,
     staleTime: 10_000,
   });

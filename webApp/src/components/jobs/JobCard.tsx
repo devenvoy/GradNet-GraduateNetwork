@@ -33,9 +33,9 @@ export default function JobCard({ job }: { job: JobResponse }) {
           </div>
           <button
             onClick={(e) => { e.preventDefault(); saveJob.mutate(job.id); }}
-            className={cn('text-on-surface-variant hover:text-secondary transition-colors', job.isSaved && 'text-secondary')}
+            className={cn('text-on-surface-variant hover:text-secondary transition-colors', job.saved && 'text-secondary')}
           >
-            <span className="material-symbols-outlined" style={job.isSaved ? { fontVariationSettings: "'FILL' 1" } : undefined}>bookmark</span>
+            <span className="material-symbols-outlined" style={job.saved ? { fontVariationSettings: "'FILL' 1" } : undefined}>bookmark</span>
           </button>
         </div>
 

@@ -57,10 +57,10 @@ export default function PostCard({ post }: { post: PostResponse }) {
         <div className="flex gap-6">
           <button
             onClick={() => likePost.mutate(post.id)}
-            className={`flex items-center gap-1.5 transition-colors ${post.isLiked ? 'text-primary' : 'text-on-surface-variant hover:text-primary'}`}
+            className={`flex items-center gap-1.5 transition-colors ${post.liked ? 'text-primary' : 'text-on-surface-variant hover:text-primary'}`}
           >
-            <span className="material-symbols-outlined text-lg" style={post.isLiked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
-              {post.isLiked ? 'favorite' : 'thumb_up'}
+            <span className="material-symbols-outlined text-lg" style={post.liked ? { fontVariationSettings: "'FILL' 1" } : undefined}>
+              {post.liked ? 'favorite' : 'thumb_up'}
             </span>
             <span className="text-xs font-semibold">{post.likeCount}</span>
           </button>

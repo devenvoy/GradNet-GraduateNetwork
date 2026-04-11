@@ -2,41 +2,23 @@
 
 import { CardSkeleton } from '@/components/shared/LoadingSkeletons';
 import EmptyState from '@/components/shared/EmptyState';
-import Avatar from '@/components/shared/Avatar';
 import { useLostFound } from '@/hooks/useLostFound';
 import { timeAgo } from '@/lib/utils/formatters';
-import { cn } from '@/lib/utils';
 import type { LostFoundResponse } from '@/types';
 
 function LostFoundCard({ item }: { item: LostFoundResponse }) {
-  const statusColors: Record<string, string> = {
-    LOST: 'bg-error-container/20 text-error',
-    FOUND: 'bg-primary-container/20 text-primary',
-  };
-
   return (
     <article className="bg-surface-container rounded-2xl overflow-hidden hover:bg-surface-container-highest transition-colors">
       {item.images && item.images.length > 0 && (
-        <img src={item.images[0]} alt={item.title} className="w-full h-40 object-cover" />
+        <img src={item.images[0]} alt="Lost or Found item" className="w-full h-40 object-cover" />
       )}
       <div className="p-6">
         <div className="flex items-start justify-between mb-2">
-          <span className={cn('px-2 py-0.5 rounded text-[10px] font-bold uppercase', statusColors[item.status] || 'bg-surface-container-high text-on-surface-variant')}>
-            {item.status}
-          </span>
           <span className="text-[10px] text-on-surface-variant italic">{timeAgo(item.createdAt)}</span>
         </div>
-        <h3 className="font-bold text-white mb-1">{item.title}</h3>
-        <p className="text-sm text-on-surface-variant line-clamp-2 mb-4">{item.description}</p>
-        {item.location && (
-          <p className="text-xs text-on-surface-variant flex items-center gap-1">
-            <span className="material-symbols-outlined text-sm">location_on</span> {item.location}
-          </p>
+        {item.description && (
+          <p className="text-sm text-on-surface-variant line-clamp-3 mb-4">{item.description}</p>
         )}
-        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
-          <Avatar src={item.userAvatar} name={item.userName} size="sm" />
-          <span className="text-xs text-on-surface-variant">{item.userName || 'Anonymous'}</span>
-        </div>
       </div>
     </article>
   );

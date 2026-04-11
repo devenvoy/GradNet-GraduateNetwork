@@ -1,33 +1,60 @@
 import { api } from './client';
-import type { ApiResponse, AuthResponse } from '@/types';
+import type {
+  ApiResponse,
+  AuthResponse,
+  SignupRequest,
+  LoginRequest,
+  ChangePasswordRequest,
+  SetPasswordRequest,
+  ResetPasswordRequest,
+  RefreshTokenRequest,
+  ForgotPasswordRequest,
+  VerifyUserRequest,
+  VerifyOtpRequest,
+} from '@/types';
 
 export const authApi = {
-  signup: (data: {
-    email: string; password: string; firstName: string; lastName: string;
-    accountType: string; accountName?: string;
-  }) => api.post<ApiResponse<AuthResponse>>('/api/v1/auth/signup', data).then(r => r.data),
+  /** POST /api/v1/auth/signup */
+  signup: (data: SignupRequest) =>
+    api.post<ApiResponse<AuthResponse>>('/api/v1/auth/signup', data).then(r => r.data),
 
-  login: (data: { email: string; password: string }) =>
+  /** POST /api/v1/auth/login */
+  login: (data: LoginRequest) =>
     api.post<ApiResponse<AuthResponse>>('/api/v1/auth/login', data).then(r => r.data),
 
-  logout: (refreshToken: string) =>
-    api.post('/api/v1/auth/logout', { refreshToken }),
+  /** POST /api/v1/auth/logout */
+  logout: (data: RefreshTokenRequest) =>
+    api.post<ApiResponse<void>>('/api/v1/auth/logout', data).then(r => r.data),
 
-  changePassword: (data: { currentPassword: string; newPassword: string }) =>
-    api.put('/api/v1/auth/change-password', data),
+  /** POST /api/v1/auth/refresh-token */
+  refreshToken: (data: RefreshTokenRequest) =>
+    api.post<ApiResponse<AuthResponse>>('/api/v1/auth/refresh-token', data).then(r => r.data),
 
-  forgotPassword: (email: string) =>
-    api.post('/api/v1/auth/forgot-password', { email }),
+  /** PUT /api/v1/auth/change-password */
+  changePassword: (data: ChangePasswordRequest) =>
+    api.put<ApiResponse<void>>('/api/v1/auth/change-password', data).then(r => r.data),
 
-  resetPassword: (token: string, password: string) =>
-    api.post(`/api/v1/auth/reset-password/${token}`, { password }),
+  /** POST /api/v1/auth/set-password */
+  setPassword: (data: SetPasswordRequest) =>
+    api.post<ApiResponse<void>>('/api/v1/auth/set-password', data).then(r => r.data),
 
-  verifyOtp: (email: string, otp: string) =>
-    api.post('/api/v1/verify-otp', { email, otp }),
+  /** POST /api/v1/auth/forgot-password */
+  forgotPassword: (data: ForgotPasswordRequest) =>
+    api.post<ApiResponse<void>>('/api/v1/auth/forgot-password', data).then(r => r.data),
 
-  verifyUser: (data: Record<string, unknown>) =>
-    api.post('/api/v1/verify-user', data),
+  /** POST /api/v1/auth/reset-password/{token} */
+  resetPassword: (token: string, data: ResetPasswordRequest) =>
+    api.post<ApiResponse<void>>(`/api/v1/auth/reset-password/${token}`, data).then(r => r.data),
 
-  setPassword: (data: { password: string }) =>
-    api.post('/api/v1/auth/set-password', data),
+  /** POST /api/v1/verify-user */
+  verifyUser: (data: VerifyUserRequest) =>
+    api.post<ApiResponse<unknown>>('/api/v1/verify-user', data).then(r => r.data),
+
+  /** POST /api/v1/verify-otp */
+  verifyOtp: (data: VerifyOtpRequest) =>
+    api.post<ApiResponse<unknown>>('/api/v1/verify-otp', data).then(r => r.data),
+
+  /** DELETE /api/v1/delete_user */
+  deleteUser: () =>
+    api.delete<ApiResponse<void>>('/api/v1/delete_user').then(r => r.data),
 };

@@ -6,18 +6,20 @@ import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { toast } from 'sonner';
+import type { LoginRequest, SignupRequest } from '@/types';
 
 export function useLogin() {
   const { setAuth } = useAuthStore();
   const router = useRouter();
 
   return useMutation({
-    mutationFn: authApi.login,
+    mutationFn: (data: LoginRequest) => authApi.login(data),
     onSuccess: async (res) => {
       if (!res.data) return;
       const { accessToken, refreshToken, user } = res.data;
       setAuth(accessToken, user);
 
+      // Store refresh token in httpOnly cookie via BFF
       await fetch('/api/auth/refresh', {
         method: 'PUT',
         body: JSON.stringify({ refreshToken }),
@@ -41,7 +43,7 @@ export function useSignup() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: authApi.signup,
+    mutationFn: (data: SignupRequest) => authApi.signup(data),
     onSuccess: () => {
       toast.success('Account created! Please verify your email.');
       router.push('/verify-otp');
@@ -87,7 +89,8 @@ export function useVerifyOtp() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: ({ email, otp }: { email: string; otp: string }) => authApi.verifyOtp(email, otp),
+    mutationFn: ({ email, otp }: { email: string; otp: string }) =>
+      authApi.verifyOtp({ email, otp }),
     onSuccess: () => {
       toast.success('Email verified successfully!');
       router.push('/login');
@@ -100,7 +103,7 @@ export function useVerifyOtp() {
 
 export function useForgotPassword() {
   return useMutation({
-    mutationFn: (email: string) => authApi.forgotPassword(email),
+    mutationFn: (email: string) => authApi.forgotPassword({ email }),
     onSuccess: () => {
       toast.success('Password reset link sent to your email.');
     },
@@ -115,7 +118,7 @@ export function useResetPassword() {
 
   return useMutation({
     mutationFn: ({ token, password }: { token: string; password: string }) =>
-      authApi.resetPassword(token, password),
+      authApi.resetPassword(token, { password }),
     onSuccess: () => {
       toast.success('Password reset successfully!');
       router.push('/login');
@@ -134,6 +137,37 @@ export function useChangePassword() {
     },
     onError: () => {
       toast.error('Failed to change password.');
+    },
+  });
+}
+
+export function useSetPassword() {
+  return useMutation({
+    mutationFn: (password: string) => authApi.setPassword({ password }),
+    onSuccess: () => {
+      toast.success('Password set successfully!');
+    },
+    onError: () => {
+      toast.error('Failed to set password.');
+    },
+  });
+}
+
+export function useDeleteAccount() {
+  const { clearAuth } = useAuthStore();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: () => authApi.deleteUser(),
+    onSuccess: async () => {
+      await fetch('/api/auth/refresh', { method: 'DELETE' });
+      Cookies.remove('gradnet_is_admin');
+      clearAuth();
+      toast.success('Account deleted.');
+      router.push('/login');
+    },
+    onError: () => {
+      toast.error('Failed to delete account.');
     },
   });
 }

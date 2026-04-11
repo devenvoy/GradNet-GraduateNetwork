@@ -1,56 +1,47 @@
 export interface DataEntryRequest {
-  type: string;
-  name: string;
-  email?: string;
-  details?: Record<string, unknown>;
+  verifyId: string;
+  collegeName?: string;
+  verifyType?: string;
+  data?: string;
 }
 
 export interface DataUpdateRequest {
-  name?: string;
-  email?: string;
-  details?: Record<string, unknown>;
+  collegeName?: string;
+  verifyType?: string;
+  data?: string;
 }
 
-export interface VerifyDataResponse {
-  id: string;
-  type: string;
-  name: string;
-  email: string | null;
-  details: Record<string, unknown> | null;
-  createdAt: string;
-  updatedAt: string;
+export interface FeedbackRequest {
+  feedback: string;
 }
 
 export interface FeedbackResponse {
   id: string;
+  feedback: string;
   userId: string;
-  userName: string | null;
-  content: string;
-  category: string | null;
-  status: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface LostFoundResponse {
   id: string;
-  title: string;
-  description: string;
-  category: string;
-  location: string | null;
+  description: string | null;
   images: string[] | null;
-  status: string;
   userId: string;
-  userName: string | null;
-  userAvatar: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface LostFoundCreateRequest {
-  title: string;
-  description: string;
-  category: string;
-  location?: string;
+  description?: string;
   images?: string[];
+}
+
+export interface MediaUploadResponse {
+  id: string;
+  fileName: string;
+  fileUrl: string;
+  fileType: string;
+  imgType: string;
+  createdAt: string;
 }

@@ -215,7 +215,7 @@ class EventScreen : Screen {
                  }*/
 
                 items(selectedDateEvents) { event ->
-                    when (event.type.lowercase()) {
+                    when (event.eventType.lowercase()) {
                         "casual", "trending", "normal", "default" -> {
                             EventItemCard(
                                 modifier = Modifier.height(220.dp).padding(12.dp),

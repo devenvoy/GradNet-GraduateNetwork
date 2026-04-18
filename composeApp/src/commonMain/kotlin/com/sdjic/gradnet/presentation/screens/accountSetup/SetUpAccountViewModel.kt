@@ -9,7 +9,6 @@ import com.sdjic.gradnet.data.network.utils.onSuccess
 import com.sdjic.gradnet.data.network.utils.toEducationModel
 import com.sdjic.gradnet.data.network.utils.toEducationTable
 import com.sdjic.gradnet.data.network.utils.toExperienceModel
-import com.sdjic.gradnet.data.network.utils.toExperienceTable
 import com.sdjic.gradnet.data.network.utils.toSocialUrls
 import com.sdjic.gradnet.data.network.utils.toUrlDto
 import com.sdjic.gradnet.data.network.utils.toUrlTable
@@ -115,11 +114,9 @@ class SetUpAccountViewModel(
         try {
             val userProfile = user.toUserProfile()
             updateUserDataState(userProfile)
-            prefs.isVerified = user.verified
             prefs.saveUserProfile(userProfile)
-            userDataSource.upsertAllUrls(user.urls.map { it.toUrlTable() })
-            userDataSource.upsertAllEducations(user.education.map { it.toEducationTable() })
-            userDataSource.upsertAllExperiences(user.experience.map { it.toExperienceTable() })
+            user.urls?.map { it.toUrlTable() }?.let { userDataSource.upsertAllUrls(it) }
+            user.education?.map { it.toEducationTable() }?.let { userDataSource.upsertAllEducations(it) }
         } catch (e: Exception) {
             _userData.value = UiState.Error(e.message)
         }

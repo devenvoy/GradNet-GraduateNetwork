@@ -177,11 +177,11 @@ android {
 
 
 buildConfig {
-    // BuildConfig configuration here.
+//    packageName("com.sdjic.gradnet")
     buildConfigField("APP_NAME", project.project.name)
     buildConfigField("APP_VERSION_CODE", project.version.toString())
     buildConfigField("APP_VERSION_NAME", project.version.toString())
-    buildConfigField("BASE_URL", "https://grednet-production.up.railway.app")
+    buildConfigField("BASE_URL", "https://g3tnsvx7-4002.inc1.devtunnels.ms/api/v1")
 }
 
 ksp {

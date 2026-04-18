@@ -78,12 +78,9 @@ class UserVerificationScreenModel(
             result.onSuccess { r ->
                 r.value?.let { user ->
                     val userProfile = user.toUserProfile()
-                    prefs.isVerified = user.verified
+                    prefs.isVerified = true
                     prefs.saveUserProfile(userProfile)
-                    _isUserVerified.value = prefs.isVerified
-                    user.accessToken.takeIf { it.isNotEmpty() }?.let {
-                        prefs.accessToken = it
-                    }
+                    _isUserVerified.value = true
                     _showOtpBottomSheet.update { false }
                     _verificationState.update { UiState.Success(r.status) }
                 }

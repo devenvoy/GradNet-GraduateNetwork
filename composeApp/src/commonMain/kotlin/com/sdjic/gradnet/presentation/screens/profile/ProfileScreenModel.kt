@@ -11,7 +11,6 @@ import com.sdjic.gradnet.data.network.utils.postDtoToPost
 import com.sdjic.gradnet.data.network.utils.toEducationModel
 import com.sdjic.gradnet.data.network.utils.toEducationTable
 import com.sdjic.gradnet.data.network.utils.toExperienceModel
-import com.sdjic.gradnet.data.network.utils.toExperienceTable
 import com.sdjic.gradnet.data.network.utils.toSocialUrls
 import com.sdjic.gradnet.data.network.utils.toUrlDto
 import com.sdjic.gradnet.data.network.utils.toUrlTable
@@ -91,11 +90,9 @@ class ProfileScreenModel(
         try {
             val currentUser = user.toUserProfile()
             _profileState.update { UiState.Success(currentUser) }
-            prefs.isVerified = user.verified
             prefs.saveUserProfile(currentUser)
-            userDataSource.upsertAllUrls(user.urls.map { it.toUrlTable() })
-            userDataSource.upsertAllEducations(user.education.map { it.toEducationTable() })
-            userDataSource.upsertAllExperiences(user.experience.map { it.toExperienceTable() })
+            user.urls?.map { it.toUrlTable() }?.let { userDataSource.upsertAllUrls(it) }
+            user.education?.map { it.toEducationTable() }?.let { userDataSource.upsertAllEducations(it) }
         } catch (e: Exception) {
         }
     }
@@ -107,8 +104,8 @@ class ProfileScreenModel(
             try {
                 userRepository.fetchUser(userId).onSuccess { r ->
                     r.value?.let {
-                        fetchUserPosts(r.value.id)
-                        userRole.value = UserRole.getUserRole(r.value.role)
+                        fetchUserPosts(r.value.userId)
+                        userRole.value = UserRole.Alumni
                         _profileState.update { UiState.Success(r.value.toUserProfile()) }
                     } ?: run {
                         _profileState.update { UiState.Error("User not found") }

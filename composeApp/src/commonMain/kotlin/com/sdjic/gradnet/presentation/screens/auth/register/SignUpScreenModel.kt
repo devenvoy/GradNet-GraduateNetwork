@@ -26,8 +26,11 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
 
     private val prefs = getKoin().get<AppCacheSetting>()
 
-    private val _name = MutableStateFlow("")
-    val name = _name.asStateFlow()
+    private val _firstName = MutableStateFlow("")
+    val firstName = _firstName.asStateFlow()
+
+    private val _lastName = MutableStateFlow("")
+    val lastName = _lastName.asStateFlow()
 
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
@@ -52,8 +55,12 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
         _selectedUserRole.value = value
     }
 
-    fun onNameChange(newValue: String) {
-        _name.value = newValue
+    fun onFirstNameChange(newValue: String) {
+        _firstName.value = newValue
+    }
+
+    fun onLastNameChange(newValue: String) {
+        _lastName.value = newValue
     }
 
     fun onEmailChange(newValue: String) {
@@ -79,16 +86,17 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             if (ConnectivityManager.isConnected) {
                 val result = authRepository.signUp(
                     SignUpRequest(
-                        username = _name.value,
                         email = _email.value,
                         password = _password.value.text,
-                        userType = getUserRoles()[_selectedUserRole.value].name
+                        firstName = _firstName.value,
+                        lastName = _lastName.value,
+                        accountType = getUserRoles()[_selectedUserRole.value].name
                     )
                 )
                 result.onSuccess {
                     it.value?.let { res ->
                         updateRegisterPref(res)
-                        _signUpState.value = UiState.Success(res.user?.isVerified == true)
+                        _signUpState.value = UiState.Success(res.user?.emailVerified == true)
                     }
                 }.onError {
                     _signUpState.value = UiState.Error(it.detail)
@@ -104,18 +112,20 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
             _signUpState.value = UiState.Loading
             if (googleUser.value != null) {
                 if (ConnectivityManager.isConnected) {
+                    val (gFirst, gLast) = splitName(googleUser.value!!.displayName)
                     val result = authRepository.signUp(
                         SignUpRequest(
-                            username = googleUser.value!!.displayName,
-                            email = googleUser.value!!.email,
+                            email = googleUser.value!!.email!!,
                             password = googleUser.value!!.email!!.reversed(),
-                            userType = getUserRoles()[_selectedUserRole.value].name
+                            firstName = gFirst,
+                            lastName = gLast,
+                            accountType = getUserRoles()[_selectedUserRole.value].name
                         )
                     )
                     result.onSuccess {
                         it.value?.let { res ->
                             updateRegisterPref(res)
-                            _signUpState.value = UiState.Success(res.user?.isVerified == true)
+                            _signUpState.value = UiState.Success(res.user?.emailVerified == true)
                         }
                     }.onError {
                         _signUpState.value = UiState.Error(it.detail)
@@ -140,19 +150,28 @@ class SignUpScreenModel(private val authRepository: AuthRepository) : ScreenMode
     }
 
     private fun updateRegisterPref(loginResponse: SignUpResponse) {
-        prefs.accessToken = loginResponse.accessToken.toString()
-        prefs.userId = loginResponse.user?.userId.toString()
-        prefs.isVerified = loginResponse.user?.isVerified == true
-        prefs.userName = loginResponse.user?.username.toString()
-        prefs.userEmail = loginResponse.user?.email.toString()
-        prefs.userRole = loginResponse.user?.userType?.let { UserRole.getUserRole(it)?.name } ?: ""
+        prefs.accessToken = loginResponse.accessToken
+        prefs.userId = loginResponse.user.userId.toString()
+        prefs.isVerified = loginResponse.user.emailVerified == true
+        prefs.userName = loginResponse.user.displayName.toString()
+        prefs.userEmail = loginResponse.user.email
+        prefs.userRole = loginResponse.user.accountType?.let { UserRole.getUserRole(it)?.name } ?: ""
+    }
+
+    private fun splitName(fullName: String?): Pair<String, String> {
+        val parts = (fullName ?: "").trim().split("\\s+".toRegex(), 2)
+        return if (parts.size == 2) parts[0] to parts[1] else (parts.firstOrNull() ?: "") to ""
     }
 
     private fun validateInputs(): List<String>? {
         val errors = mutableListOf<String>()
 
-        if (_name.value.isBlank()) {
-            errors.add("Please enter your name")
+        if (_firstName.value.isBlank()) {
+            errors.add("Please enter your First name")
+        }
+
+        if (_lastName.value.isBlank()) {
+            errors.add("Please enter your Last name")
         }
 
         if (_email.value.isBlank()) {

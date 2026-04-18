@@ -193,9 +193,9 @@ class LostItemListScreen : Screen {
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Title(lostItem.userName, size = 14.ssp)
-                if (lostItem.photos.isNotEmpty()) {
-                    PostImages(lostItem.photos, onLikeClicked = {})
+                Title(lostItem.id, size = 14.ssp)
+                if (lostItem.images?.isNotEmpty() == true) {
+                    PostImages(lostItem.images, onLikeClicked = {})
                 }
                 Text(
                     text = postedAgo,
@@ -206,7 +206,7 @@ class LostItemListScreen : Screen {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = lostItem.description,
+                    text = lostItem.description.orEmpty(),
                     style = TextStyle(
                         fontFamily = displayFontFamily()
                     )

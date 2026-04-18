@@ -43,7 +43,7 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
 
     override suspend fun fetchProfile(token: String): Result<ServerResponse<UserProfileResponse>, ServerError> {
         return tryToExecute<ServerResponse<UserProfileResponse>> {
-            get(BuildConfig.BASE_URL + "/fetch_profile") {
+            get(BuildConfig.BASE_URL + "/profile") {
                 header(HttpHeaders.Authorization, "Bearer $token")
                 contentType(ContentType.Application.Json)
             }
@@ -52,7 +52,7 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
 
     override suspend fun fetchUser(userId: String): Result<ServerResponse<UserProfileResponse>, ServerError> {
         return tryToExecute<ServerResponse<UserProfileResponse>> {
-            get(BuildConfig.BASE_URL + "/fetch_profile/$userId") {
+            get(BuildConfig.BASE_URL + "/profile/$userId") {
                 contentType(ContentType.Application.Json)
             }
         }
@@ -118,7 +118,7 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
                 val byteArray = imageBitmap.toByteArray()
                 Logger.e("Response Body: $token")
                 val response: HttpResponse = client.submitFormWithBinaryData(
-                    url = "${BuildConfig.BASE_URL}/image_upload?img_type=$type",
+                    url = "${BuildConfig.BASE_URL}/storage/upload?img_type=$type",
                     formData = formData {
                         append("file", byteArray, Headers.build {
                             append(HttpHeaders.ContentType, "image/jpeg")
@@ -151,9 +151,10 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
         return if (oldToken.isEmpty())
             Result.Error(ServerError(500, null, "Invalid Token"))
         else tryToExecute {
-            post(BuildConfig.BASE_URL + "/refresh-token/"){
+            post(BuildConfig.BASE_URL + "/auth/refresh-token"){
                 header(HttpHeaders.Authorization, "Bearer $oldToken")
                 contentType(ContentType.Application.Json)
+                setBody(mapOf("refreshToken" to oldToken))
             }
         }
     }
@@ -162,7 +163,6 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
         return if (userId.isEmpty())
             Result.Error(ServerError(500, null, "Invalid userId"))
         else tryToExecute {
-            // 75ed0707-e5e7-45cf-9013-c6cbe79ceb49
             get(BuildConfig.BASE_URL + "/posts/user?user_id=$userId"){
             }
         }
@@ -174,7 +174,7 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
         pageSize: Int
     ): Result<ServerResponse<SearchProfileResponse>, ServerError> {
         return tryToExecute {
-            get(BuildConfig.BASE_URL + "/search_profile?page=$page&per_page=$pageSize&search=$query") {
+            get(BuildConfig.BASE_URL + "/profile/search?page=$page&perPage=$pageSize&q=$query") {
                 contentType(ContentType.Application.Json)
             }
         }
@@ -191,9 +191,10 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
 
     override suspend fun sendOtp(verificationId: String,token: String): Result<ServerResponse<VerifyUserResponse>, ServerError> {
         return tryToExecute<ServerResponse<VerifyUserResponse>> {
-            post(BuildConfig.BASE_URL + "/verify-user?verify_id=${verificationId}") {
+            post(BuildConfig.BASE_URL + "/verify-user") {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer $token")
+                setBody(mapOf("verifyId" to verificationId))
             }
         }
     }
@@ -204,9 +205,10 @@ class UserRepositoryImpl(httpClient: HttpClient) : UserRepository, BaseGateway(h
         token:String
     ): Result<ServerResponse<UserProfileResponse>, ServerError> {
         return tryToExecute<ServerResponse<UserProfileResponse>> {
-            post(BuildConfig.BASE_URL + "/verify-otp?verify_id=${verificationId}&otp=${otp}") {
+            post(BuildConfig.BASE_URL + "/verify-otp") {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer $token")
+                setBody(mapOf("email" to "", "otp" to otp))
             }
         }
     }

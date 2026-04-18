@@ -1,14 +1,22 @@
 package com.sdjic.gradnet.data.network.utils
 
+import GradNet_GraduateNetwork.composeApp.BuildConfig
 import co.touchlab.kermit.Logger
+import com.sdjic.gradnet.data.network.entity.dto.MediaUploadDto
 import com.sdjic.gradnet.data.network.entity.response.ServerError
+import com.sdjic.gradnet.data.network.entity.response.ServerResponse
 import com.sdjic.gradnet.domain.utils.InternetException
 import com.sdjic.gradnet.domain.utils.UnknownErrorException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
+import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
 import kotlinx.serialization.SerializationException
 
@@ -86,5 +94,33 @@ abstract class BaseGateway(val client: HttpClient) {
     private fun Map<String, String>.containsErrors(vararg errorCodes: String): Boolean =
         keys.containsAll(errorCodes.toList())
 
-    private fun Map<String, String>.getOrEmpty(key: String): String = get(key) ?: ""
+    suspend fun uploadImage(
+        byteArray: ByteArray,
+        accessToken: String,
+        type: String = "LOST_FOUND"
+    ): Result<ServerResponse<MediaUploadDto>, ServerError> {
+        return try {
+            val response: HttpResponse = client.submitFormWithBinaryData(
+                url = "${BuildConfig.BASE_URL}/storage/upload?img_type=$type",
+                formData = formData {
+                    append("file", byteArray, Headers.build {
+                        append(HttpHeaders.ContentType, "image/jpeg")
+                        append(HttpHeaders.ContentDisposition, "filename=image.jpg")
+                    })
+                }
+            ) {
+                header(HttpHeaders.Authorization, "Bearer $accessToken")
+            }
+
+            if (response.status.isSuccess()) {
+                val serverResponse = response.body<ServerResponse<MediaUploadDto>>()
+                Result.Success(serverResponse)
+            } else {
+                val serverError = response.body<ServerError>()
+                Result.Error(serverError)
+            }
+        } catch (e: Exception) {
+            Result.Error(ServerError(500, null, e.message ?: "Upload failed", false))
+        }
+    }
 }

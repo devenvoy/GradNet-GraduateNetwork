@@ -210,8 +210,22 @@ class SignUpScreen(
 
                 CustomInputField(
                     fieldTitle = "Full Name",
-                    textFieldValue = viewModel.name.collectAsState().value,
-                    onValueChange = { viewModel.onNameChange(it) },
+                    textFieldValue = viewModel.firstName.collectAsState().value,
+                    onValueChange = viewModel::onFirstNameChange,
+                    placeholder = { Text("Enter Name") },
+                    trailingIcon = {
+                        Icon(
+                            modifier = Modifier.size(18.sdp),
+                            imageVector = FontAwesomeIcons.Solid.User,
+                            contentDescription = "Name icon",
+                        )
+                    },
+                )
+
+                CustomInputField(
+                    fieldTitle = "Last Name",
+                    textFieldValue = viewModel.lastName.collectAsState().value,
+                    onValueChange = viewModel::onLastNameChange,
                     placeholder = { Text("Enter Name") },
                     trailingIcon = {
                         Icon(

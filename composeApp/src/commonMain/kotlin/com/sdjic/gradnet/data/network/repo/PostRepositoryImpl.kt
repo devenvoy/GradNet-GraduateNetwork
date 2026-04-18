@@ -12,18 +12,18 @@ import com.sdjic.gradnet.presentation.core.model.Filter
 import io.ktor.client.HttpClient
 import io.ktor.client.content.ProgressListener
 import io.ktor.client.plugins.onUpload
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.Headers
-import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
 
 class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(httpClient) {
     private val baseUrl = BuildConfig.BASE_URL
@@ -38,7 +38,7 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
             get("$baseUrl/posts") {
                 header("Authorization", "Bearer $accessToken")
                 parameter("page", "$page")
-                parameter("per_page", "$perPage")
+                parameter("perPage", "$perPage")
 
                 selectedFilters.filter { it.value }.forEach { filter ->
                     parameter("role", filter.key)
@@ -56,7 +56,7 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
             get("$baseUrl/posts/liked_post") {
                 header("Authorization", "Bearer $accessToken")
                 parameter("page", "$page")
-                parameter("per_page", "$perPage")
+                parameter("perPage", "$perPage")
             }
         }
     }
@@ -84,28 +84,35 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
         files: List<ByteArray>,
         listener: ProgressListener?
     ): Result<ServerResponse<JsonElement>, ServerError> {
+        val imageUrls = mutableListOf<String>()
+
+        // 1. Upload all images
+        files.forEach { byteArray ->
+            val uploadResult = uploadImage(byteArray, accessToken, type = "POST")
+            when (uploadResult) {
+                is Result.Success -> {
+                    uploadResult.data.value?.fileUrl?.let { url ->
+                        imageUrls.add(url)
+                    }
+                }
+                is Result.Error -> return Result.Error(uploadResult.error)
+                Result.Loading -> {}
+            }
+        }
+
+        // 2. Submit JSON payload
         return tryToExecute<ServerResponse<JsonElement>> {
             post("$baseUrl/posts/create") {
                 header("Authorization", "Bearer $accessToken")
-                contentType(ContentType.MultiPart.FormData)
-
+                contentType(ContentType.Application.Json)
                 setBody(
-                    MultiPartFormDataContent(
-                        formData {
-                            append("description", postContent)
-                            append("location", location)
-                            files.forEachIndexed { index, byteArray ->
-                                append(
-                                    "files",
-                                    byteArray,
-                                    Headers.build {
-                                        append(HttpHeaders.ContentDisposition, "form-data; name=\"files\"; filename=\"image_$index.jpg\"")
-                                        append(HttpHeaders.ContentType, ContentType.Image.JPEG.toString())
-                                    }
-                                )
-                            }
+                    buildJsonObject {
+                        put("description", postContent)
+                        put("location", location)
+                        putJsonArray("images") {
+                            imageUrls.forEach { add(JsonPrimitive(it)) }
                         }
-                    )
+                    }
                 )
                 onUpload(listener)
             }
@@ -122,7 +129,7 @@ class PostRepositoryImpl(httpClient: HttpClient) : PostRepository, BaseGateway(h
                 contentType(ContentType.Application.Json)
                 setBody("""
                     {
-                      "post_id": "$postId"
+                      "postId": "$postId"
                     }
                 """.trimIndent())
             }

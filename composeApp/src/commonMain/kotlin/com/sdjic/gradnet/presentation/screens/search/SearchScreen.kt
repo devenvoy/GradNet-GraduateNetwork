@@ -145,8 +145,8 @@ class SearchScreen : Screen {
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 CircularProfileImage(
-                    placeHolderName = user.username,
-                    data = user.profilePic
+                    placeHolderName = user.displayName ?: "",
+                    data = user.avatarUrl
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -154,10 +154,10 @@ class SearchScreen : Screen {
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontFamily = displayFontFamily(),
-                    text = user.username, style = MaterialTheme.typography.bodyLarge
+                    text = user.displayName ?: "", style = MaterialTheme.typography.bodyLarge
                 )
                 UserRoleChip(
-                    userRole = UserRole.getUserRole(user.userType) ?: UserRole.Alumni
+                    userRole = UserRole.getUserRole(user.accountType?:"") ?: UserRole.Alumni
                 )
             }
         }

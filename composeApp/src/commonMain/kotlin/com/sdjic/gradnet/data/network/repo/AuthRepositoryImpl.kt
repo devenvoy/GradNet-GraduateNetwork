@@ -11,46 +11,41 @@ import com.sdjic.gradnet.data.network.utils.BaseGateway
 import com.sdjic.gradnet.data.network.utils.Result
 import com.sdjic.gradnet.domain.repo.AuthRepository
 import io.ktor.client.HttpClient
-import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import kotlinx.serialization.json.JsonElement
 
 class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(httpClient) {
 
-
     override suspend fun login(
         email: String,
         password: String
     ): Result<ServerResponse<LoginResponse>, ServerError> {
-        val result = tryToExecute<ServerResponse<LoginResponse>> {
-            post(BuildConfig.BASE_URL + "/login") {
+        return tryToExecute<ServerResponse<LoginResponse>> {
+            post("${BuildConfig.BASE_URL}/auth/login") {
                 contentType(ContentType.Application.Json)
                 setBody(
-                    """{
-                    "email": "$email",
-                    "password": "$password"
-                }""".trimIndent()
+                    mapOf(
+                        "email" to email,
+                        "password" to password
+                    )
                 )
             }
         }
-        return result
     }
 
     override suspend fun signUp(
         signUpRequest: SignUpRequest
     ): Result<ServerResponse<SignUpResponse>, ServerError> {
-        val result = tryToExecute<ServerResponse<SignUpResponse>> {
-            post(BuildConfig.BASE_URL + "/signup") {
+        return tryToExecute<ServerResponse<SignUpResponse>> {
+            post("${BuildConfig.BASE_URL}/auth/signup") {
                 contentType(ContentType.Application.Json)
                 setBody(signUpRequest)
             }
         }
-        return result
     }
 
     override suspend fun updatePassword(
@@ -59,14 +54,14 @@ class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(h
         newPassword: String
     ): Result<ServerResponse<JsonElement>, ServerError> {
         return tryToExecute {
-            post(BuildConfig.BASE_URL + "/change-password/") {
+            post("${BuildConfig.BASE_URL}/auth/change-password") {
                 contentType(ContentType.Application.Json)
                 header("Authorization", "Bearer $accessToken")
                 setBody(
-                    """{
-                    "old_password": "$oldPassword",
-                    "new_password": "$newPassword"
-                    }""".trimIndent()
+                    mapOf(
+                        "currentPassword" to oldPassword,
+                        "newPassword" to newPassword
+                    )
                 )
             }
         }
@@ -74,15 +69,9 @@ class AuthRepositoryImpl(httpClient: HttpClient) : AuthRepository, BaseGateway(h
 
     override suspend fun forgotPassword(email: String): Result<ForgotPasswordResponse, ServerError> {
         return tryToExecute {
-            post(BuildConfig.BASE_URL + "/auth/forgot-password") {
+            post("${BuildConfig.BASE_URL}/auth/forgot-password") {
                 contentType(ContentType.Application.Json)
-                setBody(
-                    FormDataContent(
-                        Parameters.build {
-                            append("email", email)
-                        }
-                    )
-                )
+                setBody(mapOf("email" to email))
             }
         }
     }

@@ -8,42 +8,25 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserProfileResponse(
-    @SerialName("id") var id: String,
-    @SerialName("name") var name: String = "",
-    @SerialName("email") var email: String = "",
-    @SerialName("phone_no") var phoneNo: Long? = null,
-    @SerialName("verify_id") var verifyId: String? = null,
-    @SerialName("profile_pic") var profilePic: String? = "",
-    @SerialName("background_pic") var backgroundPic: String? = "",
-    @SerialName("verified") var verified: Boolean = false,
-    @SerialName("plus_member") var plusMember: Boolean = false,
-    @SerialName("about_self") var aboutSelf: String? = "",
-
-    @SerialName("collage_name") var collegeName: String? = "",
-    @SerialName("course") var course: String? = "",
-    @SerialName("role") var role: String,
-
-    @SerialName("address") var address: String? = "",
-    @SerialName("dob") var dob: String? = "",
-    @SerialName("gender") var gender: String? = "",
-    @SerialName("languages") var languages: List<String>? = emptyList(),
-    @SerialName("skills") var skills: List<String>? = emptyList(),
-
-    @SerialName("industry_type") var industryType: String? = null,
-    @SerialName("employee") var employee: String? = null,
-    @SerialName("website") var website: String? = null,
-    @SerialName("department") var department: String? = null,
-    @SerialName("designation") var designation: String? = null,
-
-    @SerialName("education") var education: List<EducationDto> = emptyList(),
-    @SerialName("experience") var experience: List<ExperienceDto> = emptyList(),
-    @SerialName("urls") var urls: List<URLDto> = emptyList(),
-
-    @SerialName("is_private") var isPrivate: Boolean? = false,
-    @SerialName("is_active") var isActive: Boolean = false,
-    @SerialName("created_at") var createdAt: String = "",
-    @SerialName("updated_at") var updatedAt: String = ""
-) {
-    @SerialName("access_token")
-    val accessToken: String = ""
-}
+    @SerialName("id") val id: String,
+    @SerialName("userId") val userId: String,
+    @SerialName("firstName") val firstName: String? = null,
+    @SerialName("lastName") val lastName: String? = null,
+    @SerialName("displayName") val displayName: String? = null,
+    @SerialName("email") val email: String? = null,
+    @SerialName("avatarUrl") val avatarUrl: String? = null,
+    @SerialName("aboutSelf") val aboutSelf: String? = null,
+    @SerialName("isPrivate") val isPrivate: Boolean = false,
+    @SerialName("languages") val languages: List<String>? = null,
+    @SerialName("skills") val skills: List<String>? = null,
+    @SerialName("industryType") val industryType: String? = null,
+    @SerialName("employee") val employee: String? = null,
+    @SerialName("website") val website: String? = null,
+    @SerialName("department") val department: String? = null,
+    @SerialName("designation") val designation: String? = null,
+    @SerialName("education") val education: List<EducationDto>? = null,
+    @SerialName("experience") val experience: List<Map<String, String>>? = null,
+    @SerialName("urls") val urls: List<URLDto>? = null,
+    @SerialName("createdAt") val createdAt: String,
+    @SerialName("updatedAt") val updatedAt: String
+)

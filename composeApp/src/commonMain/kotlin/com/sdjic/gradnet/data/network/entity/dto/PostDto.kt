@@ -12,25 +12,24 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class PostDto(
-    @SerialName("post_id") val postId: String,
-    @SerialName("user_id") var userId: String? = null,
-    @SerialName("user_name") var userName: String? = null,
-    @SerialName("user_profile_pic") var userProfilePic: String? = null,
-    @SerialName("description") val description: String,
-    @SerialName("location") val location: String?,
-    @SerialName("photos") val photos: List<String?>?,
-    @SerialName("created_at") val createdAt: String,
-    @SerialName("likes") val likes: Int = 0,
-    @SerialName("liked_by") val isLiked: Boolean,
-    @SerialName("user_role") var userRole: String? = null
+    @SerialName("id") val id: String,
+    @SerialName("description") val description: String? = null,
+    @SerialName("location") val location: String? = null,
+    @SerialName("images") val images: List<String>? = null,
+    @SerialName("userId") val userId: String,
+    @SerialName("userName") val userName: String? = null,
+    @SerialName("userRole") val userRole: String? = null,
+    @SerialName("userAvatar") val userAvatar: String? = null,
+    @SerialName("likeCount") val likeCount: Int = 0,
+    @SerialName("isLiked") val isLiked: Boolean = false,
+    @SerialName("createdAt") val createdAt: String,
+    @SerialName("updatedAt") val updatedAt: String
 )
-
 
 @Entity(tableName = "post_table")
 data class PostTable(
     @PrimaryKey(autoGenerate = false)
     val id: String,
-    val postId: String,
     var userId: String? = null,
     var userName: String? = null,
     var userProfilePic: String? = null,
@@ -43,39 +42,36 @@ data class PostTable(
     var userRole: String? = null
 )
 
-
 object Converters {
 
     @TypeConverter
     fun fromStringList(list: List<String>?): String {
-        return list?.let { Json.encodeToString(it) } ?: "[]" // Convert List<String> to JSON String
+        return list?.let { Json.encodeToString(it) } ?: "[]"
     }
 
     @TypeConverter
     fun toStringList(value: String): List<String> {
         return try {
-            Json.decodeFromString(value) // Convert JSON String back to List<String>
+            Json.decodeFromString(value)
         } catch (e: Exception) {
             emptyList()
         }
     }
 }
 
-
 object PostMapper {
 
     fun mapDtoToTable(dto: PostDto): PostTable {
         return PostTable(
-            id = dto.postId, // Assuming postId is unique
-            postId = dto.postId,
+            id = dto.id,
             userId = dto.userId,
             userName = dto.userName,
-            userProfilePic = dto.userProfilePic,
-            description = dto.description,
+            userProfilePic = dto.userAvatar,
+            description = dto.description ?: "",
             location = dto.location,
-            photos = dto.photos?.filterNotNull() ?: emptyList(), // Ensuring null safety
+            photos = dto.images,
             createdAt = dto.createdAt,
-            likes = dto.likes,
+            likes = dto.likeCount,
             isLiked = dto.isLiked,
             userRole = dto.userRole
         )
@@ -83,23 +79,24 @@ object PostMapper {
 
     fun mapTableToDto(table: PostTable): PostDto {
         return PostDto(
-            postId = table.postId,
-            userId = table.userId,
+            id = table.id,
+            userId = table.userId.orEmpty(),
             userName = table.userName,
-            userProfilePic = table.userProfilePic,
+            userRole = table.userRole,
+            userAvatar = table.userProfilePic,
             description = table.description,
             location = table.location,
-            photos = table.photos ?: emptyList(), // Ensuring null safety
-            createdAt = table.createdAt,
-            likes = table.likes,
+            images = table.photos,
+            likeCount = table.likes,
             isLiked = table.isLiked,
-            userRole = table.userRole
+            createdAt = table.createdAt,
+            updatedAt = table.createdAt
         )
     }
 
     fun mapTableToPost(table: PostTable): Post {
         return Post(
-            postId = table.postId,
+            postId = table.id,
             userId = table.userId.orEmpty(),
             userName = table.userName.orEmpty(),
             userImage = table.userProfilePic.orEmpty(),

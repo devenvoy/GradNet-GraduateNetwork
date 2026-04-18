@@ -62,38 +62,56 @@ fun List<URLDto>.toSocialUrls(): SocialUrls {
 }
 
 fun UserProfileResponse.toUserProfile(): UserProfile {
+    val displayName = listOfNotNull(this.firstName, this.lastName)
+        .joinToString(" ")
+        .takeIf { it.isNotEmpty() }
+        ?: this.displayName
+        ?: ""
+
+    val experienceList = this.experience?.map { expMap ->
+        ExperienceModel(
+            title = expMap["job_title"] ?: expMap["title"] ?: "",
+            type = expMap["job_type"]?.ifEmpty { null },
+            company = expMap["company_name"]?.ifEmpty { null },
+            location = expMap["location"]?.ifEmpty { null },
+            description = expMap["job_description"]?.ifEmpty { null },
+            startDate = expMap["start_date"]?.ifEmpty { null },
+            endDate = expMap["end_date"]?.ifEmpty { null },
+        )
+    } ?: emptyList()
+
     return UserProfile(
-        userId = this.id,
-        userName = this.name,
-        email = this.email,
-        verificationId = (this.verifyId ?: "").toString(),
-        isVerified = this.verified,
-        isPlusMember = this.plusMember,
-        isActive = this.isActive,
+        userId = this.userId,
+        userName = displayName,
+        email = this.email ?: "",
+        verificationId = "",
+        isVerified = false,
+        isPlusMember = false,
+        isActive = true,
         isDeleted = false,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
-        dob = this.dob,
-        gender = this.gender,
+        dob = null,
+        gender = null,
         skills = this.skills,
         languages = this.languages,
-        educations = this.education.map { it.toEducationModel() },
-        name = this.name,
-        backgroundPic = this.backgroundPic,
-        profilePic = this.profilePic,
+        educations = this.education?.map { it.toEducationModel() } ?: emptyList(),
+        name = displayName,
+        backgroundPic = this.avatarUrl,
+        profilePic = this.avatarUrl,
         about = this.aboutSelf ?: "",
-        phoneNumber = this.phoneNo.toString(),
-        isPrivate = this.isPrivate?.not() ?: false,
-        address = this.address,
-        socialUrls = this.urls.takeIf { it.isNotEmpty() }?.toSocialUrls(),
-        experiences = this.experience.map { it.toExperienceModel() },
+        phoneNumber = "",
+        isPrivate = this.isPrivate,
+        address = null,
+        socialUrls = this.urls.takeIf { it?.isNotEmpty() == true }?.toSocialUrls(),
+        experiences = experienceList,
         website = this.website,
-        userRole = UserRole.getUserRole(this.role) ?: UserRole.Alumni,
+        userRole = UserRole.Alumni,
         industryType = this.industryType,
         department = this.department,
         designation = this.designation,
         employee = this.employee,
-        course = this.course
+        course = null
     )
 }
 
@@ -156,15 +174,15 @@ fun ExperienceTable.toExperienceModel(): ExperienceModel {
 
 fun postDtoToPost(postDto: PostDto?) = postDto?.let {
     Post(
-        postId = it.postId,
-        userId = it.userId.orEmpty(),
+        postId = it.id,
+        userId = it.userId,
         userName = it.userName.orEmpty(),
-        userImage = it.userProfilePic.orEmpty(),
+        userImage = it.userAvatar.orEmpty(),
         userRole = UserRole.getUserRole(it.userRole ?: "") ?: UserRole.Alumni,
-        content = it.description,
-        likesCount = it.likes,
+        content = it.description ?: "",
+        likesCount = it.likeCount,
         liked = it.isLiked,
-        images = it.photos?.filterNotNull() ?: emptyList(),
+        images = it.images.orEmpty(),
         location = it.location.orEmpty(),
         createdAt = it.createdAt
     )
@@ -173,7 +191,7 @@ fun postDtoToPost(postDto: PostDto?) = postDto?.let {
 
 fun jobDtoToJob(jobDto: JobDto?) = jobDto?.let {
     Job(
-        id = it.jobId.toString(),
+        id = it.id,
         title = it.jobTitle.orEmpty(),
         company = it.companyName.orEmpty(),
         jobType = it.workMode?.lowercase()?.replaceFirstChar { char -> char.uppercase() },
@@ -182,11 +200,11 @@ fun jobDtoToJob(jobDto: JobDto?) = jobDto?.let {
         salary = it.salary,
         requirements = it.requirements.orEmpty(),
         benefits = it.benefits.orEmpty(),
-        postedDate = it.createdAt.toString(),
-        applyLink = it.applylink.orEmpty(),
+        postedDate = it.createdAt,
+        applyLink = it.applyLink.orEmpty(),
         companyLogo = it.companyLogo,
-        category = it.industry.orEmpty(),
+        category = "",
         skills = it.skills.orEmpty(),
-        isSaved = it.isSaved ?: false
+        isSaved = it.isSaved
     )
 }

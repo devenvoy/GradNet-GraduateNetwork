@@ -10,7 +10,6 @@ import com.sdjic.gradnet.domain.repo.JobsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
-import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -29,7 +28,7 @@ class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(h
             get("${BuildConfig.BASE_URL}/jobs") {
                 header("Authorization", "Bearer $accessToken")
                 parameter("page", "$page")
-                parameter("per_page", "$pageSize")
+                parameter("perPage", "$pageSize")
                 filter.forEach {
                     parameter("work_mode", it.uppercase())
                 }
@@ -49,7 +48,7 @@ class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(h
             get("${BuildConfig.BASE_URL}/job/saved") {
                 header("Authorization", "Bearer $accessToken")
                 parameter("page", "$page")
-                parameter("per_page", "$pageSize")
+                parameter("perPage", "$pageSize")
             }
         }
     }
@@ -60,12 +59,10 @@ class JobsRepositoryImpl(httpClient: HttpClient) : JobsRepository, BaseGateway(h
     ): Result<ServerResponse<JsonElement>, ServerError> {
         return tryToExecute {
             post("${BuildConfig.BASE_URL}/job/save") {
-                headers {
-                    append("Authorization", "Bearer $accessToken")
-                    append("accept", "application/json")
-                    append("Content-Type", "application/json")
-                }
-                setBody(mapOf("job_id" to jobId))
+                header("Authorization", "Bearer $accessToken")
+                header("accept", "application/json")
+                header("Content-Type", "application/json")
+                setBody(mapOf("jobId" to jobId))
             }
         }
     }

@@ -41,7 +41,7 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
                 result.onSuccess {
                     it.value?.let { res ->
                         updateLoginPref(res)
-                        _loginState.value = UiState.Success(res.userDto?.isVerified == true)
+                        _loginState.value = UiState.Success(res.user?.emailVerified == true)
                     }
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
@@ -62,7 +62,7 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
                 result.onSuccess {
                     it.value?.let { res ->
                         updateLoginPref(res)
-                        _loginState.value = UiState.Success(res.userDto?.isVerified == true)
+                        _loginState.value = UiState.Success(res.user?.emailVerified == true)
                     }
                 }.onError {
                     _loginState.value = UiState.Error(it.detail)
@@ -85,12 +85,12 @@ class LoginScreenModel(private val authRepository: AuthRepository) : ScreenModel
 
     private fun updateLoginPref(loginResponse: LoginResponse) {
         prefs.accessToken = loginResponse.accessToken.toString()
-        prefs.userId = loginResponse.userDto?.userId.toString()
-        prefs.userName = loginResponse.userDto?.username.toString()
-        prefs.userEmail = loginResponse.userDto?.email.toString()
-        prefs.isVerified = loginResponse.userDto?.isVerified == true
+        prefs.userId = loginResponse.user?.userId.toString()
+        prefs.userName = loginResponse.user?.displayName.toString()
+        prefs.userEmail = loginResponse.user?.email.toString()
+        prefs.isVerified = loginResponse.user?.emailVerified == true
         prefs.userRole =
-            loginResponse.userDto?.userType?.let { UserRole.getUserRole(it)?.name } ?: ""
+            loginResponse.user?.accountType?.let { UserRole.getUserRole(it)?.name } ?: ""
     }
 
     private fun validateInputs(): List<String>? {
